@@ -1,17 +1,3 @@
-// import React from 'react';
-
-// const page = () => {
-// 	return (
-//         <div className='flex items-center justify-center h-screen w-full'>
-//             <div className='score_page '>
-//                 <h2>Exam Completed!</h2>
-//                 <h3>You Score { }</h3>
-//             </div>
-//         </div>
-// 	);
-// };
-
-// export default page;
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';

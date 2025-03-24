@@ -49,7 +49,7 @@ const Page = () => {
 			setTimeLeft(parsedState.timeLeft);
 		} else {
 			// Shuffle questions once and store in localStorage
-			const shuffled = shuffle(itilQuestions).slice(0, 50);
+			const shuffled = shuffle(itilQuestions).slice(0, 40);
 			setShuffledQuestions(shuffled);
 		}
 	}, []);
