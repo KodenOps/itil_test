@@ -22,6 +22,15 @@ const page = () => {
 					Click To Start Exam
 				</Link>
 			</div>
+			<p className='absolute bottom-0 py-4 text-center bg-[#f4f4f4] w-full'>
+				Created by{' '}
+				<a
+					href='https://www.linkedin.com/in/femi-fadiya-segun-pelumi'
+					className='underline text-blue-600'>
+					Kodenops
+				</a>
+				❤
+			</p>
 		</div>
 	);
 };
