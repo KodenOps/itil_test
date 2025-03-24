@@ -127,7 +127,7 @@ const Page = () => {
 
 		// Reset quiz state in the background
 		setTimeout(() => {
-			const shuffled = shuffle(itilQuestions).slice(0, 50);
+			const shuffled = shuffle(itilQuestions).slice(0, 40);
 			setShuffledQuestions(shuffled);
 			setCurrentIndex(0);
 			setSelectedAnswers({});
