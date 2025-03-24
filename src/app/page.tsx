@@ -18,7 +18,7 @@ const page = () => {
 				</p>
 				<Link
 					href={'/questions'}
-					className='bg-green-900 px-6  rounded-full py-4 text-slate-50 md:text-lg w-[50%] md:mt-[50px] mt-[20px] cursor-pointer hover:bg-green-700 duration-1000 text-center'>
+					className='bg-green-900 px-6  rounded-full py-4 text-slate-50 md:text-lg w-[80%] md:mt-[50px] mt-[20px] cursor-pointer hover:bg-green-700 duration-1000 text-center'>
 					Click To Start Exam
 				</Link>
 			</div>
