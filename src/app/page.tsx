@@ -3,7 +3,7 @@ import React from 'react';
 
 const page = () => {
 	return (
-		<div className='w-full h-screen flex md:mt-[10%] md:items-start mt-[100px] justify-center'>
+		<div className='w-full h-full flex md:mt-[5%] md:items-start mt-[100px] overflow-hidden justify-center'>
 			<div className='title items-center flex flex-col'>
 				<h3 className='text-green-900 font-bold md:text-4xl text-2xl text-center'>
 					Welcome To Your ITIL Test
