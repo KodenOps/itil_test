@@ -169,14 +169,30 @@ const Page = () => {
 
 			{/* Modal for Explanation */}
 			{isModalOpen && (
-				<div className='fixed inset-0 flex items-center justify-center bg-[#000000b5] bg-opacity-90'>
+				<div className='fixed inset-0 flex items-center justify-center bg-[#0009] bg-opacity-50'>
 					<div className='bg-white p-6 rounded-lg shadow-lg w-96 text-center'>
-						<h2 className='text-xl font-semibold text-red-600 mb-4'>
-							Explanation✨
+						<h2 className='text-xl font-semibold text-green-700 mb-2'>
+							Notification ✨
 						</h2>
+
+						{/* Show if user was right or wrong */}
+						<div className='flex items-center justify-center mb-3'>
+							{selectedAnswers[currentIndex] ===
+							shuffledQuestions[currentIndex].answer ? (
+								<p className='text-green-600 font-semibold'>
+									✅ You got it right!
+								</p>
+							) : (
+								<p className='text-red-600 font-semibold'>❌ Incorrect</p>
+							)}
+						</div>
+
+						{/* Explanation */}
 						<p className='text-gray-700'>
 							{shuffledQuestions[currentIndex].ShortExplanation}
 						</p>
+
+						{/* Next Question Button */}
 						<button
 							onClick={handleCloseModal}
 							className='mt-4 px-6 py-2 bg-green-600 text-white rounded-lg'>
