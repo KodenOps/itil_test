@@ -171,15 +171,15 @@ const Page = () => {
 			{isModalOpen && (
 				<div className='fixed inset-0 flex items-center justify-center bg-[#0009] bg-opacity-50'>
 					<div className='bg-white p-6 rounded-lg shadow-lg w-96 text-center'>
-						<h2 className='text-xl font-semibold text-green-700 mb-2'>
-							Notification ✨
+						<h2 className='text-xl font-semibold  text-green-700 mb-2 text-center '>
+							✨ Notification ✨
 						</h2>
 
 						{/* Show if user was right or wrong */}
 						<div className='flex items-center justify-center mb-3'>
 							{selectedAnswers[currentIndex] ===
 							shuffledQuestions[currentIndex].answer ? (
-								<p className='text-green-600 font-semibold'>
+								<p className='text-green-600 font-semibold text-center'>
 									✅ You got it right!
 								</p>
 							) : (
