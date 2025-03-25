@@ -3,7 +3,7 @@ import React from 'react';
 
 const page = () => {
 	return (
-		<div className='w-full h-full flex md:mt-[5%] md:items-start mt-[100px] overflow-hidden justify-center'>
+		<div className='w-full h-full flex md:mt-[5%] md:items-start mt-[80px] overflow-hidden justify-center'>
 			<div className='title items-center flex flex-col'>
 				<h3 className='text-green-900 font-bold md:text-4xl text-2xl text-center'>
 					Welcome To Your ITIL Test
@@ -16,12 +16,12 @@ const page = () => {
 				<div className='flex flex-wrap items-center justify-center w-full mt-6 gap-4'>
 					<Link
 						href={'/questions'}
-						className='left h-[200px] w-[200px] shadow-lg border-2 border-[#c4c4c4] rounded-sm flex p-10 text-center justify-center items-center font-bold text-[#696969]'>
+						className='left md:h-[200px] w-[200px] h-[100px]  shadow-lg border-2 border-[#c4c4c4] rounded-sm flex p-10 text-center justify-center items-center font-bold text-[#696969]'>
 						Full Exam Mode
 					</Link>
 					<Link
 						href={'/practise'}
-						className='left h-[200px] w-[200px] shadow-lg border-2 border-[#c4c4c4] rounded-sm flex p-10 text-center justify-center items-center font-bold text-[#696969]'>
+						className='left md:h-[200px] w-[200px] h-[100px]  shadow-lg border-2 border-[#c4c4c4] rounded-sm flex p-10 text-center justify-center items-center font-bold text-[#696969]'>
 						Partial Exam Mode
 					</Link>
 				</div>
