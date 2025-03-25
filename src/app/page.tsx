@@ -15,7 +15,7 @@ const page = () => {
 				<p className='mt-10 text-lg font-medium'>Total Questions: 40</p>
 				<div className='flex flex-wrap items-center justify-center w-full mt-6 gap-4'>
 					<Link
-						href={'/question'}
+						href={'/questions'}
 						className='left h-[200px] w-[200px] shadow-lg border-2 border-[#c4c4c4] rounded-sm flex p-10 text-center justify-center items-center font-bold text-[#696969]'>
 						Full Exam Mode
 					</Link>
