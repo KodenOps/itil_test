@@ -25,25 +25,28 @@ const page = () => {
 		<div className='flex flex-col items-center justify-center h-screen bg-gray-100'>
 			<h1 className='text-3xl font-bold text-green-600'>Exam Completed!</h1>
 			{finalScore && (finalScore / 40) * 100 < 65 ? (
-				<p className='text-xl mt-4'>Olodo! You fail o! </p>
+				<p className='text-xl mt-6'>Olodo! You fail o! </p>
 			) : (
-				<p>Smart Chap! Keep it up. Keep practicing</p>
+				<p className='text-xl mt-6'>Smart Chap! Keep it up. Keep practicing</p>
 			)}
 			{finalScore !== null && totalQuestions !== null ? (
 				<p className='mt-4 text-xl'>
 					Your Score:{' '}
 					<span className='font-bold'>
-						{((finalScore / 40) * 100).toFixed(1)}
-					</span>{' '}
-					/ 100
+						{((finalScore / totalQuestions!) * 100).toFixed(1)}
+						{'% '}
+					</span>
 				</p>
 			) : (
 				<p className='mt-4 text-xl'>Loading...</p>
 			)}
 
 			<button
-				onClick={() => router.push('/')}
-				className='mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg'>
+				onClick={() => {
+					localStorage.clear(); // Clear all data from localStorage
+					router.push('/'); // Navigate to home
+				}}
+				className='mt-6 px-6 py-3 bg-green-600 font-semibold text-white rounded-lg md:w-auto w-[80vw]'>
 				Go to Home
 			</button>
 		</div>

@@ -21,6 +21,7 @@ const Page = () => {
 	const [selectedAnswers, setSelectedAnswers] = useState<{
 		[key: number]: string;
 	}>({});
+	const [score, setScore] = useState<number>(0);
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
 	// Shuffle function (Fisher-Yates Algorithm)
@@ -45,6 +46,7 @@ const Page = () => {
 			setCurrentIndex(parsedState.currentIndex);
 			setSelectedAnswers(parsedState.selectedAnswers);
 			setTimeLeft(parsedState.timeLeft);
+			setScore(parsedState.score);
 		} else {
 			const shuffled = shuffle(itilQuestions).slice(0, 40);
 			setShuffledQuestions(shuffled);
@@ -61,10 +63,11 @@ const Page = () => {
 					currentIndex,
 					selectedAnswers,
 					timeLeft,
+					score,
 				})
 			);
 		}
-	}, [shuffledQuestions, currentIndex, selectedAnswers, timeLeft]);
+	}, [shuffledQuestions, currentIndex, selectedAnswers, timeLeft, score]);
 
 	// Handle selecting an option
 	const handleOptionSelect = (option: string) => {
@@ -78,12 +81,39 @@ const Page = () => {
 	const handleNextQuestion = () => {
 		if (!selectedAnswers[currentIndex]) return;
 		setIsModalOpen(true);
+
+		// Update Score
+		const isCorrect =
+			selectedAnswers[currentIndex] === shuffledQuestions[currentIndex].answer;
+		setScore((prev) => prev + (isCorrect ? 1 : 0));
+
+		// Update localStorage score
+		localStorage.setItem(
+			'finalScore',
+			JSON.stringify(score + (isCorrect ? 1 : 0))
+		);
+		localStorage.setItem(
+			'totalQuestions',
+			JSON.stringify(shuffledQuestions.length)
+		);
 	};
 
 	// Move to the next question after closing modal
 	const handleCloseModal = () => {
 		setIsModalOpen(false);
 		setCurrentIndex((prev) => prev + 1);
+	};
+
+	// Handle finish: Save score & navigate
+	const handleFinish = () => {
+		localStorage.setItem('finalScore', JSON.stringify(score));
+		localStorage.setItem(
+			'totalQuestions',
+			JSON.stringify(shuffledQuestions.length)
+		);
+		localStorage.removeItem(LOCAL_STORAGE_KEY); // Clear quiz state
+
+		router.push('/score');
 	};
 
 	// Timer Effect
@@ -160,7 +190,7 @@ const Page = () => {
 					</button>
 				) : (
 					<button
-						onClick={() => router.push('/score')}
+						onClick={handleFinish}
 						className='px-10 py-4 bg-red-600 text-white rounded-lg'>
 						Finish
 					</button>
