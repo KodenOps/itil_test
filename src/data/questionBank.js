@@ -1294,4 +1294,1404 @@ export const itilQuestions = [
 		ShortExplanation:
 			'The service value system encompasses all elements that contribute to value co-creation.',
 	},
+	{
+		id: '1',
+		question:
+			'Which practice is responsible for moving components to live environments?',
+		options: [
+			'Change enablement',
+			'Release management',
+			'IT asset management',
+			'Deployment management',
+		],
+		answer: 'Deployment management',
+		ShortExplanation:
+			'Deployment management is specifically focused on the processes and activities required to move components into live environments, ensuring that they are deployed correctly and efficiently.',
+	},
+	{
+		id: '2',
+		question:
+			'Which practice includes the classification and ownership of queries and requests from users?',
+		options: [
+			'Service desk',
+			'Incident management',
+			'Change enablement',
+			'Service level management',
+		],
+		answer: 'Service desk',
+		ShortExplanation:
+			'The service desk acts as the primary point of contact for users, managing and classifying their requests and queries effectively.',
+	},
+	{
+		id: '3',
+		question:
+			'Which practice identifies metrics that reflect the customer’s experience of a service?',
+		options: [
+			'Continual improvement',
+			'Service desk',
+			'Service level management',
+			'Problem management',
+		],
+		answer: 'Service level management',
+		ShortExplanation:
+			'Service level management focuses on defining and monitoring service levels, which directly relate to customer satisfaction and experience.',
+	},
+	{
+		id: '4',
+		question: 'What is the PRIMARY use of a change schedule?',
+		options: [
+			"To support 'incident management' and improvement planning",
+			'To manage emergency changes',
+			'To plan changes and help avoid conflicts',
+			'To manage standard changes',
+		],
+		answer: 'To plan changes and help avoid conflicts',
+		ShortExplanation:
+			'The change schedule is essential for planning and coordinating changes to minimize conflicts and ensure smooth operations.',
+	},
+	{
+		id: '5',
+		question:
+			'Which service management dimension is focused on activities and how these are coordinated?',
+		options: [
+			'Organizations and people',
+			'Information and technology',
+			'Partners and suppliers',
+			'Value streams and processes',
+		],
+		answer: 'Value streams and processes',
+		ShortExplanation:
+			'Value streams and processes focus on how activities are organized and coordinated to deliver value to customers.',
+	},
+	{
+		id: '6',
+		question:
+			"How does categorization of incidents assist the 'incident management' practice?",
+		options: [
+			'It helps direct the incident to the correct support area',
+			'It determines the priority assigned to the incident',
+			'It ensures that incidents are resolved in timescales agreed with the customer',
+			'It determines how the service provider is perceived',
+		],
+		answer: 'It helps direct the incident to the correct support area',
+		ShortExplanation:
+			'Categorization allows incidents to be routed to the appropriate support teams, improving response times and resolution efficiency.',
+	},
+	{
+		id: '7',
+		question:
+			'Identify the missing word(s) in the following sentence. A service is a means of enabling value co-creation by facilitating [?] that customers want to achieve.',
+		options: ['the warranty', 'outcomes', 'the utility', 'outputs'],
+		answer: 'outcomes',
+		ShortExplanation:
+			'Outcomes represent the results that customers seek to achieve through the use of services, highlighting the value co-creation aspect.',
+	},
+	{
+		id: '8',
+		question:
+			"Which is a recommendation of the 'continual improvement' practice?",
+		options: [
+			"There should at base be a small team dedicated to leading 'continual improvement' efforts",
+			'All improvements should be managed as multi-phase projects',
+			"'Continual improvement' should be isolated from other practices",
+			'External suppliers should be excluded from improvement initiatives',
+		],
+		answer:
+			"There should at base be a small team dedicated to leading 'continual improvement' efforts",
+		ShortExplanation:
+			'Having a dedicated team ensures focused efforts on identifying and implementing improvements across the organization.',
+	},
+	{
+		id: '9',
+		question:
+			"Which is a potential benefit of using an IT service management tool to support the 'incident management' practice?",
+		options: [
+			'It may ensure that the cause of incidents is identified within agreed times',
+			'It may provide automated matching of incidents to problems or known errors',
+			'It may ensure that supplier contracts are aligned with the needs of the service provider',
+			'It may provide automated resolution and closure of complex incidents',
+		],
+		answer:
+			'It may provide automated matching of incidents to problems or known errors',
+		ShortExplanation:
+			'Automated matching helps in quickly identifying recurring issues, leading to faster resolutions and improved service quality.',
+	},
+	{
+		id: '10',
+		question: 'Which role submits service requests?',
+		options: [
+			'The user, or their authorized representative',
+			'The customer, or their authorized representative',
+			'The sponsor, or their authorized representative',
+			'The supplier, or their authorized representative',
+		],
+		answer: 'The user, or their authorized representative',
+		ShortExplanation:
+			'Users or their representatives are the ones who initiate service requests based on their needs.',
+	},
+	{
+		id: '11',
+		question: 'Which practice provides a single point of contact for users?',
+		options: [
+			'Incident management',
+			'Change enablement',
+			'Service desk',
+			'Service request management',
+		],
+		answer: 'Service desk',
+		ShortExplanation:
+			'The service desk serves as the main point of contact for users, facilitating communication and support.',
+	},
+	{
+		id: '12',
+		question:
+			'Which guiding principle recommends that the four dimensions of service management are considered?',
+		options: [
+			'Think and work holistically',
+			'Progress iteratively with feedback',
+			'Focus on value',
+			'Keep it simple and practical',
+		],
+		answer: 'Think and work holistically',
+		ShortExplanation:
+			'This principle emphasizes the importance of considering all dimensions to achieve effective service management.',
+	},
+	{
+		id: '13',
+		question:
+			"Which would be supported by the 'service request management' practice?",
+		options: [
+			'A request to authorize a change that could have an effect on a service',
+			'A request from a user for something which is a normal part of service delivery',
+			'A request to restore service after a service interruption',
+			'A request to investigate the cause of multiple related incidents',
+		],
+		answer:
+			'A request from a user for something which is a normal part of service delivery',
+		ShortExplanation:
+			'Service request management is designed to handle routine requests that are part of standard service delivery.',
+	},
+	{
+		id: '14',
+		question:
+			'Which practice is the responsibility of everyone in the organization?',
+		options: [
+			'Service level management',
+			'Change enablement',
+			'Problem management',
+			'Continual improvement',
+		],
+		answer: 'Continual improvement',
+		ShortExplanation:
+			'Continual improvement is a collective responsibility, encouraging all employees to contribute to enhancing services and processes.',
+	},
+	{
+		id: '15',
+		question:
+			"Identify the missing word in the following sentence. The purpose of the 'information security management' practice is to [?] the organization’s information.",
+		options: ['store', 'provide', 'audit', 'protect'],
+		answer: 'protect',
+		ShortExplanation:
+			"The primary goal of information security management is to safeguard the organization's information from threats and vulnerabilities.",
+	},
+	{
+		id: '16',
+		question:
+			'Which guiding principle recommends collecting data before deciding what can be re-used?',
+		options: [
+			'Focus on value',
+			'Start where you are',
+			'Keep it simple and practical',
+			'Progress iteratively with feedback',
+		],
+		answer: 'Start where you are',
+		ShortExplanation:
+			'This principle encourages organizations to assess their current state and resources before making decisions on reuse.',
+	},
+	{
+		id: '17',
+		question: 'Which is NOT usually included as part of incident management?',
+		options: [
+			'Scripts for collecting initial information about incidents',
+			'Formalized procedures for logging incidents',
+			'Detailed procedures for the diagnosis of incidents',
+			'The use of specialized knowledge for complicated incidents',
+		],
+		answer: 'The use of specialized knowledge for complicated incidents',
+		ShortExplanation:
+			'Incident management typically focuses on standard procedures rather than specialized knowledge, which is more relevant to problem management.',
+	},
+	{
+		id: '18',
+		question: 'Which describes the nature of the guiding principles?',
+		options: [
+			'Guiding principles can guide an organization in all circumstances',
+			'Each guiding principle mandates specific actions and decisions',
+			'An organization will select and adopt only one of the seven guiding principles',
+			'Guiding principles describe the processes that all organizations must adopt',
+		],
+		answer: 'Guiding principles can guide an organization in all circumstances',
+		ShortExplanation:
+			'Guiding principles are designed to be flexible and applicable in various situations, providing overarching guidance.',
+	},
+	{
+		id: '19',
+		question: 'Which statement about a change authority is CORRECT?',
+		options: [
+			'A single change authority should be assigned to authorize all types of change and change models',
+			'A change authority should be assigned for each type of change and change model',
+			'Normal changes are pre-authorized and do not need a change authority',
+			'Emergency changes can be implemented without prior authorization from a change authority',
+		],
+		answer:
+			'A change authority should be assigned for each type of change and change model',
+		ShortExplanation:
+			'Assigning specific change authorities ensures that the appropriate level of oversight and control is maintained for different types of changes.',
+	},
+	{
+		id: '20',
+		question:
+			'Which practice has the purpose of making new and changed services and features available for use?',
+		options: [
+			'Change enablement',
+			'Service request management',
+			'Release management',
+			'Deployment management',
+		],
+		answer: 'Release management',
+		ShortExplanation:
+			'Release management is responsible for ensuring that new and updated services are delivered to users effectively and efficiently.',
+	},
+	{
+		id: '21',
+		question:
+			'Which value chain activity ensures people understand the strategic and operational context?',
+		options: ['Improve', 'Plan', 'Deliver and support', 'Obtain/build'],
+		answer: 'Plan',
+		ShortExplanation:
+			'The planning activity is crucial for aligning services with business objectives and ensuring that all stakeholders understand their roles.',
+	},
+	{
+		id: '22',
+		question: 'Which statement about the value chain activities is CORRECT?',
+		options: [
+			'Every practice belongs to a specific value chain activity',
+			'A specific combination of value chain activities and practices forms a service relationship',
+			'Service value chain activities form a single workflow that enables value creation',
+			'Each value chain activity contributes to the value chain by transforming specific inputs into outputs',
+		],
+		answer:
+			'Each value chain activity contributes to the value chain by transforming specific inputs into outputs',
+		ShortExplanation:
+			'Each activity in the value chain plays a distinct role in converting inputs into outputs, contributing to overall service delivery.',
+	},
+	{
+		id: '23',
+		question: "What is the purpose of the 'supplier management' practice?",
+		options: [
+			'To ensure that the organization’s suppliers and their performance are managed appropriately to support the seamless provision of quality products and services',
+			'To align the organization’s practices and services with changing business needs through the ongoing identification and improvement of services',
+			'To ensure that the organization’s suppliers and their performance are managed appropriately at strategic and tactical levels through coordinated marketing, selling, and delivery activities',
+			'To ensure that accurate and reliable information about the configuration of suppliers’ services is available when and where it is needed',
+		],
+		answer:
+			'To ensure that the organization’s suppliers and their performance are managed appropriately to support the seamless provision of quality products and services',
+		ShortExplanation:
+			'Supplier management focuses on maintaining effective relationships and performance standards with suppliers to ensure quality service delivery.',
+	},
+	{
+		id: '24',
+		question:
+			'What are the two types of cost that a service consumer should evaluate?',
+		options: [
+			'The price of the service, and the cost of creating the service',
+			'The costs removed by the service, and the costs imposed by the service',
+			'The cost of provisioning the service, and the cost of improving the service',
+			'The cost of software, and the cost of hardware',
+		],
+		answer:
+			'The costs removed by the service, and the costs imposed by the service',
+		ShortExplanation:
+			'Evaluating both the costs removed and imposed helps consumers understand the true value and impact of the service.',
+	},
+	{
+		id: '25',
+		question: 'Which term describes the functionality offered by a service?',
+		options: ['Utility', 'Warranty', 'Outcome', 'Output'],
+		answer: 'Utility',
+		ShortExplanation:
+			'Utility refers to the features and functionalities that a service provides, which fulfill customer needs.',
+	},
+	{
+		id: '26',
+		question:
+			'Which term refers to the level of assurance that a service will meet agreed requirements?',
+		options: ['Utility', 'Warranty', 'Outcome', 'Value'],
+		answer: 'Warranty',
+		ShortExplanation:
+			'Warranty provides assurance that a service will perform reliably and meet the agreed-upon requirements.',
+	},
+	{
+		id: '27',
+		question: 'Which dimension of service management includes knowledge bases?',
+		options: [
+			'Organizations and people',
+			'Information and technology',
+			'Partners and suppliers',
+			'Value streams and processes',
+		],
+		answer: 'Information and technology',
+		ShortExplanation:
+			'The information and technology dimension encompasses the tools and knowledge bases that support service management.',
+	},
+	{
+		id: '28',
+		question:
+			'Which value chain activity ensures continual improvement of services?',
+		options: [
+			'Engage',
+			'Improve',
+			'Design and transition',
+			'Deliver and support',
+		],
+		answer: 'Improve',
+		ShortExplanation:
+			'The Improve activity is dedicated to identifying and implementing enhancements to services and processes.',
+	},
+	{
+		id: '29',
+		question:
+			'Which practice is focused on reducing the likelihood and impact of incidents?',
+		options: [
+			'Change enablement',
+			'Incident management',
+			'Problem management',
+			'Service request management',
+		],
+		answer: 'Problem management',
+		ShortExplanation:
+			'Problem management aims to identify and eliminate the root causes of incidents, thereby reducing their occurrence and impact.',
+	},
+	{
+		id: '30',
+		question:
+			'Which role is responsible for ensuring that value is delivered to stakeholders?',
+		options: ['Service owner', 'Sponsor', 'Customer', 'User '],
+		answer: 'Customer',
+		ShortExplanation:
+			'The customer is the primary stakeholder who defines and evaluates the value delivered by services.',
+	},
+	{
+		id: '31',
+		question: "What is the purpose of 'relationship management'?",
+		options: [
+			'To establish and nurture the links between the organization and its stakeholders',
+			'To provide a clear understanding of service performance',
+			'To handle incidents effectively',
+			'To manage service changes efficiently',
+		],
+		answer:
+			'To establish and nurture the links between the organization and its stakeholders',
+		ShortExplanation:
+			'Relationship management focuses on building and maintaining strong connections with stakeholders to enhance collaboration and service delivery.',
+	},
+	{
+		id: '32',
+		question: 'Which practice supports the handling of service requests?',
+		options: [
+			'Service desk',
+			'Incident management',
+			'Service request management',
+			'Problem management',
+		],
+		answer: 'Service request management',
+		ShortExplanation:
+			'Service request management is specifically designed to handle and fulfill service requests efficiently.',
+	},
+	{
+		id: '33',
+		question:
+			'Which guiding principle suggests using the existing services, processes, and tools?',
+		options: [
+			'Focus on value',
+			'Start where you are',
+			'Keep it simple and practical',
+			'Optimize and automate',
+		],
+		answer: 'Start where you are',
+		ShortExplanation:
+			'This principle encourages leveraging current resources and capabilities before making changes or improvements.',
+	},
+	{
+		id: '34',
+		question: "What is the main goal of 'continual improvement'?",
+		options: [
+			'To create detailed project plans',
+			'To identify and make improvements in service management',
+			'To approve changes efficiently',
+			'To respond to incidents quickly',
+		],
+		answer: 'To identify and make improvements in service management',
+		ShortExplanation:
+			'The goal of continual improvement is to systematically enhance services and processes to better meet customer needs.',
+	},
+	{
+		id: '35',
+		question:
+			'Which practice is responsible for handling and resolving incidents?',
+		options: [
+			'Service request management',
+			'Incident management',
+			'Problem management',
+			'Change enablement',
+		],
+		answer: 'Incident management',
+		ShortExplanation:
+			'Incident management focuses on restoring normal service operation as quickly as possible after an incident occurs.',
+	},
+	{
+		id: '36',
+		question:
+			'Which practice helps an organization to understand and improve the customer experience?',
+		options: [
+			'Service desk',
+			'Service level management',
+			'Continual improvement',
+			'Incident management',
+		],
+		answer: 'Service level management',
+		ShortExplanation:
+			'Service level management is key to understanding customer expectations and ensuring that services meet those expectations.',
+	},
+	{
+		id: '37',
+		question:
+			'Which practice provides the framework for designing, developing, and managing services?',
+		options: [
+			'Service level management',
+			'Service request management',
+			'Service design',
+			'Change enablement',
+		],
+		answer: 'Service design',
+		ShortExplanation:
+			'Service design provides the necessary framework and guidelines for creating and managing effective services.',
+	},
+	{
+		id: '38',
+		question: "What is the purpose of 'availability management'?",
+		options: [
+			'To ensure that services are available when needed',
+			'To track and monitor service performance',
+			'To respond to incidents effectively',
+			'To authorize changes efficiently',
+		],
+		answer: 'To ensure that services are available when needed',
+		ShortExplanation:
+			'Availability management focuses on ensuring that services are accessible and operational as required by the business.',
+	},
+	{
+		id: '39',
+		question:
+			'Which practice ensures that accurate and reliable information about service components is available?',
+		options: [
+			'Configuration management',
+			'Change enablement',
+			'Deployment management',
+			'Service desk',
+		],
+		answer: 'Configuration management',
+		ShortExplanation:
+			'Configuration management maintains up-to-date information about service components, which is crucial for effective service management.',
+	},
+	{
+		id: '40',
+		question:
+			'Which practice aims to make services available within agreed service levels?',
+		options: [
+			'Incident management',
+			'Availability management',
+			'Service request management',
+			'Problem management',
+		],
+		answer: 'Availability management',
+		ShortExplanation:
+			'Availability management is focused on ensuring that services meet the agreed-upon availability targets to satisfy customer needs.',
+	},
+	{
+		id: 'new-1',
+		question:
+			"What is the effect of increased automation on the 'service desk' practice?",
+		options: [
+			'Greater ability to focus on customer experience when personal contact is needed',
+			'Decrease in self-service incident logging and resolution',
+			'Increased ability to focus on fixing technology instead of supporting people',
+			'Elimination of the need to escalate incidents to support teams',
+		],
+		answer:
+			'Greater ability to focus on customer experience when personal contact is needed',
+		ShortExplanation:
+			'Automation can streamline routine tasks, allowing service desk staff to focus more on complex customer interactions and value-added support.',
+	},
+	{
+		id: 'new-2',
+		question: 'Which term describes the functionality offered by a service?',
+		options: ['Cost', 'Utility', 'Warranty', 'Risk'],
+		answer: 'Utility',
+		ShortExplanation:
+			'Utility refers to the functionality that a service provides to meet customer needs – essentially, what the service does.',
+	},
+	{
+		id: 'new-3',
+		question:
+			"What is the purpose of the 'monitoring and event management' practice?",
+		options: [
+			'To ensure that accurate and reliable information about the configuration of services is available',
+			'To systematically observe services and service components',
+			'To protect information needed to conduct business',
+			'To minimize negative impact of incidents by restoring service quickly',
+		],
+		answer: 'To systematically observe services and service components',
+		ShortExplanation:
+			"'Monitoring and event management' is focused on tracking the performance and status of services to anticipate issues and trigger appropriate responses.",
+	},
+	{
+		id: 'new-4',
+		question: "What should all 'continual improvement' decisions be based on?",
+		options: [
+			'Details of how services are measured',
+			'Accurate and carefully analyzed data',
+			'An up-to-date balanced scorecard',
+			'A recent maturity assessment',
+		],
+		answer: 'Accurate and carefully analyzed data',
+		ShortExplanation:
+			'Data-driven decision-making is essential to identify improvement opportunities and implement effective changes.',
+	},
+	{
+		id: 'new-5',
+		question: 'How do value chain activities transform inputs to outputs?',
+		options: [
+			'By determining service demand',
+			'By using a combination of practices',
+			'By using a single functional team',
+			'By implementing process automation',
+		],
+		answer: 'By using a combination of practices',
+		ShortExplanation:
+			'In ITIL 4, value chain activities leverage a range of practices and resources to transform inputs into outputs that create value.',
+	},
+	{
+		id: 'new-6',
+		question:
+			"How does customer engagement contribute to the 'service level management' practice? \n 1. It captures information that metrics can be based on \n 2. It ensures the organization meets defined service levels \n 3. It defines the workflows for service requests n 4. It supports progress discussions",
+		options: ['1 and 2', '2 and 3', '3 and 4', '1 and 4'],
+		answer: '1 and 4',
+		ShortExplanation:
+			'Engaging with customers helps align service levels with actual expectations and provides feedback to adjust performance.',
+	},
+	{
+		id: 'new-7',
+		question: 'What is the starting point for optimization?',
+		options: [
+			'Securing stakeholder engagement',
+			'Understanding the vision and objectives of the organization',
+			'Determining where the most positive impact would be',
+			'Standardizing practices and services',
+		],
+		answer: 'Understanding the vision and objectives of the organization',
+		ShortExplanation:
+			'Optimization begins with a clear understanding of organizational goals, ensuring that improvements align with overall objectives.',
+	},
+	{
+		id: 'new-8',
+		question:
+			"Identify the missing words in the following sentence. The purpose of the [P] is to ensure that the organization continually co-creates value with all stakeholders in line with the organization's objectives.",
+		options: [
+			'focus on value guiding principle',
+			'four dimensions of service management',
+			'service value system',
+			'service request management practice',
+		],
+		answer: 'service value system',
+		ShortExplanation:
+			'The service value system is the framework that ensures the organization continually co-creates value with all stakeholders.',
+	},
+	{
+		id: 'new-9',
+		question:
+			'Which practice provides support for managing feedback, compliments and complaints from users?',
+		options: [
+			'Change enablement',
+			'Service request management',
+			'Problem management',
+			'Incident management',
+		],
+		answer: 'Service request management',
+		ShortExplanation:
+			'Service request management handles standard user requests, which can include feedback and complaints.',
+	},
+	{
+		id: 'new-10',
+		question:
+			'Which activity performed by a service provider and service consumer ensures continual value co-creation?',
+		options: [
+			'Service provision',
+			'Service consumption',
+			'Service offering',
+			'Service relationship management',
+		],
+		answer: 'Service relationship management',
+		ShortExplanation:
+			'Maintaining strong service relationships is critical for ongoing value co-creation between provider and consumer.',
+	},
+	{
+		id: 'new-11',
+		question: 'Which practice may involve the initiation of disaster recovery?',
+		options: [
+			'Incident management',
+			'Service request management',
+			'Service level management',
+			'IT asset management',
+		],
+		answer: 'Incident management',
+		ShortExplanation:
+			'Incident management handles major incidents, which can trigger disaster recovery measures as part of its response process.',
+	},
+	{
+		id: 'new-12',
+		question:
+			"What type of change is MOST likely to be managed by the 'service request management' practice?",
+		options: [
+			'A normal change',
+			'An emergency change',
+			'A standard change',
+			'An application change',
+		],
+		answer: 'A standard change',
+		ShortExplanation:
+			'Standard changes are pre-authorized, low-risk changes that are typically managed through service requests.',
+	},
+	{
+		id: 'new-13',
+		question:
+			'Which guiding principle emphasizes the need to understand the flow of work in progress, identify bottlenecks, and uncover waste?',
+		options: [
+			'Focus on value',
+			'Collaborate and promote visibility',
+			'Think and work holistically',
+			'Keep it simple and practical',
+		],
+		answer: 'Collaborate and promote visibility',
+		ShortExplanation:
+			'This principle encourages teamwork and making work visible so that bottlenecks and waste can be identified and addressed.',
+	},
+	{
+		id: 'new-14',
+		question:
+			'What is a means of enabling value co-creation by facilitating outcomes customers want to achieve?',
+		options: ['A service', 'An output', 'A practice', 'Continual improvement'],
+		answer: 'A service',
+		ShortExplanation:
+			'A service is designed to help customers achieve desired outcomes, thereby co-creating value.',
+	},
+	{
+		id: 'new-15',
+		question: 'Which statement about change authorization is CORRECT?',
+		options: [
+			'A change authority should be assigned to each type of change and change model',
+			'Centralizing change authorization to a single person is the most effective means of authorization',
+			'The authorization of normal changes should be expedited to ensure they can be implemented quickly',
+			'Standard changes are high risk and should be authorized by the highest level of change authority',
+		],
+		answer:
+			'A change authority should be assigned to each type of change and change model',
+		ShortExplanation:
+			'Different types of changes require different levels of review; thus, assigning specific change authorities ensures appropriate oversight.',
+	},
+	{
+		id: 'new-16',
+		question:
+			'Which dimension of service management considers governance, management, and communication?',
+		options: [
+			'Organizations and people',
+			'Information and technology',
+			'Partners and suppliers',
+			'Value streams and processes',
+		],
+		answer: 'Organizations and people',
+		ShortExplanation:
+			'This dimension focuses on how people, culture, and governance structures impact service management.',
+	},
+	{
+		id: 'new-17',
+		question:
+			'Identify the missing word in the following sentence. A known error is a problem that has been [P] and has not been resolved.',
+		options: ['logged', 'analyzed', 'categorized', 'closed'],
+		answer: 'analyzed',
+		ShortExplanation:
+			'Once a problem is analyzed and its root cause is understood, it is designated as a known error if not yet resolved.',
+	},
+	{
+		id: 'new-18',
+		question: 'Which statement about known errors and problems is CORRECT?',
+		options: [
+			'A known error is the status assigned to a problem after it has been analyzed',
+			'A known error is the cause of one or more problems',
+			'Known errors cause vulnerabilities; problems cause incidents',
+			'Known errors are managed by technical staff; problems are managed by service management staff',
+		],
+		answer:
+			'A known error is the status assigned to a problem after it has been analyzed',
+		ShortExplanation:
+			'This accurately reflects ITIL terminology where a problem becomes a known error once its root cause is analyzed.',
+	},
+	{
+		id: 'new-19',
+		question:
+			"What does the 'service request management' practice depend on for maximum efficiency?",
+		options: [
+			'Complaints and complaints',
+			'Self-service tools',
+			'Processes and procedures',
+			'Incident management',
+		],
+		answer: 'Processes and procedures',
+		ShortExplanation:
+			'Well-defined processes and procedures ensure that service requests are handled consistently and efficiently, enabling the practice to operate at maximum efficiency.',
+	},
+	{
+		id: 'new-20',
+		question: "Which statement about the 'service desk' practice is CORRECT?",
+		options: [
+			'It provides a link with stakeholders at strategic and tactical levels',
+			'It carries out change assessment and authorization',
+			'It investigates the cause of incidents',
+			'It needs a practical understanding of the business processes',
+		],
+		answer: 'It needs a practical understanding of the business processes',
+		ShortExplanation:
+			"A deep understanding of business processes is essential for the service desk to effectively address user issues and ensure that support aligns with the organization's operational priorities.",
+	},
+	{
+		id: 'new-21',
+		question:
+			'Which practice ensures that accurate and reliable information is available about configuration items and the relationships between them?',
+		options: [
+			'Service configuration management',
+			'Service desk',
+			'IT asset management',
+			'Monitoring and event management',
+		],
+		answer: 'Service configuration management',
+		ShortExplanation:
+			'This practice is responsible for maintaining the integrity of configuration data and its relationships.',
+	},
+	{
+		id: 'new-22',
+		question: 'What is the primary goal of service value management?',
+		options: [
+			'Maximizing the value of available services',
+			'Minimizing the cost of service delivery',
+			'Ensuring compliance with regulations',
+			'Reducing the number of incidents',
+		],
+		answer: 'Maximizing the value of available services',
+		ShortExplanation:
+			'Service value management focuses on ensuring that all activities lead to the highest possible value creation.',
+	},
+	{
+		id: 'new-23',
+		question:
+			"In the context of 'service management', what does the term 'service' primarily refer to?",
+		options: [
+			'A means of delivering value to customers',
+			'A tangible product offered to customers',
+			'A temporary provision of IT resources',
+			'The ability to respond to customer requests',
+		],
+		answer: 'A means of delivering value to customers',
+		ShortExplanation:
+			'A service is fundamentally about delivering value and enabling customers to achieve outcomes.',
+	},
+	{
+		id: 'new-24',
+		question: 'What is the key purpose of incident management?',
+		options: [
+			'Restoring service to normal as quickly as possible',
+			'Preventing incidents from occurring in the first place',
+			'Managing problems and known errors effectively',
+			'Ensuring that all incidents are escalated immediately',
+		],
+		answer: 'Restoring service to normal as quickly as possible',
+		ShortExplanation:
+			'The primary goal of incident management is to minimize downtime by quickly restoring services.',
+	},
+	{
+		id: 'new-25',
+		question: 'Which aspect is essential for effective change management?',
+		options: [
+			'Comprehensive documentation practices',
+			'Agile development methodologies',
+			'Ensuring all changes lead to improvements',
+			'Frequent updates to stakeholders',
+		],
+		answer: 'Comprehensive documentation practices',
+		ShortExplanation:
+			'Accurate documentation is critical for tracking changes and ensuring accountability throughout the change process.',
+	},
+	{
+		id: 'new-26',
+		question: "What is the primary objective of 'problem management'?",
+		options: [
+			'Minimizing the number of incidents',
+			'Identifying and managing the root cause of issues',
+			'Ensuring that service delivery meets SLAs',
+			'Providing a temporary workaround for incidents',
+		],
+		answer: 'Identifying and managing the root cause of issues',
+		ShortExplanation:
+			'Problem management seeks to eliminate the underlying causes of incidents to prevent recurrence.',
+	},
+	{
+		id: 'new-27',
+		question: "What does the 'service level agreement' (SLA) provide?",
+		options: [
+			'Detailed procedures for incident resolution',
+			'An understanding of customer expectations and service delivery obligations',
+			'A contractual obligation for service providers',
+			'Guidelines for continual improvement initiatives',
+		],
+		answer:
+			'An understanding of customer expectations and service delivery obligations',
+		ShortExplanation:
+			'SLAs define the agreed-upon standards and responsibilities between service providers and customers.',
+	},
+	{
+		id: 'new-28',
+		question:
+			'Which practice would typically be responsible for managing vendor relationships?',
+		options: [
+			'Service request management',
+			'Change enablement',
+			'Supplier management',
+			'Incident management',
+		],
+		answer: 'Supplier management',
+		ShortExplanation:
+			'Supplier management focuses on overseeing and managing relationships with external vendors to ensure quality and reliability.',
+	},
+	{
+		id: 'new-29',
+		question:
+			"What is the main focus of the 'service design' stage of the service lifecycle?",
+		options: [
+			'Continually improving existing services',
+			'Creating new services and processes',
+			'Retiring services that no longer provide value',
+			'Planning for service delivery and implementation',
+		],
+		answer: 'Creating new services and processes',
+		ShortExplanation:
+			'Service design is centered on planning and architecting new or modified services to meet business needs.',
+	},
+	{
+		id: 'new-30',
+		question:
+			'Which dimension addresses how resources are structured and managed?',
+		options: [
+			'Organizations and people',
+			'Information and technology',
+			'Value streams and processes',
+			'Partners and suppliers',
+		],
+		answer: 'Organizations and people',
+		ShortExplanation:
+			'This dimension focuses on the organizational structure, roles, and culture necessary for effective service management.',
+	},
+	{
+		id: 'new-31',
+		question: 'What is the role of the service value chain?',
+		options: [
+			'To deliver services and create value',
+			'To manage supplier relationships',
+			'To evaluate service performance',
+			'To develop incident response plans',
+		],
+		answer: 'To deliver services and create value',
+		ShortExplanation:
+			'The service value chain outlines the key activities that transform inputs into valuable outputs for customers.',
+	},
+	{
+		id: 'new-32',
+		question: 'Which guideline is encouraged when working within teams?',
+		options: [
+			'Minimize communication',
+			'Assign each team member clear roles',
+			'Maintain a competitive environment',
+			'Encourage collaboration and knowledge sharing',
+		],
+		answer: 'Encourage collaboration and knowledge sharing',
+		ShortExplanation:
+			'Fostering a collaborative environment and sharing knowledge improves outcomes and innovation.',
+	},
+	{
+		id: 'new-33',
+		question: "What is the purpose of the 'relationship management' practice?",
+		options: [
+			'To ensure effective communication with customers',
+			'To monitor service performance',
+			'To manage agreements with suppliers',
+			'To resolve conflicts within teams',
+		],
+		answer: 'To ensure effective communication with customers',
+		ShortExplanation:
+			'Relationship management focuses on maintaining strong, communicative relationships with customers and stakeholders.',
+	},
+	{
+		id: 'new-34',
+		question: 'What does continual improvement require?',
+		options: [
+			'Prioritizing efficiency over effectiveness',
+			'Regular assessment of performance and feedback',
+			'Minimizing stakeholder involvement',
+			'Focusing exclusively on service delivery',
+		],
+		answer: 'Regular assessment of performance and feedback',
+		ShortExplanation:
+			'Continual improvement is driven by ongoing measurement and learning from feedback.',
+	},
+	{
+		id: 'new-35',
+		question:
+			"In the context of service management, what does 'utility' specifically refer to?",
+		options: [
+			'The functionality offered by a service',
+			'The ease of use of a service',
+			'The performance metrics of a service',
+			'The support provided by a service',
+		],
+		answer: 'The functionality offered by a service',
+		ShortExplanation:
+			'Utility is about what the service does – its core functionality to meet user needs.',
+	},
+	{
+		id: 'new-36',
+		question:
+			'Which principle supports the best practices for managing change?',
+		options: [
+			'Focus on improvement',
+			'Keep it simple and practical',
+			'Collaborate and promote visibility',
+			'Think and work holistically',
+		],
+		answer: 'Keep it simple and practical',
+		ShortExplanation:
+			'A simple, practical approach helps ensure that change processes are clear and manageable.',
+	},
+	{
+		id: 'new-37',
+		question:
+			'What practice focuses on the delivery and support of services to users?',
+		options: [
+			'Service operation',
+			'Service design',
+			'Change management',
+			'Project management',
+		],
+		answer: 'Service operation',
+		ShortExplanation:
+			"Historically, Service Operation covered the day-to-day delivery and support of services. In ITIL 4, this role is integrated into the 'Deliver and Support' value chain activity.",
+	},
+	{
+		id: 'new-38',
+		question: 'What is a key characteristic of a service?',
+		options: [
+			'It is always free of charge',
+			'It is delivered by hardware',
+			'It creates value based on service outcomes',
+			'It is temporary in nature',
+		],
+		answer: 'It creates value based on service outcomes',
+		ShortExplanation:
+			'Services are defined by their ability to deliver outcomes that provide value to the customer.',
+	},
+	{
+		id: 'new-39',
+		question:
+			'Which practice is involved in assessing and managing organizational performance?',
+		options: [
+			'Change management',
+			'Service level management',
+			'Continual improvement',
+			'Incident management',
+		],
+		answer: 'Continual improvement',
+		ShortExplanation:
+			'Continual improvement is dedicated to evaluating performance and implementing changes to enhance overall service delivery.',
+	},
+	{
+		id: 'new-40',
+		question: 'What is the importance of communication in service management?',
+		options: [
+			'It ensures compliance with policies',
+			'It reduces the need for training',
+			'It fosters collaboration and understanding',
+			'It speeds up decision-making processes',
+		],
+		answer: 'It fosters collaboration and understanding',
+		ShortExplanation:
+			'Effective communication is essential for teamwork, aligning stakeholders, and ensuring that services are delivered efficiently.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub22',
+		question:
+			'Which practice has a purpose that includes restoring normal service operations as quickly as possible?',
+		options: [
+			'Supplier management',
+			'Deployment management',
+			'Problem management',
+			'Incident management',
+		],
+		answer: 'Incident management',
+		ShortExplanation:
+			'This practice focuses on restoring service operations as swiftly as possible.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub23',
+		question:
+			'Identify the missing word in the following sentence. A customer is the role that defines the requirements for a service and takes responsibility for the [?] of service consumption.',
+		options: ['outputs', 'outcomes', 'costs', 'risks'],
+		answer: 'outcomes',
+		ShortExplanation:
+			'Customers define the desired outcomes of the services they consume.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub24',
+		question:
+			'Which guiding principle describes the importance of doing something, instead of spending a long time analyzing different options?',
+		options: [
+			'Optimize and automate',
+			'Start where you are',
+			'Focus on value',
+			'Progress iteratively with feedback',
+		],
+		answer: 'Progress iteratively with feedback',
+		ShortExplanation:
+			'This principle emphasizes the value of making progress efficiently while learning along the way.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub25',
+		question: 'What should be done for every problem?',
+		options: [
+			'It should be diagnosed to identify possible solutions',
+			'It should be prioritized based on its potential impact and probability',
+			'It should be resolved so that it can be closed',
+			'It should have a workaround to reduce the impact',
+		],
+		answer:
+			'It should be prioritized based on its potential impact and probability',
+		ShortExplanation:
+			'Prioritization ensures that the most critical issues are resolved first.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub26',
+		question:
+			'How should an organization include third-party suppliers in the continual improvement of services?',
+		options: [
+			'Ensure suppliers include details of their approach to service improvement in contracts',
+			'Require evidence that the supplier uses agile development methods',
+			'Require evidence that the supplier implements all improvements using project management practices',
+			'Ensure that all supplier problem management activities result in improvements',
+		],
+		answer:
+			'Ensure suppliers include details of their approach to service improvement in contracts',
+		ShortExplanation:
+			'Details in contracts can facilitate effective service improvement.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub27',
+		question:
+			'What considerations influence the supplier strategy of an organization?',
+		options: [
+			'Contracts and agreements',
+			'Type of cooperation with suppliers',
+			'Corporate culture of the organization',
+			'Level of formality',
+		],
+		answer: 'Contracts and agreements',
+		ShortExplanation:
+			'Contracts establish formal agreements that govern supplier relationships.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub28',
+		question: 'What is a problem?',
+		options: [
+			'An addition or modification that could have an effect on services',
+			'Any change of state that has significance for the management of a configuration item',
+			'A cause or potential cause of one or more incidents',
+			'An unplanned reduction in the quality of a service',
+		],
+		answer: 'A cause or potential cause of one or more incidents',
+		ShortExplanation:
+			'A problem is identified as an underlying cause that can lead to incidents.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub22',
+		question:
+			'Which practice has a purpose that includes restoring normal service operations as quickly as possible?',
+		options: [
+			'Supplier management',
+			'Deployment management',
+			'Problem management',
+			'Incident management',
+		],
+		answer: 'Incident management',
+		ShortExplanation:
+			'Incident management is designed to restore normal service operation as quickly as possible, minimizing disruption to the business.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub23',
+		question:
+			'Identify the missing word in the following sentence.\nA customer is the role that defines the requirements for a service and takes responsibility for the [?] of service consumption.',
+		options: ['outputs', 'outcomes', 'costs', 'risks'],
+		answer: 'outcomes',
+		ShortExplanation:
+			'In ITIL, the customer is responsible for the outcomes of service consumption—the benefits or results achieved by using the service.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub24',
+		question:
+			'Which guiding principle describes the importance of doing something, instead of spending a long time analyzing options?',
+		options: [
+			'Optimize and automate',
+			'Start where you are',
+			'Focus on value',
+			'Progress iteratively with feedback',
+		],
+		answer: 'Progress iteratively with feedback',
+		ShortExplanation:
+			'This principle emphasizes taking small, actionable steps and learning from each iteration rather than overanalyzing before acting.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub25',
+		question: 'What should be done for every problem?',
+		options: [
+			'It should be diagnosed to identify possible solutions',
+			'It should be prioritized based on its potential impact and probability',
+			'It should be resolved so that it can be closed',
+			'It should have a workaround to reduce the impact',
+		],
+		answer: 'It should be diagnosed to identify possible solutions',
+		ShortExplanation:
+			'Diagnosing a problem is essential to uncover its root cause and determine the most effective resolution.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub26',
+		question:
+			'How should an organization include third-party suppliers in the continual improvement of services?',
+		options: [
+			'Ensure suppliers include details of their approach to service improvement in contracts',
+			'Require evidence that the supplier uses agile development methods',
+			'Require evidence that the supplier implements all improvements using project management practices',
+			'Ensure that all supplier problem management activities result in improvements',
+		],
+		answer:
+			'Ensure suppliers include details of their approach to service improvement in contracts',
+		ShortExplanation:
+			'Including improvement expectations in contracts aligns suppliers with the organization’s continual improvement goals.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub27',
+		question:
+			'What considerations influence the supplier strategy of an organization?',
+		options: [
+			'Contracts and agreements',
+			'Type of cooperation with suppliers',
+			'Corporate culture of the organization',
+			'Level of formality',
+		],
+		answer: 'Type of cooperation with suppliers',
+		ShortExplanation:
+			'The nature of the cooperation—whether strategic or transactional—is a key factor in shaping the supplier strategy.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub28',
+		question: 'What is a problem?',
+		options: [
+			'An addition or modification that could have an effect on services',
+			'Any change of state that has significance for the management of a configuration item',
+			'A cause or potential cause of one or more incidents',
+			'An unplanned reduction in the quality of a service',
+		],
+		answer: 'A cause or potential cause of one or more incidents',
+		ShortExplanation:
+			'In ITIL, a problem is defined as the underlying cause (or potential cause) of one or more incidents.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub29',
+		question: 'What is the purpose of the "relationship management" practice?',
+		options: [
+			'To align the organization’s practices and services with changing business needs',
+			'To establish and nurture the links between the organization and its stakeholders at strategic and tactical levels',
+			'To reduce the likelihood and impact of incidents by identifying actual and potential causes of incidents',
+			'To minimize the negative impact of incidents by restoring normal service operation as quickly as possible',
+		],
+		answer:
+			'To establish and nurture the links between the organization and its stakeholders at strategic and tactical levels',
+		ShortExplanation:
+			'Relationship management focuses on building strong stakeholder relationships, which is essential for value co-creation.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub30',
+		question:
+			'Which is intended to help an organization adopt and adapt ITIL guidance?',
+		options: [
+			'The four dimensions of service management',
+			'The guiding principles',
+			'The service value chain',
+			'Practices',
+		],
+		answer: 'The guiding principles',
+		ShortExplanation:
+			'Guiding principles provide universal recommendations that help an organization tailor ITIL practices to its specific needs.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub31',
+		question: 'What is an output?',
+		options: [
+			'A change of state that has significance for the management of a configuration item',
+			'A possible event that could cause harm or loss',
+			'A result for a stakeholder',
+			'Something created by carrying out an activity',
+		],
+		answer: 'Something created by carrying out an activity',
+		ShortExplanation:
+			'An output is the result produced when an activity is performed.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub32',
+		question:
+			'What is the reason for using a balanced bundle of service metrics?',
+		options: [
+			'It reduces the number of metrics that need to be collected',
+			'It reports each service element separately',
+			'It provides an outcome-based view of services',
+			'It facilitates the automatic collection of metrics',
+		],
+		answer: 'It provides an outcome-based view of services',
+		ShortExplanation:
+			'A balanced set of metrics offers a holistic, outcome-based perspective that aligns with business objectives.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub33',
+		question: 'Why should incidents be prioritized?',
+		options: [
+			'To help automate matching of incidents to problems or known errors',
+			'To identify which support team the incident should be escalated to',
+			'To ensure that incidents with the highest business impact are resolved first',
+			'To encourage a high level of collaboration within and between teams',
+		],
+		answer:
+			'To ensure that incidents with the highest business impact are resolved first',
+		ShortExplanation:
+			'Prioritizing incidents ensures that those with the greatest effect on the business are addressed immediately.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub34',
+		question:
+			'Which practice has a purpose that includes helping the organization to maximize value, control costs, and manage risks?',
+		options: [
+			'Relationship management',
+			'Asset management',
+			'Release management',
+			'Service desk',
+		],
+		answer: 'Asset management',
+		ShortExplanation:
+			'Asset management focuses on effectively tracking and managing assets to maximize value while controlling costs and risks.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub35',
+		question: 'Why should service desk staff detect recurring issues?',
+		options: [
+			'To help identify problems',
+			'To escalate incidents to the correct support team',
+			'To ensure effective handling of service requests',
+			'To engage the correct change authority',
+		],
+		answer: 'To help identify problems',
+		ShortExplanation:
+			'Detecting recurring issues enables the organization to identify underlying problems and take corrective actions.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub36',
+		question:
+			"Which guiding principle is PRIMARILY concerned with consumer's revenue and growth?",
+		options: [
+			'Keep it simple and practical',
+			'Optimize and automate',
+			'Focus on value',
+			'Progress iteratively with feedback',
+		],
+		answer: 'Focus on value',
+		ShortExplanation:
+			'Focusing on value ensures that all activities contribute to generating revenue and growth by aligning with customer needs.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub37',
+		question:
+			"Which practice provides visibility of the organization's services by capturing and reporting on performance?",
+		options: [
+			'Service desk',
+			'Service level management',
+			'Service request management',
+			'Service configuration management',
+		],
+		answer: 'Service level management',
+		ShortExplanation:
+			'Service level management tracks and reports on service performance, ensuring that agreed targets are met.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub38',
+		question: 'What is the BEST example of an emergency change?',
+		options: [
+			'The implementation of a planned new release of a software application',
+			'A low-risk computer upgrade implemented as a service request',
+			'The implementation of a security patch to a critical software application',
+			'A scheduled major hardware and software implementation',
+		],
+		answer:
+			'The implementation of a security patch to a critical software application',
+		ShortExplanation:
+			'Emergency changes address urgent issues, such as critical security vulnerabilities, that require immediate action.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub39',
+		question:
+			'Which guiding principle recommends assessing the current state and deciding what can be reused?',
+		options: [
+			'Focus on value',
+			'Start where you are',
+			'Collaborate and promote visibility',
+			'Progress iteratively with feedback',
+		],
+		answer: 'Start where you are',
+		ShortExplanation:
+			'This principle advises leveraging existing resources and solutions by assessing the current state before making changes.',
+	},
+	{
+		id: 'jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub40',
+		question:
+			'Which practice has a purpose that includes helping the organization to maximize value?',
+		options: [
+			'Focus on value',
+			'Start where you are',
+			'Collaborate and promote visibility',
+			'Progress iteratively with feedback',
+		],
+		answer: 'Focus on value',
+		ShortExplanation:
+			"The guiding principle 'Focus on value' directs all efforts to ensure that every action contributes to maximizing overall value.",
+	},
 ];
