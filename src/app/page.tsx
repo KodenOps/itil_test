@@ -1,7 +1,15 @@
-import Link from 'next/link';
+'use client';
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 const page = () => {
+	const router = useRouter();
+
+	const handleNavigation = (path: string) => {
+		localStorage.clear();
+		router.push(path);
+	};
+
 	return (
 		<div className='w-full h-full flex md:mt-[5%] md:items-start mt-[80px] overflow-hidden justify-center'>
 			<div className='title items-center flex flex-col'>
@@ -14,32 +22,38 @@ const page = () => {
 				</p>
 
 				<div className='flex flex-wrap items-center justify-center w-full mt-6 gap-4'>
-					<Link
-						href={'/page/itil-exam'}
-						className='left md:h-[200px] md:w-[200px] w-[150px] h-[150px]  shadow-lg border-2 border-[#c4c4c4] rounded-sm flex md:p-10 p-2 flex-col text-center justify-center items-center font-bold text-[#696969]'>
-						ITIL V4{' '}
-						<span className='text-sm text-[#858585]'>(Full Exam Mode)</span>
-					</Link>
-					<Link
-						href={'/page/itil-practise'}
-						className='left md:h-[200px] md:w-[200px] w-[150px] h-[150px]  shadow-lg border-2 border-[#c4c4c4] rounded-sm flex md:p-10 p-2 flex-col text-center justify-center items-center font-bold text-[#696969]'>
-						ITIL v4{' '}
-						<span className='text-sm text-[#858585]'>(Partial Exam Mode)</span>
-					</Link>
-					<Link
-						href={'/page/aws-exam'}
-						className='left md:h-[200px] md:w-[200px] w-[150px] h-[150px]  shadow-lg border-2 border-[#c4c4c4] rounded-sm flex md:p-10 p-2 flex-col text-center justify-center items-center font-bold text-[#696969]'>
-						AWS Cloud Practitioner{' '}
-						<span className='text-sm text-[#858585]'>(Full Exam Mode)</span>
-					</Link>
-					<Link
-						href={'/page/aws-practise'}
-						className='left md:h-[200px] md:w-[200px] w-[150px] h-[150px]  shadow-lg border-2 border-[#c4c4c4] rounded-sm flex md:p-10 p-2 flex-col text-center justify-center items-center font-bold text-[#696969]'>
-						AWS Cloud Practitioner{' '}
-						<span className='text-sm text-[#858585]'>(Partial Exam Mode)</span>
-					</Link>
+					{[
+						{
+							path: '/page/itil-exam',
+							label: 'ITIL V4',
+							mode: 'Full Exam Mode',
+						},
+						{
+							path: '/page/itil-practise',
+							label: 'ITIL v4',
+							mode: 'Partial Exam Mode',
+						},
+						{
+							path: '/page/aws-exam',
+							label: 'AWS Cloud Practitioner',
+							mode: 'Full Exam Mode',
+						},
+						{
+							path: '/page/aws-practise',
+							label: 'AWS Cloud Practitioner',
+							mode: 'Partial Exam Mode',
+						},
+					].map(({ path, label, mode }) => (
+						<div
+							key={path}
+							onClick={() => handleNavigation(path)}
+							className='cursor-pointer left md:h-[200px] md:w-[200px] w-[150px] h-[150px] shadow-lg border-2 border-[#c4c4c4] rounded-sm flex md:p-10 p-2 flex-col text-center justify-center items-center font-bold text-[#696969]'>
+							{label} <span className='text-sm text-[#858585]'>({mode})</span>
+						</div>
+					))}
 				</div>
 			</div>
+
 			<p className='absolute bottom-0 py-4 text-center bg-[#f4f4f4] w-full'>
 				Created by{' '}
 				<a
