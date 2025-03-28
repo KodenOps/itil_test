@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: 'ITIL EXAM 2025',
-	description: 'ITIL V4 Simulated Exam',
+	title: 'Practise Prof Exam',
+	description: 'Professional Exam Simulated Exam',
 };
 
 export default function RootLayout({

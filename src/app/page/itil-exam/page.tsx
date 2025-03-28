@@ -1,9 +1,16 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { itilQuestions } from '@/data/questionBank';
 import Exam from '@/app/components/questions/Exam';
 const page = () => {
-	localStorage.clear();
+	    useEffect(() => {
+				// Check if localStorage is available
+				if (typeof localStorage === 'undefined') {
+					console.warn('localStorage is not available in this environment.');
+				} else {
+					localStorage.clear();
+				}
+			}, []);
 	return (
 		<div>
 			<Exam
