@@ -6,23 +6,37 @@ const page = () => {
 		<div className='w-full h-full flex md:mt-[5%] md:items-start mt-[80px] overflow-hidden justify-center'>
 			<div className='title items-center flex flex-col'>
 				<h3 className='text-green-900 font-bold md:text-4xl text-2xl text-center'>
-					Welcome To Your ITIL Test
+					Welcome To Your Practice Test Center
 				</h3>
 				<p className='md:text-xl text-center mt-4 px-10'>
-					This is a preparatory test for your ITIL V4 exam. You have 1hr to
+					This is a preparatory test for your professional exam. You have 1hr to
 					complete the test.
 				</p>
-				<p className='mt-10 text-lg font-medium'>Total Questions: 40</p>
+
 				<div className='flex flex-wrap items-center justify-center w-full mt-6 gap-4'>
 					<Link
-						href={'/questions'}
-						className='left md:h-[200px] w-[200px] h-[100px]  shadow-lg border-2 border-[#c4c4c4] rounded-sm flex p-10 text-center justify-center items-center font-bold text-[#696969]'>
-						Full Exam Mode
+						href={'/page/itil-exam'}
+						className='left md:h-[200px] md:w-[200px] w-[150px] h-[150px]  shadow-lg border-2 border-[#c4c4c4] rounded-sm flex md:p-10 p-2 flex-col text-center justify-center items-center font-bold text-[#696969]'>
+						ITIL V4{' '}
+						<span className='text-sm text-[#858585]'>(Full Exam Mode)</span>
 					</Link>
 					<Link
-						href={'/practise'}
-						className='left md:h-[200px] w-[200px] h-[100px]  shadow-lg border-2 border-[#c4c4c4] rounded-sm flex p-10 text-center justify-center items-center font-bold text-[#696969]'>
-						Partial Exam Mode
+						href={'/page/itil-practise'}
+						className='left md:h-[200px] md:w-[200px] w-[150px] h-[150px]  shadow-lg border-2 border-[#c4c4c4] rounded-sm flex md:p-10 p-2 flex-col text-center justify-center items-center font-bold text-[#696969]'>
+						ITIL v4{' '}
+						<span className='text-sm text-[#858585]'>(Partial Exam Mode)</span>
+					</Link>
+					<Link
+						href={'/page/aws-exam'}
+						className='left md:h-[200px] md:w-[200px] w-[150px] h-[150px]  shadow-lg border-2 border-[#c4c4c4] rounded-sm flex md:p-10 p-2 flex-col text-center justify-center items-center font-bold text-[#696969]'>
+						AWS Cloud Practitioner{' '}
+						<span className='text-sm text-[#858585]'>(Full Exam Mode)</span>
+					</Link>
+					<Link
+						href={'/page/aws-practise'}
+						className='left md:h-[200px] md:w-[200px] w-[150px] h-[150px]  shadow-lg border-2 border-[#c4c4c4] rounded-sm flex md:p-10 p-2 flex-col text-center justify-center items-center font-bold text-[#696969]'>
+						AWS Cloud Practitioner{' '}
+						<span className='text-sm text-[#858585]'>(Partial Exam Mode)</span>
 					</Link>
 				</div>
 			</div>

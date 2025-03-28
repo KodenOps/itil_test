@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { itilQuestions } from '@/data/questionBank';
+// import { itilQuestions } from '@/data/questionBank';
 
 interface Question {
 	id: string;
@@ -13,7 +13,7 @@ interface Question {
 
 const LOCAL_STORAGE_KEY = 'quizState';
 
-const Page = () => {
+const Practise = ({ questionBank, qnumber }: any) => {
 	const router = useRouter();
 	const [timeLeft, setTimeLeft] = useState<number>(3600);
 	const [shuffledQuestions, setShuffledQuestions] = useState<Question[]>([]);
@@ -48,7 +48,7 @@ const Page = () => {
 			setTimeLeft(parsedState.timeLeft);
 			setScore(parsedState.score);
 		} else {
-			const shuffled = shuffle(itilQuestions).slice(0, 40);
+			const shuffled = shuffle(questionBank).slice(0, qnumber);
 			setShuffledQuestions(shuffled);
 		}
 	}, []);
@@ -235,4 +235,4 @@ const Page = () => {
 	);
 };
 
-export default Page;
+export default Practise;

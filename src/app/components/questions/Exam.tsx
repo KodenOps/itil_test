@@ -12,7 +12,7 @@ interface Question {
 
 const LOCAL_STORAGE_KEY = 'quizState';
 
-const Page = () => {
+const Exam = ({ questionBank, qnumber }: any) => {
 	const router = useRouter();
 
 	// State Management
@@ -49,7 +49,7 @@ const Page = () => {
 			setTimeLeft(parsedState.timeLeft);
 		} else {
 			// Shuffle questions once and store in localStorage
-			const shuffled = shuffle(itilQuestions).slice(0, 40);
+			const shuffled = shuffle(questionBank).slice(0, qnumber);
 			setShuffledQuestions(shuffled);
 		}
 	}, []);
@@ -214,4 +214,4 @@ const Page = () => {
 	);
 };
 
-export default Page;
+export default Exam;
