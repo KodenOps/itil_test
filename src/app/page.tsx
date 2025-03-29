@@ -33,16 +33,16 @@ const page = () => {
 							label: 'ITIL v4',
 							mode: 'Partial Exam Mode',
 						},
-						{
-							path: '/page/aws-exam',
-							label: 'AWS Cloud Practitioner',
-							mode: 'Full Exam Mode',
-						},
-						{
-							path: '/page/aws-practise',
-							label: 'AWS Cloud Practitioner',
-							mode: 'Partial Exam Mode',
-						},
+						// {
+						// 	path: '/page/aws-exam',
+						// 	label: 'AWS Cloud Practitioner',
+						// 	mode: 'Full Exam Mode',
+						// },
+						// {
+						// 	path: '/page/aws-practise',
+						// 	label: 'AWS Cloud Practitioner',
+						// 	mode: 'Partial Exam Mode',
+						// },
 					].map(({ path, label, mode }) => (
 						<div
 							key={path}
