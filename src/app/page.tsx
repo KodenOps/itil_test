@@ -16,7 +16,7 @@ const Page = () => {
 			} = await supabase.auth.getSession();
 
 			if (!session) {
-				router.replace('/login');
+				router.replace('/');
 			} else {
 				setAuthenticated(true);
 				setLoading(false);
@@ -26,63 +26,63 @@ const Page = () => {
 		checkSession();
 	}, [router]);
 
-	useEffect(() => {
-		const { data: authListener } = supabase.auth.onAuthStateChange(
-			async (event, session) => {
-				if (event === 'SIGNED_IN') {
-					if (window.location.hash) {
-						history.replaceState(null, '', window.location.pathname);
-					}
-				}
-			}
-		);
+	// useEffect(() => {
+	// 	const { data: authListener } = supabase.auth.onAuthStateChange(
+	// 		async (event, session) => {
+	// 			if (event === 'SIGNED_IN') {
+	// 				if (window.location.hash) {
+	// 					history.replaceState(null, '', window.location.pathname);
+	// 				}
+	// 			}
+	// 		}
+	// 	);
 
-		if (window.location.hash.includes('access_token')) {
-			supabase.auth.getSession().then(() => {
-				history.replaceState(null, '', window.location.pathname);
-			});
-		}
+	// 	if (window.location.hash.includes('access_token')) {
+	// 		supabase.auth.getSession().then(() => {
+	// 			history.replaceState(null, '', window.location.pathname);
+	// 		});
+	// 	}
 
-		return () => {
-			authListener.subscription.unsubscribe();
-		};
-	}, []);
+	// 	return () => {
+	// 		authListener.subscription.unsubscribe();
+	// 	};
+	// }, []);
 
 	const handleNavigation = (path: string) => {
 		localStorage.clear();
 		router.push(path);
 	};
 
-	const handleLogout = async () => {
-		const { error } = await supabase.auth.signOut();
-		if (error) {
-			console.error('Error signing out:', error.message);
-		} else {
-			window.location.href = '/login';
-		}
-	};
+	// const handleLogout = async () => {
+	// 	const { error } = await supabase.auth.signOut();
+	// 	if (error) {
+	// 		console.error('Error signing out:', error.message);
+	// 	} else {
+	// 		window.location.href = '/login';
+	// 	}
+	// };
 
-	// 👇 Prevent flashing
-	if (loading || !authenticated) {
-		return (
-			<div className='w-full h-screen flex items-center justify-center'>
-				<div className='animate-pulse space-y-4 w-[80%] max-w-xl text-center'>
-					<div className='h-6 bg-gray-300 rounded w-3/4 mx-auto' />
-					<div className='h-4 bg-gray-200 rounded w-5/6 mx-auto' />
-					<div className='flex justify-center gap-4 mt-6 flex-wrap'>
-						{Array(2)
-							.fill(0)
-							.map((_, i) => (
-								<div
-									key={i}
-									className='h-[150px] w-[150px] md:h-[200px] md:w-[200px] bg-gray-200 rounded-md'
-								/>
-							))}
-					</div>
-				</div>
-			</div>
-		);
-	}
+	// // 👇 Prevent flashing
+	// if (loading || !authenticated) {
+	// 	return (
+	// 		<div className='w-full h-screen flex items-center justify-center'>
+	// 			<div className='animate-pulse space-y-4 w-[80%] max-w-xl text-center'>
+	// 				<div className='h-6 bg-gray-300 rounded w-3/4 mx-auto' />
+	// 				<div className='h-4 bg-gray-200 rounded w-5/6 mx-auto' />
+	// 				<div className='flex justify-center gap-4 mt-6 flex-wrap'>
+	// 					{Array(2)
+	// 						.fill(0)
+	// 						.map((_, i) => (
+	// 							<div
+	// 								key={i}
+	// 								className='h-[150px] w-[150px] md:h-[200px] md:w-[200px] bg-gray-200 rounded-md'
+	// 							/>
+	// 						))}
+	// 				</div>
+	// 			</div>
+	// 		</div>
+	// 	);
+	// }
 
 	return (
 		<div className='w-full h-full flex md:mt-[5%] md:items-start mt-[80px] overflow-hidden justify-center'>
@@ -108,6 +108,11 @@ const Page = () => {
 							label: 'ITIL v4',
 							mode: 'Partial Exam Mode',
 						},
+						{
+							path: '/page/itil-practise-extended',
+							label: 'ITIL v4',
+							mode: 'Extended Question Bank',
+						},
 					].map(({ path, label, mode }) => (
 						<div
 							key={path}
@@ -117,11 +122,11 @@ const Page = () => {
 						</div>
 					))}
 				</div>
-				<button
+				{/* <button
 					className='mt-20 border-2 border-red-500 py-2 w-[100px] rounded-sm'
 					onClick={handleLogout}>
 					Logout
-				</button>
+				</button> */}
 			</div>
 
 			<p className='absolute bottom-0 py-4 text-center bg-[#f4f4f4] w-full'>
