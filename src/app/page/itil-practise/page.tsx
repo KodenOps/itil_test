@@ -16,6 +16,7 @@ const page = () => {
 			<Practise
 				questionBank={itilQuestions}
 				qnumber={40}
+				duration={3600}
 			/>
 		</div>
 	);
