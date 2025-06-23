@@ -13,7 +13,7 @@ interface Question {
 interface PractiseProps {
 	questionBank: Question[];
 	qnumber: number;
-	duration?: number; // Duration in seconds (default = 3600)
+	duration?: number;
 }
 
 const LOCAL_STORAGE_KEY = 'quizState';
@@ -30,36 +30,38 @@ const Practise = ({
 	const [selectedAnswers, setSelectedAnswers] = useState<{
 		[key: number]: string;
 	}>({});
+	const [submittedQuestions, setSubmittedQuestions] = useState<{
+		[key: number]: boolean;
+	}>({});
+	const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 	const [score, setScore] = useState<number>(0);
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
 	const shuffle = (array: Question[]) => {
-		let shuffledArray = [...array];
-		for (let i = shuffledArray.length - 1; i > 0; i--) {
+		const shuffled = [...array];
+		for (let i = shuffled.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1));
-			[shuffledArray[i], shuffledArray[j]] = [
-				shuffledArray[j],
-				shuffledArray[i],
-			];
+			[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
 		}
-		return shuffledArray;
+		return shuffled;
 	};
 
 	useEffect(() => {
-		const savedState = localStorage.getItem(LOCAL_STORAGE_KEY);
-		if (savedState) {
-			const parsedState = JSON.parse(savedState);
-			setShuffledQuestions(parsedState.shuffledQuestions);
-			setCurrentIndex(parsedState.currentIndex);
-			setSelectedAnswers(parsedState.selectedAnswers);
-			setTimeLeft(parsedState.timeLeft);
-			setScore(parsedState.score);
+		const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+		if (saved) {
+			const parsed = JSON.parse(saved);
+			setShuffledQuestions(parsed.shuffledQuestions);
+			setCurrentIndex(parsed.currentIndex);
+			setSelectedAnswers(parsed.selectedAnswers);
+			setSubmittedQuestions(parsed.submittedQuestions || {});
+			setIsSubmitted(!!parsed.submittedQuestions?.[parsed.currentIndex]);
+			setTimeLeft(parsed.timeLeft);
+			setScore(parsed.score);
 		} else {
 			const shuffled = shuffle(questionBank).slice(0, qnumber);
 			setShuffledQuestions(shuffled);
-			setTimeLeft(duration); // Set time from prop
 		}
-	}, [questionBank, qnumber, duration]);
+	}, [questionBank, qnumber]);
 
 	useEffect(() => {
 		if (shuffledQuestions.length > 0) {
@@ -69,41 +71,60 @@ const Practise = ({
 					shuffledQuestions,
 					currentIndex,
 					selectedAnswers,
-					timeLeft,
+					submittedQuestions,
 					score,
+					timeLeft,
 				})
 			);
 		}
-	}, [shuffledQuestions, currentIndex, selectedAnswers, timeLeft, score]);
+	}, [
+		shuffledQuestions,
+		currentIndex,
+		selectedAnswers,
+		submittedQuestions,
+		score,
+		timeLeft,
+	]);
+
+	useEffect(() => {
+		if (timeLeft === 0) {
+			handleFinish();
+			return;
+		}
+		const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
+		return () => clearInterval(timer);
+	}, [timeLeft]);
+
+	const formatTime = (t: number): string =>
+		[Math.floor(t / 3600), Math.floor((t % 3600) / 60), t % 60]
+			.map((v) => (v < 10 ? `0${v}` : v))
+			.join(':');
 
 	const handleOptionSelect = (option: string) => {
+		if (isSubmitted) return;
 		setSelectedAnswers((prev) => ({
 			...prev,
 			[currentIndex]: option,
 		}));
 	};
 
-	const handleNextQuestion = () => {
+	const handleSubmitAnswer = () => {
 		if (!selectedAnswers[currentIndex]) return;
-		setIsModalOpen(true);
-
 		const isCorrect =
 			selectedAnswers[currentIndex] === shuffledQuestions[currentIndex].answer;
 		setScore((prev) => prev + (isCorrect ? 1 : 0));
-
-		localStorage.setItem(
-			'finalScore',
-			JSON.stringify(score + (isCorrect ? 1 : 0))
-		);
-		localStorage.setItem(
-			'totalQuestions',
-			JSON.stringify(shuffledQuestions.length)
-		);
+		setSubmittedQuestions((prev) => ({ ...prev, [currentIndex]: true }));
+		setIsSubmitted(true);
+		setIsModalOpen(true);
 	};
 
-	const handleCloseModal = () => {
+	const handleMove = (direction: 'prev' | 'next') => {
+		const newIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
+		if (newIndex >= 0 && newIndex < shuffledQuestions.length) {
+			setCurrentIndex(newIndex);
+			setIsSubmitted(!!submittedQuestions[newIndex]);
+		}
 		setIsModalOpen(false);
-		setCurrentIndex((prev) => prev + 1);
 	};
 
 	const handleFinish = () => {
@@ -115,20 +136,6 @@ const Practise = ({
 		localStorage.removeItem(LOCAL_STORAGE_KEY);
 		router.push('/score');
 	};
-
-	useEffect(() => {
-		if (timeLeft === 0) {
-			handleFinish();
-			return;
-		}
-		const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000); // 1-second intervals
-		return () => clearInterval(timer);
-	}, [timeLeft]);
-
-	const formatTime = (t: number): string =>
-		[Math.floor(t / 3600), Math.floor((t % 3600) / 60), t % 60]
-			.map((v) => (v < 10 ? `0${v}` : v))
-			.join(':');
 
 	return (
 		<div>
@@ -151,59 +158,65 @@ const Practise = ({
 
 			<div className='p-5'>
 				{shuffledQuestions.length > 0 &&
-					shuffledQuestions[currentIndex].options.map((option, index) => (
-						<div
-							key={index}
-							className='flex items-center text-xl mb-5 hover:bg-gray-100 p-4 cursor-pointer'>
-							<input
-								type='radio'
-								id={`option-${index}`}
-								className='w-6 h-6 accent-green-600 cursor-pointer'
-								name={`question-${currentIndex}`}
-								value={option}
-								checked={selectedAnswers[currentIndex] === option}
-								onChange={() => handleOptionSelect(option)}
-							/>
-							<label
-								htmlFor={`option-${index}`}
-								className='ml-2 cursor-pointer'>
-								{option}
-							</label>
-						</div>
-					))}
+					shuffledQuestions[currentIndex].options.map((option, index) => {
+						const selected = selectedAnswers[currentIndex] === option;
+						const correct = shuffledQuestions[currentIndex].answer === option;
+						const isCorrect = isSubmitted && correct;
+						const isWrong = isSubmitted && selected && !correct;
+
+						return (
+							<div
+								key={index}
+								className={`flex items-center text-xl mb-5 p-4 cursor-pointer border 
+                ${isCorrect ? 'border-green-500' : ''} 
+                ${isWrong ? 'border-red-500' : ''} 
+                ${!isCorrect && !isWrong ? 'border-transparent' : ''} 
+                hover:bg-gray-100 rounded-md`}>
+								<input
+									type='radio'
+									id={`option-${index}`}
+									className='w-6 h-6 accent-green-600 cursor-pointer'
+									name={`question-${currentIndex}`}
+									value={option}
+									checked={selected}
+									disabled={isSubmitted}
+									onChange={() => handleOptionSelect(option)}
+								/>
+								<label
+									htmlFor={`option-${index}`}
+									className='ml-2 cursor-pointer'>
+									{option}
+								</label>
+							</div>
+						);
+					})}
 			</div>
 
-			<div className='p-5 flex justify-center gap-6'>
-				{currentIndex < shuffledQuestions.length - 1 ? (
+			{!isSubmitted && (
+				<div className='p-5 flex justify-center'>
 					<button
-						onClick={handleNextQuestion}
+						onClick={handleSubmitAnswer}
 						disabled={!selectedAnswers[currentIndex]}
 						className={`px-10 py-4 ${
 							selectedAnswers[currentIndex]
-								? 'bg-green-600'
+								? 'bg-blue-600'
 								: 'bg-gray-400 cursor-not-allowed'
 						} text-white rounded-lg`}>
-						Next
+						Submit
 					</button>
-				) : (
-					<button
-						onClick={handleFinish}
-						className='px-10 py-4 bg-red-600 text-white rounded-lg'>
-						Finish
-					</button>
-				)}
-			</div>
+				</div>
+			)}
 
 			{isModalOpen && (
-				<div className='fixed inset-0 flex items-center justify-center bg-[#0009] bg-opacity-50'>
+				<div className='fixed inset-0 flex items-center justify-center bg-[#0009] bg-opacity-50 z-50'>
 					<div className='bg-white p-6 rounded-lg shadow-lg w-96 text-center'>
-						<h2 className='text-xl font-semibold text-green-700 mb-2 text-center'>
+						<h2 className='text-xl font-semibold text-green-700 mb-2'>
 							✨ Notification ✨
 						</h2>
 						<div className='flex items-center justify-center mb-3'>
 							{selectedAnswers[currentIndex] ===
 							shuffledQuestions[currentIndex].answer ? (
-								<p className='text-green-600 font-semibold text-center'>
+								<p className='text-green-600 font-semibold'>
 									✅ You got it right!
 								</p>
 							) : (
@@ -213,11 +226,29 @@ const Practise = ({
 						<p className='text-gray-700'>
 							{shuffledQuestions[currentIndex].ShortExplanation}
 						</p>
-						<button
-							onClick={handleCloseModal}
-							className='mt-4 px-6 py-2 bg-green-600 text-white rounded-lg'>
-							Next Question
-						</button>
+
+						<div className='mt-4 flex justify-between gap-4'>
+							{currentIndex > 0 && (
+								<button
+									onClick={() => handleMove('prev')}
+									className='px-6 py-2 bg-gray-600 text-white rounded-lg'>
+									Previous
+								</button>
+							)}
+							{currentIndex < shuffledQuestions.length - 1 ? (
+								<button
+									onClick={() => handleMove('next')}
+									className='px-6 py-2 bg-green-600 text-white rounded-lg'>
+									Next
+								</button>
+							) : (
+								<button
+									onClick={handleFinish}
+									className='px-6 py-2 bg-red-600 text-white rounded-lg'>
+									Finish
+								</button>
+							)}
+						</div>
 					</div>
 				</div>
 			)}

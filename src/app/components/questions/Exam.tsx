@@ -15,46 +15,47 @@ const LOCAL_STORAGE_KEY = 'quizState';
 const Exam = ({ questionBank, qnumber }: any) => {
 	const router = useRouter();
 
-	// State Management
 	const [timeLeft, setTimeLeft] = useState<number>(3600);
 	const [shuffledQuestions, setShuffledQuestions] = useState<Question[]>([]);
 	const [currentIndex, setCurrentIndex] = useState<number>(0);
 	const [selectedAnswers, setSelectedAnswers] = useState<{
 		[key: number]: string;
 	}>({});
+	const [submittedQuestions, setSubmittedQuestions] = useState<{
+		[key: number]: boolean;
+	}>({});
+	const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 	const [score, setScore] = useState<number>(0);
 
-	// Shuffle function (Fisher-Yates Algorithm)
+	// Shuffle questions
 	const shuffle = (array: Question[]) => {
-		let shuffledArray = [...array];
-		for (let i = shuffledArray.length - 1; i > 0; i--) {
+		const newArray = [...array];
+		for (let i = newArray.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1));
-			[shuffledArray[i], shuffledArray[j]] = [
-				shuffledArray[j],
-				shuffledArray[i],
-			];
+			[newArray[i], newArray[j]] = [newArray[j], newArray[i]];
 		}
-		return shuffledArray;
+		return newArray;
 	};
 
-	// Load quiz state from LocalStorage
+	// Load saved state or init
 	useEffect(() => {
 		const savedState = localStorage.getItem(LOCAL_STORAGE_KEY);
 		if (savedState) {
-			const parsedState = JSON.parse(savedState);
-			setShuffledQuestions(parsedState.shuffledQuestions);
-			setCurrentIndex(parsedState.currentIndex);
-			setSelectedAnswers(parsedState.selectedAnswers);
-			setScore(parsedState.score);
-			setTimeLeft(parsedState.timeLeft);
+			const parsed = JSON.parse(savedState);
+			setShuffledQuestions(parsed.shuffledQuestions);
+			setCurrentIndex(parsed.currentIndex);
+			setSelectedAnswers(parsed.selectedAnswers);
+			setSubmittedQuestions(parsed.submittedQuestions || {});
+			setScore(parsed.score);
+			setTimeLeft(parsed.timeLeft);
+			setIsSubmitted(!!parsed.submittedQuestions?.[parsed.currentIndex]);
 		} else {
-			// Shuffle questions once and store in localStorage
 			const shuffled = shuffle(questionBank).slice(0, qnumber);
 			setShuffledQuestions(shuffled);
 		}
 	}, []);
 
-	// Auto-save to LocalStorage on state changes
+	// Auto-save
 	useEffect(() => {
 		if (shuffledQuestions.length > 0) {
 			localStorage.setItem(
@@ -63,21 +64,29 @@ const Exam = ({ questionBank, qnumber }: any) => {
 					shuffledQuestions,
 					currentIndex,
 					selectedAnswers,
+					submittedQuestions,
 					score,
 					timeLeft,
 				})
 			);
 		}
-	}, [shuffledQuestions, currentIndex, selectedAnswers, score, timeLeft]);
+	}, [
+		shuffledQuestions,
+		currentIndex,
+		selectedAnswers,
+		submittedQuestions,
+		score,
+		timeLeft,
+	]);
 
-	// Timer Effect
+	// Timer
 	useEffect(() => {
 		if (timeLeft <= 0) return;
 		const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
 		return () => clearInterval(timer);
 	}, [timeLeft]);
 
-	// Format Timer Display
+	// Format time
 	const formatTime = (t: number): string =>
 		[Math.floor(t / 3600), Math.floor((t % 3600) / 60), t % 60]
 			.map((v) => (v < 10 ? `0${v}` : v))
@@ -85,52 +94,59 @@ const Exam = ({ questionBank, qnumber }: any) => {
 
 	// Handle selecting an option
 	const handleOptionSelect = (option: string) => {
+		if (isSubmitted) return;
 		setSelectedAnswers((prev) => ({
 			...prev,
 			[currentIndex]: option,
 		}));
 	};
 
-	// Move to the next question
+	// Submit current answer
+	const handleSubmitAnswer = () => {
+		if (!selectedAnswers[currentIndex]) return;
+		setSubmittedQuestions((prev) => ({
+			...prev,
+			[currentIndex]: true,
+		}));
+		setIsSubmitted(true);
+	};
+
+	// Navigation
 	const handleNextQuestion = () => {
-		if (!selectedAnswers[currentIndex]) return; // Ensure answer is selected
-
-		setCurrentIndex((prev) => prev + 1);
+		if (!isSubmitted) return;
+		const nextIndex = currentIndex + 1;
+		setCurrentIndex(nextIndex);
+		setIsSubmitted(!!submittedQuestions[nextIndex]);
 	};
 
-	// Move to the previous question
 	const handlePreviousQuestion = () => {
-		setCurrentIndex((prev) => prev - 1);
+		const prevIndex = currentIndex - 1;
+		setCurrentIndex(prevIndex);
+		setIsSubmitted(!!submittedQuestions[prevIndex]);
 	};
 
-	// Handle finish: Calculate score, save, navigate
+	// Finish and score
 	const handleFinish = () => {
-		// Calculate total score
 		const totalScore = Object.keys(selectedAnswers).reduce((acc, key) => {
-			const questionIndex = parseInt(key);
-			return selectedAnswers[questionIndex] ===
-				shuffledQuestions[questionIndex].answer
-				? acc + 1
-				: acc;
+			const i = parseInt(key);
+			return selectedAnswers[i] === shuffledQuestions[i].answer ? acc + 1 : acc;
 		}, 0);
 
-		// Save to LocalStorage
 		localStorage.setItem('finalScore', JSON.stringify(totalScore));
 		localStorage.setItem(
 			'totalQuestions',
 			JSON.stringify(shuffledQuestions.length)
 		);
-		localStorage.removeItem(LOCAL_STORAGE_KEY); // Clear state
-
-		// Navigate to score page
+		localStorage.removeItem(LOCAL_STORAGE_KEY);
 		router.push('/score');
 
-		// Reset quiz state in the background
 		setTimeout(() => {
 			const shuffled = shuffle(itilQuestions).slice(0, 40);
 			setShuffledQuestions(shuffled);
 			setCurrentIndex(0);
 			setSelectedAnswers({});
+			setSubmittedQuestions({});
+			setIsSubmitted(false);
 			setScore(0);
 			setTimeLeft(3600);
 		}, 500);
@@ -151,39 +167,52 @@ const Exam = ({ questionBank, qnumber }: any) => {
 				</div>
 			</div>
 
-			{/* Display Current Question */}
+			{/* Question */}
 			<div className='p-5 text-xl'>
 				{shuffledQuestions.length > 0 &&
 					shuffledQuestions[currentIndex].question}
 			</div>
 
-			{/* Display Options as Radio Buttons */}
+			{/* Options */}
 			<div className='p-5'>
 				{shuffledQuestions.length > 0 &&
-					shuffledQuestions[currentIndex].options.map((option, index) => (
-						<div
-							key={index}
-							className='flex items-center text-xl mb-5 hover:bg-gray-100 p-4 cursor-pointer'>
-							<input
-								type='radio'
-								id={`option-${index}`}
-								className='w-6 h-6 accent-green-600 cursor-pointer'
-								name={`question-${currentIndex}`}
-								value={option}
-								checked={selectedAnswers[currentIndex] === option}
-								onChange={() => handleOptionSelect(option)}
-							/>
-							<label
-								htmlFor={`option-${index}`}
-								className='ml-2 cursor-pointer'>
-								{option}
-							</label>
-						</div>
-					))}
+					shuffledQuestions[currentIndex].options.map((option, index) => {
+						const selected = selectedAnswers[currentIndex] === option;
+						const correct = shuffledQuestions[currentIndex].answer === option;
+						const isCorrect = isSubmitted && correct;
+						const isWrong = isSubmitted && selected && !correct;
+
+						return (
+							<div
+								key={index}
+								className={`flex items-center text-xl mb-5 p-4 cursor-pointer border 
+									${isCorrect ? 'border-green-500' : ''} 
+									${isWrong ? 'border-red-500' : ''} 
+									${!isCorrect && !isWrong ? 'border-transparent' : ''} 
+									hover:bg-gray-100 rounded-md`}>
+								<input
+									type='radio'
+									id={`option-${index}`}
+									className='w-6 h-6 accent-green-600 cursor-pointer'
+									name={`question-${currentIndex}`}
+									value={option}
+									checked={selected}
+									disabled={isSubmitted}
+									onChange={() => handleOptionSelect(option)}
+								/>
+								<label
+									htmlFor={`option-${index}`}
+									className='ml-2 cursor-pointer'>
+									{option}
+								</label>
+							</div>
+						);
+					})}
 			</div>
 
 			{/* Navigation Buttons */}
 			<div className='p-5 flex justify-center gap-6'>
+				{/* Previous */}
 				<button
 					onClick={handlePreviousQuestion}
 					disabled={currentIndex === 0}
@@ -191,15 +220,22 @@ const Exam = ({ questionBank, qnumber }: any) => {
 					Previous
 				</button>
 
-				{currentIndex < shuffledQuestions.length - 1 ? (
+				{/* Submit or Next */}
+				{!isSubmitted ? (
 					<button
-						onClick={handleNextQuestion}
+						onClick={handleSubmitAnswer}
 						disabled={!selectedAnswers[currentIndex]}
 						className={`px-10 py-4 ${
 							selectedAnswers[currentIndex]
-								? 'bg-green-600'
+								? 'bg-blue-600'
 								: 'bg-gray-400 cursor-not-allowed'
 						} text-white rounded-lg`}>
+						Submit
+					</button>
+				) : currentIndex < shuffledQuestions.length - 1 ? (
+					<button
+						onClick={handleNextQuestion}
+						className='px-10 py-4 bg-green-600 text-white rounded-lg'>
 						Next
 					</button>
 				) : (
