@@ -1,9 +1,8 @@
 'use client';
 import { BsGithub } from 'react-icons/bs';
-import { supabase } from '@/app/utils/supabase'; // Adjust path if necessary
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-type OAuthProvider = 'github';
+
 
 export default function Page() {
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -11,51 +10,7 @@ export default function Page() {
 
 	const [email, setEmail] = useState<string>('');
 	const router = useRouter();
-	// const handleLogin = async (provider: OAuthProvider | 'email') => {
-	// 	setErrorMessage(null);
-	// 	try {
-	// 		if (provider === 'email') {
-	// 			// Email magic link authentication
-	// 			const { error } = await supabase.auth.signInWithOtp({
-	// 				email: email, // Use the email entered by the user
-	// 			});
-	// 			if (error) {
-	// 				setErrorMessage(error.message);
-	// 			}
-	// 		} else {
-	// 			// GitHub OAuth authentication
-	// 			const { error } = await supabase.auth.signInWithOAuth({
-	// 				provider: 'github',
-	// 				options: {
-	// 					redirectTo:
-	// 						'https://tetoyldltdxylaszrdpz.supabase.co/auth/v1/callback',
-	// 				},
-	// 			});
-	// 			if (error) {
-	// 				setErrorMessage(error.message);
-	// 			}
-	// 		}
-	// 	} catch (error) {
-	// 		setErrorMessage('An error occurred during login.');
-	// 	}
-	// };
-	// useEffect(() => {
-	// 	const checkSession = async () => {
-	// 		const {
-	// 			data: { session },
-	// 		} = await supabase.auth.getSession();
 
-	// 		if (session) {
-	// 			// If user is already logged in, redirect them
-	// 			router.replace('/');
-	// 		} else {
-	// 			// If no session, show the login page
-	// 			setLoading(false);
-	// 		}
-	// 	};
-
-	// 	checkSession();
-	// }, [router]);
 
 	return (
 		<div className='w-full h-screen flex items-center justify-center bg-slate-300'>
