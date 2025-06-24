@@ -122,9 +122,10 @@ const Practise = ({
 		const newIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
 		if (newIndex >= 0 && newIndex < shuffledQuestions.length) {
 			setCurrentIndex(newIndex);
-			setIsSubmitted(!!submittedQuestions[newIndex]);
+			const alreadySubmitted = !!submittedQuestions[newIndex];
+			setIsSubmitted(alreadySubmitted);
+			setIsModalOpen(alreadySubmitted); // 👈 Automatically show modal if already submitted
 		}
-		setIsModalOpen(false);
 	};
 
 	const handleFinish = () => {
@@ -139,6 +140,7 @@ const Practise = ({
 
 	return (
 		<div>
+			{/* Top Bar */}
 			<div className='topNav md:py-5 py-4 md:px-20 px-6 shadow-md w-full bg-white flex justify-between items-center'>
 				<div className='text-2xl text-green-600'>
 					Q{currentIndex + 1}/
@@ -151,11 +153,13 @@ const Practise = ({
 				</div>
 			</div>
 
+			{/* Question */}
 			<div className='p-5 text-xl'>
 				{shuffledQuestions.length > 0 &&
 					shuffledQuestions[currentIndex].question}
 			</div>
 
+			{/* Options */}
 			<div className='p-5'>
 				{shuffledQuestions.length > 0 &&
 					shuffledQuestions[currentIndex].options.map((option, index) => {
@@ -192,6 +196,7 @@ const Practise = ({
 					})}
 			</div>
 
+			{/* Submit Button */}
 			{!isSubmitted && (
 				<div className='p-5 flex justify-center'>
 					<button
@@ -207,9 +212,16 @@ const Practise = ({
 				</div>
 			)}
 
+			{/* Modal or Inline Feedback */}
 			{isModalOpen && (
-				<div className='fixed inset-0 flex items-center justify-center bg-[#0009] bg-opacity-50 z-50'>
-					<div className='bg-white p-6 rounded-lg shadow-lg w-96 text-center'>
+				<div
+					className={`
+            w-full px-4 py-6 
+            bg-white border-t mt-4 
+            md:fixed md:inset-0 md:flex md:items-center md:justify-center 
+            md:bg-[#0009] md:bg-opacity-50 md:z-50
+          `}>
+					<div className='bg-white p-6 rounded-lg shadow-lg w-full md:w-96 text-center'>
 						<h2 className='text-xl font-semibold text-green-700 mb-2'>
 							✨ Notification ✨
 						</h2>
