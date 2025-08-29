@@ -12,19 +12,20 @@ pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 export default function PdfViewer({ fileUrl }: { fileUrl: string }) {
 	const [numPages, setNumPages] = useState<number>(0);
 	const [currentPage, setCurrentPage] = useState<number>(1);
-	const [pageInput, setPageInput] = useState<string>('1'); // separate input state
+	const [pageInput, setPageInput] = useState<string>('1');
 	const [containerWidth, setContainerWidth] = useState<number>(800);
+
 	const containerRef = useRef<HTMLDivElement>(null);
 	const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
 
 	// Adjust width on mount and resize
 	useEffect(() => {
-		function updateWidth() {
+		const updateWidth = () => {
 			if (containerRef.current) {
 				const width = containerRef.current.offsetWidth;
-				setContainerWidth(width > 800 ? 800 : width); // max width 800
+				setContainerWidth(width > 800 ? 800 : width);
 			}
-		}
+		};
 		updateWidth();
 		window.addEventListener('resize', updateWidth);
 		return () => window.removeEventListener('resize', updateWidth);
@@ -37,50 +38,81 @@ export default function PdfViewer({ fileUrl }: { fileUrl: string }) {
 			if (target) {
 				target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 				setCurrentPage(page);
-				setPageInput(String(page)); // keep input synced after jumping
+				setPageInput(String(page));
 			}
 		}
 	};
 
+	// Input handling
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setPageInput(e.target.value); // allow clearing or partial typing
+		setPageInput(e.target.value);
 	};
 
 	const handleInputBlur = () => {
 		const value = parseInt(pageInput, 10);
-		if (!isNaN(value)) {
-			scrollToPage(value);
-		} else {
-			setPageInput(String(currentPage)); // revert to current if invalid
+		if (!isNaN(value)) scrollToPage(value);
+		else setPageInput(String(currentPage));
+	};
+
+	const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === 'Enter') {
+			const value = parseInt(pageInput, 10);
+			if (!isNaN(value)) scrollToPage(value);
+			else setPageInput(String(currentPage));
 		}
 	};
 
 	const handlePrev = () => {
-		if (currentPage > 1) {
-			scrollToPage(currentPage - 1);
-		}
+		if (currentPage > 1) scrollToPage(currentPage - 1);
 	};
 
 	const handleNext = () => {
-		if (currentPage < numPages) {
-			scrollToPage(currentPage + 1);
-		}
+		if (currentPage < numPages) scrollToPage(currentPage + 1);
 	};
-	const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (e.key === 'Enter') {
-			const value = parseInt(pageInput, 10);
-			if (!isNaN(value)) {
-				scrollToPage(value);
-			} else {
-				setPageInput(String(currentPage)); // revert if invalid
+
+	// Sync pageInput with manual scroll
+	useEffect(() => {
+		if (!containerRef.current || pageRefs.current.length === 0) return;
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						const index = pageRefs.current.indexOf(
+							entry.target as HTMLDivElement
+						);
+						if (index !== -1 && currentPage !== index + 1) {
+							setCurrentPage(index + 1);
+							setPageInput(String(index + 1));
+						}
+					}
+				});
+			},
+			{
+				root: containerRef.current,
+				rootMargin: '-50% 0px -50% 0px', // triggers when page center crosses container center
+				threshold: 0,
 			}
-		}
-	};
+		);
+
+		pageRefs.current.forEach((page) => {
+			if (page) observer.observe(page);
+		});
+
+		return () => {
+			pageRefs.current.forEach((page) => {
+				if (page) observer.unobserve(page);
+			});
+		};
+	}, [numPages, currentPage]);
+
 	return (
 		<div
 			ref={containerRef}
-			className='flex flex-col items-center w-full px-2'
-			onContextMenu={(e) => e.preventDefault()}>
+			className='flex flex-col items-center w-full px-2 overflow-y-auto'
+			onContextMenu={(e) => e.preventDefault()}
+			style={{ height: '100vh' }} // ensure container scroll works
+		>
 			<Document
 				file={fileUrl}
 				onLoadSuccess={({ numPages }) => setNumPages(numPages)}
@@ -118,10 +150,11 @@ export default function PdfViewer({ fileUrl }: { fileUrl: string }) {
 					<input
 						id='jump-page'
 						type='number'
+						min={1}
 						max={numPages}
 						value={pageInput}
 						onChange={handleInputChange}
-						// onBlur={handleInputBlur}
+						onBlur={handleInputBlur}
 						onKeyDown={handleInputKeyDown}
 						className='w-16 text-center border rounded text-black'
 					/>
