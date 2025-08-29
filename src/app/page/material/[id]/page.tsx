@@ -1,10 +1,30 @@
 import ClientMaterial from './ClientMaterial/page';
 
 const materials = [
-	{ id: '1', title: 'Exam Guidelines', type: 'pdf' },
-	{ id: '2', title: 'ITIL Foundation Textbook', type: 'pdf' },
-	{ id: '3', title: 'ITIL Foundation Exam Study', type: 'pdf' },
-	{ id: '4', title: 'ITIL Foundation Slide', type: 'pdf' },
+	{
+		id: '1',
+		title: 'Exam Guidelines',
+		type: 'pdf',
+		author: 'PeopleCerts Officials',
+	},
+	{
+		id: '2',
+		title: 'ITIL Foundation Textbook',
+		type: 'pdf',
+		author: 'Axelos Limited',
+	},
+	{
+		id: '3',
+		title: 'ITIL Foundation Exam Study',
+		type: 'pdf',
+		author: 'Liz Gallacher and Helen Morris',
+	},
+	{
+		id: '4',
+		title: 'ITIL Foundation Slide',
+		type: 'pdf',
+		author: 'Sanmi Samuel Ogunjobi',
+	},
 ];
 
 export default async function MaterialPage({
@@ -22,6 +42,7 @@ export default async function MaterialPage({
 			materialId={material.id}
 			type={material.type}
 			title={material.title}
+			author={material.author || 'Unknown Author'}
 		/>
 	);
 }
