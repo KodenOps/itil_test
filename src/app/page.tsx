@@ -20,9 +20,10 @@ const Page = () => {
 				<h3 className='text-green-900 font-bold md:text-4xl text-2xl text-center'>
 					Welcome To Your Practice Test Center
 				</h3>
-				<p className='md:text-xl text-center mt-4 px-10'>
-					This is a preparatory test for your professional exam. You have 1hr to
-					complete the test.
+				<p className='md:text-xl text-center mt-4 px-10 w-[70vw] text-[#696969] font-medium'>
+					This is a solution to properly prepare you for your ITIL exam. This
+					includes practice exams and study materials to move you from 0 - 100
+					quickly.
 				</p>
 
 				<div className='flex flex-wrap items-center justify-center w-full mt-6 gap-4'>
@@ -41,6 +42,11 @@ const Page = () => {
 							path: '/page/itil-practise-extended',
 							label: 'ITIL v4',
 							mode: 'Extended Question Bank',
+						},
+						{
+							path: '/page/study-materials',
+							label: 'Study Material',
+							mode: 'PDF & PPTX',
 						},
 					].map(({ path, label, mode }) => (
 						<div
