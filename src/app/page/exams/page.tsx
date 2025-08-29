@@ -1,3 +1,27 @@
+// import React from 'react';
+
+// const page = () => {
+// 	let exams = [
+// 		{
+// 			path: '/page/itil-exam',
+// 			label: 'ITIL V4',
+// 			mode: 'Full Exam Mode',
+// 		},
+// 		{
+// 			path: '/page/itil-practise',
+// 			label: 'ITIL v4',
+// 			mode: 'Partial Exam Mode',
+// 		},
+// 		{
+// 			path: '/page/itil-practise-extended',
+// 			label: 'ITIL v4',
+// 			mode: 'Extended Question Bank',
+// 		}
+// 	];
+// 	return <div>page</div>;
+// };
+
+// export default page;
 // app/page.tsx
 'use client';
 import React, { useEffect, useState } from 'react';
@@ -18,26 +42,33 @@ const Page = () => {
 			{/* The rest of your protected content */}
 			<div className='title items-center flex flex-col'>
 				<h3 className='text-green-900 font-bold md:text-4xl text-2xl text-center'>
-					Welcome To Your ITIL Exam Prep Portal
+					Welcome To Your Exam Section
 				</h3>
 				<p className='md:text-xl text-center mt-4 px-10 w-[70vw] text-[#696969] font-medium'>
-					This is a solution to properly prepare you for your ITIL exam. You
-					have access to full and partial exam modes, an extended question bank,
-					and study materials to help you prepare well for you upcoming exams.
-					The class slide is present in the study material page.
+					You can practise for your ITIL exam here in three different modes. You
+					can choose to do a full exam simulation that mimic the actual exam
+					time allocation and exam mode. Also you have partial exam that gives
+					you a short summary after selecting your answers. Finally, the
+					extended question bank to practise with all the questions in the
+					question bank at once.
 				</p>
 
 				<div className='flex flex-wrap items-center justify-center w-full mt-6 gap-4'>
 					{[
 						{
-							path: '/page/exams',
-							label: 'Exams',
-							mode: 'Simulation',
+							path: '/page/itil-exam',
+							label: 'ITIL V4',
+							mode: 'Full Exam Mode',
 						},
 						{
-							path: '/page/study-materials',
-							label: 'Study Material',
-							mode: 'PDF & PPTX',
+							path: '/page/itil-practise',
+							label: 'ITIL v4',
+							mode: 'Partial Exam Mode',
+						},
+						{
+							path: '/page/itil-practise-extended',
+							label: 'ITIL v4',
+							mode: 'Extended Question Bank',
 						},
 					].map(({ path, label, mode }) => (
 						<div
@@ -48,6 +79,11 @@ const Page = () => {
 						</div>
 					))}
 				</div>
+				<a
+					href='/'
+					className='text-lg text-blue-600 underline mt-6 p-4 cursor-pointer'>
+					Go back Home
+				</a>
 			</div>
 
 			<p className='absolute bottom-0 py-4 text-center bg-[#f4f4f4] w-full'>

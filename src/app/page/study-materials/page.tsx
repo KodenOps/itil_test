@@ -26,7 +26,7 @@ const Page = () => {
 	];
 
 	return (
-		<div>
+		<div className='w-full'>
 			<section className='w-full h-full flex md:mt-[5%] md:items-start mt-[80px] overflow-hidden justify-center'>
 				<div className='w-full h-full flex md:mt-[5%] md:items-start mt-[80px] overflow-hidden justify-center'>
 					<div className='title items-center flex flex-col'>
@@ -51,6 +51,13 @@ const Page = () => {
 					</div>
 				</div>
 			</section>
+			<div className='w-full flex justify-center'>
+				<a
+					href='/'
+					className='text-lg text-center w-full  text-blue-600 underline mt-6 p-4 cursor-pointer'>
+					Go back Home
+				</a>
+			</div>
 		</div>
 	);
 };
