@@ -17,10 +17,10 @@ const Page = () => {
 		<div className='w-full h-full flex md:mt-[5%] md:items-start mt-[80px] overflow-hidden justify-center'>
 			{/* The rest of your protected content */}
 			<div className='title items-center flex flex-col'>
-				<h3 className='text-green-900 font-bold md:text-4xl text-2xl text-center'>
+				<h3 className='text-green-900 font-bold md:text-4xl text-2xl md:px-10 px-6 text-center'>
 					Welcome To Your ITIL Exam Prep Portal
 				</h3>
-				<p className='md:text-xl text-center mt-4 px-10 w-[70vw] text-[#696969] font-medium'>
+				<p className='md:text-xl text-center mt-4 md:px-10 px-6 md:w-[70vw] w-full text-[#696969] font-medium'>
 					This is a solution to properly prepare you for your ITIL exam. You
 					have access to full and partial exam modes, an extended question bank,
 					and study materials to help you prepare well for you upcoming exams.
