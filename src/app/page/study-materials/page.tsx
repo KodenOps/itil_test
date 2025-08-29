@@ -22,7 +22,7 @@ const Page = () => {
 			type: 'pdf',
 			linkToFile: '',
 		},
-		{ id: '4', title: 'ITIL Foundation Slide', type: 'pptx', linkToFile: '' },
+		{ id: '4', title: 'ITIL Foundation Slide', type: 'pdf', linkToFile: '' },
 	];
 
 	return (
@@ -34,8 +34,8 @@ const Page = () => {
 							Study Materials
 						</h3>
 						<p className='md:text-xl text-center mt-4 px-10 w-[70vw] text-[#696969] font-medium'>
-							Here you can find various study materials including PDFs and PPTX
-							files to help you prepare for your ITIL exam.
+							Here you can find various study materials files to help you
+							prepare for your ITIL exam.
 						</p>
 
 						<div className='flex flex-wrap items-center justify-center w-full mt-6 gap-4'>
