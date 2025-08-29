@@ -44,13 +44,10 @@ const Page = () => {
 				<h3 className='text-green-900 font-bold md:text-4xl text-2xl text-center'>
 					Welcome To Your Exam Section
 				</h3>
-				<p className='md:text-xl text-center mt-4 px-10 w-[70vw] text-[#696969] font-medium'>
-					You can practise for your ITIL exam here in three different modes. You
-					can choose to do a full exam simulation that mimic the actual exam
-					time allocation and exam mode. Also you have partial exam that gives
-					you a short summary after selecting your answers. Finally, the
-					extended question bank to practise with all the questions in the
-					question bank at once.
+				<p className='md:text-xl text-center mt-4 md:px-10 px-6 md:w-[70vw] w-full text-[#696969] font-medium'>
+					Get ready for your ITIL exam your way. Take a full timed simulation,
+					try a quick practice with instant feedback, or drill through the
+					entire question bank for maximum prep.
 				</p>
 
 				<div className='flex flex-wrap items-center justify-center w-full mt-6 gap-4'>

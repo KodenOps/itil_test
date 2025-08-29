@@ -27,13 +27,13 @@ const Page = () => {
 
 	return (
 		<div className='w-full'>
-			<section className='w-full h-full flex md:mt-[5%] md:items-start mt-[80px] overflow-hidden justify-center'>
-				<div className='w-full h-full flex md:mt-[5%] md:items-start mt-[80px] overflow-hidden justify-center'>
+			<section className='w-full h-full flex md:items-start mt-[50px] overflow-hidden justify-center'>
+				<div className='w-full h-full flex md:items-start mt-[50px] overflow-hidden justify-center'>
 					<div className='title items-center flex flex-col'>
 						<h3 className='text-green-900 font-bold md:text-4xl text-2xl text-center'>
 							Study Materials
 						</h3>
-						<p className='md:text-xl text-center mt-4 px-10 w-[70vw] text-[#696969] font-medium'>
+						<p className='md:text-xl text-center mt-4 md:px-10 px-6 md:w-[70vw] w-full text-[#696969] font-medium'>
 							Here you can find various study materials files to help you
 							prepare for your ITIL exam.
 						</p>
