@@ -19,9 +19,9 @@ const NavBar = () => {
 	return (
 		<nav className='h-[80px] w-full flex items-center justify-between lg:px-[100px] md:px-[50px] px-[16px] shadow-md z-50 relative'>
 			{/* Logo / Brand */}
-			<div className='logo md:text-2xl text-lg font-bold text-[#282828]'>
+			<div className='logo md:text-2xl text-lg font-bold text-[#2660A4]'>
 				<Link href='/'>
-					Certify<span className='text-[#6D2E46]'>Hub</span>
+					Certify<span className='text-[#331E36]'>Hub</span>
 				</Link>
 			</div>
 
@@ -29,22 +29,22 @@ const NavBar = () => {
 			<div className='hidden md:flex gap-6 text-[#282828] font-medium'>
 				<Link
 					href='/'
-					className='hover:underline'>
+					className='hover:text-[#2660A4]'>
 					Home
 				</Link>
 				{/* <Link
 					href='/page/about'
-					className='hover:underline'>
+					className='hover:text-[#2660A4]'>
 					About
 				</Link> */}
 				<Link
 					href='/page/suggestion'
-					className='hover:underline'>
+					className='hover:text-[#2660A4]'>
 					Feature Suggestion
 				</Link>
 				<Link
-					href='/'
-					className='hover:underline'>
+					href='/page/report-bug'
+					className='hover:text-[#2660A4]'>
 					Report A bug
 				</Link>
 			</div>
@@ -76,7 +76,7 @@ const NavBar = () => {
 
 					<Link
 						href='/'
-						className='hover:underline flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4] '>
+						className='hover:text-[#2660A4] flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4] '>
 						<FaHome
 							size={24}
 							color='#758173'
@@ -85,7 +85,7 @@ const NavBar = () => {
 					</Link>
 					{/* <Link
 						href='/page/about'
-						className='hover:underline flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4]'>
+						className='hover:text-[#2660A4] flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4]'>
 						<FaInfoCircle
 							size={24}
 							color='#758173'
@@ -94,7 +94,7 @@ const NavBar = () => {
 					</Link> */}
 					<Link
 						href='/page/suggestion'
-						className='hover:underline flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4]'>
+						className='hover:text-[#2660A4] flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4]'>
 						<FaLightbulb
 							size={24}
 							color='#758173'
@@ -102,8 +102,8 @@ const NavBar = () => {
 						Feature Suggestion
 					</Link>
 					<Link
-						href='/'
-						className='hover:underline flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4]'>
+						href='/page/report-bug'
+						className='hover:text-[#2660A4] flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4]'>
 						<FaBug
 							size={24}
 							color='#758173'

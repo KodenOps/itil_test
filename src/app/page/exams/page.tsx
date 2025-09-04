@@ -4,17 +4,17 @@
 // 	let exams = [
 // 		{
 // 			path: '/page/itil-exam',
-// 			label: 'ITIL V4',
+//
 // 			mode: 'Full Exam Mode',
 // 		},
 // 		{
 // 			path: '/page/itil-practise',
-// 			label: 'ITIL v4',
+//
 // 			mode: 'Partial Exam Mode',
 // 		},
 // 		{
 // 			path: '/page/itil-practise-extended',
-// 			label: 'ITIL v4',
+//
 // 			mode: 'Extended Question Bank',
 // 		}
 // 	];
@@ -27,6 +27,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import NavBar from '@/app/components/NavBar';
+import { FaThermometerFull } from 'react-icons/fa';
 
 const Page = () => {
 	const [loading, setLoading] = useState(true);
@@ -44,7 +45,7 @@ const Page = () => {
 			<div className='w-full h-full flex  md:items-start mt-[40px] overflow-hidden justify-center'>
 				{/* The rest of your protected content */}
 				<div className='title items-center flex flex-col'>
-					<h3 className='text-[#6D2E46] font-bold md:text-4xl text-2xl text-center'>
+					<h3 className='text-[#2660A4] font-bold md:text-4xl text-2xl text-center'>
 						Welcome To Your Exam Section
 					</h3>
 					<p className='md:text-xl text-center mt-4 md:px-10 px-6 md:w-[70vw] w-full text-[#696969] font-medium'>
@@ -57,25 +58,41 @@ const Page = () => {
 						{[
 							{
 								path: '/page/itil-exam',
-								label: 'ITIL V4',
+
 								mode: 'Full Exam Mode',
+								IconName: FaThermometerFull,
+								colour: '#2660A4',
 							},
 							{
 								path: '/page/itil-practise',
-								label: 'ITIL v4',
+
 								mode: 'Partial Exam Mode',
+								IconName: FaThermometerFull,
+								colour: '#26a465',
 							},
 							{
 								path: '/page/itil-practise-extended',
-								label: 'ITIL v4',
+
 								mode: 'Extended Question Bank',
+								IconName: FaThermometerFull,
+								colour: '#333',
 							},
-						].map(({ path, label, mode }) => (
+						].map(({ path, mode, IconName, colour }) => (
 							<div
-								key={path}
+								key={mode}
 								onClick={() => handleNavigation(path)}
-								className='cursor-pointer left md:h-[200px] md:w-[200px] w-[150px] h-[150px] shadow-lg border-2 border-[#c4c4c4] rounded-sm flex md:p-10 p-2 flex-col text-center justify-center items-center font-bold text-[#696969]'>
-								{label} <span className='text-sm text-[#858585]'>({mode})</span>
+								style={{ backgroundColor: colour }}
+								className='cursor-pointer h-[240px] md:w-[200px] w-[180px]  rounded-sm   font-bold text-[#696969]  relative px-2'>
+								<div className=' h-full flex items-center justify-center flex-col w-full'>
+									<IconName
+										size={60}
+										color='#fff'
+										className='mb-8'
+									/>
+									<h3 className='text-[#ffffff] text-2xl  w-full bottom-8 text-center'>
+										{mode}
+									</h3>
+								</div>
 							</div>
 						))}
 					</div>
