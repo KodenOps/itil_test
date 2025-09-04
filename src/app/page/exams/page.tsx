@@ -42,7 +42,7 @@ const Page = () => {
 	return (
 		<div>
 			<NavBar />
-			<div className='w-full h-full flex  md:items-start mt-[40px] overflow-hidden justify-center'>
+			<div className='w-full h-full flex  md:items-start mt-[40px] overflow-auto min-h-screen justify-center'>
 				{/* The rest of your protected content */}
 				<div className='title items-center flex flex-col'>
 					<h3 className='text-[#2660A4] font-bold md:text-4xl text-2xl text-center'>
@@ -82,7 +82,7 @@ const Page = () => {
 								key={mode}
 								onClick={() => handleNavigation(path)}
 								style={{ backgroundColor: colour }}
-								className='cursor-pointer h-[240px] md:w-[200px] w-[180px]  rounded-sm   font-bold text-[#696969]  relative px-2'>
+								className='cursor-pointer h-[240px] md:w-[200px] w-[160px]  rounded-sm   font-bold text-[#696969]  relative px-2'>
 								<div className=' h-full flex items-center justify-center flex-col w-full'>
 									<IconName
 										size={60}
@@ -103,7 +103,7 @@ const Page = () => {
 					</a>
 				</div>
 
-				<p className='absolute bottom-0 py-4 text-center bg-[#f4f4f4] w-full'>
+				<p className='fixed bottom-0 py-4 text-center bg-[#f4f4f4] w-full'>
 					Created by{' '}
 					<a
 						href='https://www.linkedin.com/in/femi-fadiya-segun-pelumi'

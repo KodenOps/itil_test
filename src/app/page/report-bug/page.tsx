@@ -5,9 +5,9 @@ import NavBar from '@/app/components/NavBar';
 
 const Page = () => {
 	return (
-		<div className='w-full h-auto  '>
+		<div className='w-full h-auto min-h-screen '>
 			<NavBar />
-			<h3 className='text-xl font-bold text-[#6D2E46] text-center mt-[50px] mb-2'>
+			<h3 className='text-xl font-bold text-[#2660A4] text-center mt-[50px] px-8 mb-2'>
 				Don't Overlook Bugs! Report Them Here 🐞
 			</h3>
 			{/* visme form */}
@@ -27,6 +27,15 @@ const Page = () => {
 				src='https://static-bundles.visme.co/forms/vismeforms-embed.js'
 				strategy='lazyOnload'
 			/>
+			<p className='fixed bottom-0 py-4 text-center bg-[#f4f4f4] w-full'>
+				Created by{' '}
+				<a
+					href='https://www.linkedin.com/in/femi-fadiya-segun-pelumi'
+					className='underline text-blue-600'>
+					Kode-N-Ops
+				</a>
+				❤
+			</p>
 		</div>
 	);
 };

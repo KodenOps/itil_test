@@ -52,7 +52,7 @@ const Page = () => {
 								key={label}
 								onClick={() => handleNavigation(path)}
 								style={{ backgroundColor: colour }}
-								className='cursor-pointer h-[240px] md:w-[200px] w-[180px]  rounded-sm   font-bold text-[#696969]  relative px-2'>
+								className='cursor-pointer h-[240px] md:w-[200px] w-[160px]  rounded-sm   font-bold text-[#696969]  relative px-2'>
 								<div className=' h-full flex items-center justify-center flex-col w-full'>
 									<IconName
 										size={60}
