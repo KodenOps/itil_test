@@ -1,27 +1,3 @@
-// import React from 'react';
-
-// const page = () => {
-// 	let exams = [
-// 		{
-// 			path: '/page/itil-exam',
-// 			label: 'ITIL V4',
-// 			mode: 'Full Exam Mode',
-// 		},
-// 		{
-// 			path: '/page/itil-practise',
-// 			label: 'ITIL v4',
-// 			mode: 'Partial Exam Mode',
-// 		},
-// 		{
-// 			path: '/page/itil-practise-extended',
-// 			label: 'ITIL v4',
-// 			mode: 'Extended Question Bank',
-// 		}
-// 	];
-// 	return <div>page</div>;
-// };
-
-// export default page;
 // app/page.tsx
 'use client';
 import React, { useEffect, useState } from 'react';
@@ -44,31 +20,27 @@ const Page = () => {
 			<div className='w-full h-full flex  md:items-start mt-[40px] overflow-hidden justify-center'>
 				{/* The rest of your protected content */}
 				<div className='title items-center flex flex-col'>
-					<h3 className='text-[#6D2E46] font-bold md:text-4xl text-2xl text-center'>
-						Welcome To Your Exam Section
+					<h3 className='text-[#6D2E46] font-bold md:text-4xl text-2xl md:px-10 px-6 text-center'>
+						Welcome To Your ITIL Exam Prep Portal
 					</h3>
 					<p className='md:text-xl text-center mt-4 md:px-10 px-6 md:w-[70vw] w-full text-[#696969] font-medium'>
-						Get ready for your ITIL exam your way. Take a full timed simulation,
-						try a quick practice with instant feedback, or drill through the
-						entire question bank for maximum prep.
+						This is a solution to properly prepare you for your ITIL exam. You
+						have access to full and partial exam modes, an extended question
+						bank, and study materials to help you prepare well for you upcoming
+						exams. The class slide is present in the study material page.
 					</p>
 
 					<div className='flex flex-wrap items-center justify-center w-full mt-6 gap-4'>
 						{[
 							{
-								path: '/page/itil-exam',
-								label: 'ITIL V4',
-								mode: 'Full Exam Mode',
+								path: '/page/exams',
+								label: 'Exams',
+								mode: 'Simulation',
 							},
 							{
-								path: '/page/itil-practise',
-								label: 'ITIL v4',
-								mode: 'Partial Exam Mode',
-							},
-							{
-								path: '/page/itil-practise-extended',
-								label: 'ITIL v4',
-								mode: 'Extended Question Bank',
+								path: '/page/study-materials',
+								label: 'Study Material',
+								mode: 'PDF & PPTX',
 							},
 						].map(({ path, label, mode }) => (
 							<div

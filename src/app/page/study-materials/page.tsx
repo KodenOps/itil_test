@@ -1,3 +1,4 @@
+import NavBar from '@/app/components/NavBar';
 import React from 'react';
 
 interface Material {
@@ -27,10 +28,11 @@ const Page = () => {
 
 	return (
 		<div className='w-full'>
-			<section className='w-full h-full flex md:items-start mt-[50px] overflow-hidden justify-center'>
-				<div className='w-full h-full flex md:items-start mt-[50px] overflow-hidden justify-center'>
+			<NavBar />
+			<section className='w-full h-full flex md:items-start mt-[40px] overflow-hidden justify-center'>
+				<div className='w-full h-full '>
 					<div className='title items-center flex flex-col'>
-						<h3 className='text-green-900 font-bold md:text-4xl text-2xl text-center'>
+						<h3 className='text-[#6D2E46] font-bold md:text-4xl text-2xl text-center'>
 							Study Materials
 						</h3>
 						<p className='md:text-xl text-center mt-4 md:px-10 px-6 md:w-[70vw] w-full text-[#696969] font-medium'>
