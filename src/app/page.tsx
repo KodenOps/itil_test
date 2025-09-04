@@ -17,7 +17,7 @@ const Page = () => {
 	return (
 		<div>
 			<NavBar />
-			<div className='w-full h-full flex md:mt-[2%] md:items-start mt-[80px] overflow-hidden justify-center'>
+			<div className='w-full h-full flex  md:items-start mt-[40px] overflow-hidden justify-center'>
 				{/* The rest of your protected content */}
 
 				<div className='title items-center flex flex-col'>
