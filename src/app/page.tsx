@@ -23,7 +23,7 @@ const Page = () => {
 	return (
 		<div>
 			<NavBar />
-			<div className='w-full h-full flex  md:items-start md:mt-[40px] mt-[20px] overflow-auto justify-center'>
+			<div className='w-full min-h-screen flex  md:items-start md:mt-[40px] mt-[40px] overflow-auto justify-center'>
 				{/* The rest of your protected content */}
 
 				<div className='title items-center flex flex-col'>
@@ -59,15 +59,13 @@ const Page = () => {
 								key={label}
 								onClick={() => handleNavigation(path)}
 								style={{ backgroundColor: colour }}
-								className='cursor-pointer h-[280px] md:w-[200px] w-[180px]  rounded-sm   font-bold text-[#696969]  relative'>
-								<div className=' h-full px-4 w-full'>
-									<IconName
-										size={60}
-										color='#fff'
-										className='mt-8'
-									/>
-								</div>
-								<h3 className='text-[#ffffff] text-5xl absolute w-full bottom-8 text-center'>
+								className='cursor-pointer md:h-[280px] h-[200px] md:w-[200px] w-[160px]  rounded-sm   font-bold text-[#696969]  flex flex-col items-center justify-center gap-4  px-2'>
+								<IconName
+									size={60}
+									color='#fff'
+									className=''
+								/>
+								<h3 className='text-[#ffffff] md:text-5xl text-2xl w-full  text-center'>
 									{label}
 								</h3>
 							</div>
@@ -75,7 +73,7 @@ const Page = () => {
 					</div>
 				</div>
 
-				<p className='absolute bottom-0 py-4 text-center bg-[#f4f4f4] w-full'>
+				<p className='fixed bottom-0 py-4 text-center bg-[#f4f4f4] w-full'>
 					Created by{' '}
 					<a
 						href='https://www.linkedin.com/in/femi-fadiya-segun-pelumi'
