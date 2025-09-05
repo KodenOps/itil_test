@@ -20,7 +20,7 @@ const Page = () => {
 	return (
 		<div>
 			<NavBar />
-			<div className='w-full h-full flex  md:items-start mt-[40px] overflow-hidden justify-center'>
+			<div className='w-full min-h-screen flex  md:items-start mt-[40px] overflow-hidden justify-center'>
 				{/* The rest of your protected content */}
 				<div className='title items-center flex flex-col'>
 					<h3 className='text-[#2660A4] font-bold md:text-4xl text-2xl md:px-10 px-6 text-center'>
@@ -79,7 +79,7 @@ const Page = () => {
 					</a>
 				</div>
 
-				<p className='absolute bottom-0 py-4 text-center bg-[#f4f4f4] w-full'>
+				<p className='fixed bottom-0 py-4 text-center bg-[#f4f4f4] w-full'>
 					Created by{' '}
 					<a
 						href='https://www.linkedin.com/in/femi-fadiya-segun-pelumi'
