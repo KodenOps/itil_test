@@ -58,12 +58,12 @@ const Page = () => {
 								key={label}
 								onClick={() => handleNavigation(path)}
 								style={{ backgroundColor: colour }}
-								className='cursor-pointer h-[200px] md:w-[200px] w-[160px]  rounded-sm   font-bold text-[#696969]  relative px-2'>
+								className='cursor-pointer h-[160px] md:w-[200px] w-[160px]  rounded-sm   font-bold text-[#696969]  relative px-2'>
 								<div className=' h-full flex items-center justify-center flex-col w-full'>
 									<IconName
 										size={60}
 										color='#fff'
-										className='mb-8'
+										className='mb-4'
 									/>
 									<h3 className='text-[#ffffff] text-xl  w-full bottom-8 text-center'>
 										{label}
