@@ -38,10 +38,17 @@ const NavBar = () => {
 					About
 				</Link> */}
 				<Link
+					href='https://kodenops.hashnode.dev/'
+					target='_blank'
+					className='hover:text-[#2660A4]'>
+					My Blog
+				</Link>
+				<Link
 					href='/page/suggestion'
 					className='hover:text-[#2660A4]'>
 					Feature Suggestion
 				</Link>
+
 				<Link
 					href='/page/report-bug'
 					className='hover:text-[#2660A4]'>
@@ -92,6 +99,15 @@ const NavBar = () => {
 						/>
 						About
 					</Link> */}
+					<Link
+						href='https://kodenops.hashnode.dev/'
+						className='hover:text-[#2660A4] flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4]'>
+						<FaLightbulb
+							size={24}
+							color='#758173'
+						/>
+						My Blog
+					</Link>
 					<Link
 						href='/page/suggestion'
 						className='hover:text-[#2660A4] flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4]'>

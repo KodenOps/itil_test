@@ -1,26 +1,27 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { itilQuestions } from '@/data/questionBank';
+import kcna_questions from '@/data/kcna_questions';
 import NavBar from '../NavBar';
 
 interface Question {
-	id: string;
+	id?: string;
 	question: string;
 	options: string[];
-	answer: string;
+	answer: number; // now using index instead of string
+	short_explanation?: string;
 }
 
 const LOCAL_STORAGE_KEY = 'quizState';
 
-const Exam = ({ questionBank, qnumber }: any) => {
+const Exam = ({ questionBank, qnumber, timeTotal = 3600 }: any) => {
 	const router = useRouter();
 
-	const [timeLeft, setTimeLeft] = useState<number>(3600);
+	const [timeLeft, setTimeLeft] = useState<number>(timeTotal);
 	const [shuffledQuestions, setShuffledQuestions] = useState<Question[]>([]);
 	const [currentIndex, setCurrentIndex] = useState<number>(0);
 	const [selectedAnswers, setSelectedAnswers] = useState<{
-		[key: number]: string;
+		[key: number]: number;
 	}>({});
 	const [submittedQuestions, setSubmittedQuestions] = useState<{
 		[key: number]: boolean;
@@ -93,18 +94,18 @@ const Exam = ({ questionBank, qnumber }: any) => {
 			.map((v) => (v < 10 ? `0${v}` : v))
 			.join(':');
 
-	// Handle selecting an option
-	const handleOptionSelect = (option: string) => {
+	// Handle selecting an option (store index)
+	const handleOptionSelect = (optionIndex: number) => {
 		if (isSubmitted) return;
 		setSelectedAnswers((prev) => ({
 			...prev,
-			[currentIndex]: option,
+			[currentIndex]: optionIndex,
 		}));
 	};
 
 	// Submit current answer
 	const handleSubmitAnswer = () => {
-		if (!selectedAnswers[currentIndex]) return;
+		if (selectedAnswers[currentIndex] === undefined) return;
 		setSubmittedQuestions((prev) => ({
 			...prev,
 			[currentIndex]: true,
@@ -142,7 +143,7 @@ const Exam = ({ questionBank, qnumber }: any) => {
 		router.push('/score');
 
 		setTimeout(() => {
-			const shuffled = shuffle(itilQuestions).slice(0, 40);
+			const shuffled = shuffle(kcna_questions).slice(0, 40);
 			setShuffledQuestions(shuffled);
 			setCurrentIndex(0);
 			setSelectedAnswers({});
@@ -179,8 +180,8 @@ const Exam = ({ questionBank, qnumber }: any) => {
 			<div className='p-5'>
 				{shuffledQuestions.length > 0 &&
 					shuffledQuestions[currentIndex].options.map((option, index) => {
-						const selected = selectedAnswers[currentIndex] === option;
-						const correct = shuffledQuestions[currentIndex].answer === option;
+						const selected = selectedAnswers[currentIndex] === index;
+						const correct = shuffledQuestions[currentIndex].answer === index;
 						const isCorrect = isSubmitted && correct;
 						const isWrong = isSubmitted && selected && !correct;
 
@@ -191,16 +192,17 @@ const Exam = ({ questionBank, qnumber }: any) => {
 									${isCorrect ? 'border-green-500' : ''} 
 									${isWrong ? 'border-red-500' : ''} 
 									${!isCorrect && !isWrong ? 'border-transparent' : ''} 
-									hover:bg-gray-100 rounded-md`}>
+									hover:bg-gray-100 rounded-md`}
+								onClick={() => handleOptionSelect(index)}>
 								<input
 									type='radio'
 									id={`option-${index}`}
 									className='w-6 h-6 accent-green-600 cursor-pointer'
 									name={`question-${currentIndex}`}
-									value={option}
+									value={index}
 									checked={selected}
 									disabled={isSubmitted}
-									onChange={() => handleOptionSelect(option)}
+									onChange={() => handleOptionSelect(index)}
 								/>
 								<label
 									htmlFor={`option-${index}`}
@@ -226,9 +228,9 @@ const Exam = ({ questionBank, qnumber }: any) => {
 				{!isSubmitted ? (
 					<button
 						onClick={handleSubmitAnswer}
-						disabled={!selectedAnswers[currentIndex]}
+						disabled={selectedAnswers[currentIndex] === undefined}
 						className={`px-10 py-4 ${
-							selectedAnswers[currentIndex]
+							selectedAnswers[currentIndex] !== undefined
 								? 'bg-blue-600'
 								: 'bg-gray-400 cursor-not-allowed'
 						} text-white rounded-lg`}>

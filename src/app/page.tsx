@@ -28,7 +28,7 @@ const Page = () => {
 
 				<div className='title items-center flex flex-col'>
 					<h3 className='text-[#2660A4] font-bold md:text-4xl text-2xl md:px-10 px-6 text-center'>
-						Welcome To Your CertifyHub - Exam Prep Portal
+						Welcome To CertifyHub - Exam Prep Portal
 					</h3>
 					<p className='md:text-xl text-center mt-4 md:px-10 px-6 md:w-[70vw] w-full text-[#696969] font-medium'>
 						Kindly select the exam you want to prepare for below.
@@ -43,7 +43,7 @@ const Page = () => {
 								colour: '#2660A4',
 							},
 							{
-								path: '/page/kcna',
+								path: '/page/kcna-home',
 								label: 'KCNA',
 								IconName: SiKubernetes,
 								colour: '#26a465',

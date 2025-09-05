@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import NavBar from '../NavBar';
 
 interface Question {
 	id: string;
@@ -140,6 +141,7 @@ const Practise = ({
 
 	return (
 		<div>
+			<NavBar />
 			{/* Top Bar */}
 			<div className='topNav md:py-5 py-4 md:px-20 px-6 shadow-md w-full bg-white flex justify-between items-center'>
 				<div className='text-2xl text-green-600'>
