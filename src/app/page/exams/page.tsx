@@ -82,14 +82,14 @@ const Page = () => {
 								key={mode}
 								onClick={() => handleNavigation(path)}
 								style={{ backgroundColor: colour }}
-								className='cursor-pointer h-[200px] md:w-[200px] w-[160px]  rounded-sm   font-bold text-[#696969]  relative px-2'>
+								className='cursor-pointer h-[180px] md:w-[200px] w-[160px]  rounded-sm   font-bold text-[#696969]  relative px-2'>
 								<div className=' h-full flex items-center justify-center flex-col w-full'>
 									<IconName
 										size={40}
 										color='#fff'
 										className='mb-8'
 									/>
-									<h3 className='text-[#ffffff] text-2xl  w-full bottom-8 text-center'>
+									<h3 className='text-[#ffffff] md:text-2xl text-xl  w-full bottom-8 text-center'>
 										{mode}
 									</h3>
 								</div>
