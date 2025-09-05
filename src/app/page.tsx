@@ -23,7 +23,8 @@ const Page = () => {
 	return (
 		<div>
 			<NavBar />
-			<div className='w-full min-h-screen flex  md:items-start md:mt-[40px] mt-[40px] overflow-auto justify-center'>
+			<div className='marquee py-2'></div>
+			<div className='w-full min-h-screen flex  md:items-start md:mt-[40px] mt-[20px] overflow-auto justify-center'>
 				{/* The rest of your protected content */}
 
 				<div className='title items-center flex flex-col'>

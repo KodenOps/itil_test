@@ -4,3 +4,22 @@
 	--background: #ffffff;
 	--foreground: #171717;
 }
+.marquee {
+	white-space: nowrap;
+	overflow: hidden;
+	display: block;
+}
+.marquee::after {
+	display: inline-block;
+	padding-left: 100%;
+	animation: marquee 30s linear infinite;
+	content: '🚀 Yipeeee! Finally gave this web-app a facelift. A new modification just to accommodate other exams rather than sticking to ITIL alone. So, dont worry about the redirection to a new domain name. All the best in your next Exam!';
+}
+@keyframes marquee {
+	from {
+		transform: translateX(0%);
+	}
+	to {
+		transform: translateX(-100%);
+	}
+}
