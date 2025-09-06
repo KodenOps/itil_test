@@ -9,7 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@sentry/nextjs": "^9.9.0",
+    "@sentry/nextjs": "^10.10.0",
+    "@sentry/profiling-node": "^10.10.0",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.4",
     "@vercel/analytics": "^1.5.0",
