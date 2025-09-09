@@ -17,7 +17,7 @@ const NavBar = () => {
 	const closeMenu = () => setIsOpen(false);
 
 	return (
-		<nav className='h-[80px] w-full flex items-center justify-between lg:px-[100px] md:px-[50px] px-[16px] shadow-md z-50 relative'>
+		<nav className='md:h-[80px] h-[60px] w-full flex items-center justify-between lg:px-[100px] md:px-[50px] px-[16px] shadow-md z-50 relative'>
 			{/* Logo / Brand */}
 			<div className='logo md:text-2xl text-lg font-bold text-[#2660A4]'>
 				<Link href='/'>
