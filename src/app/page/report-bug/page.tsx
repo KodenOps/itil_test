@@ -2,6 +2,7 @@
 import React from 'react';
 import Script from 'next/script';
 import NavBar from '@/app/components/NavBar';
+import VismeForm from '@/app/components/VismeForm';
 
 const Page = () => {
 	return (
@@ -12,14 +13,7 @@ const Page = () => {
 			</h3>
 			{/* visme form */}
 			<div className='w-full iframe  md:px-4 md:mt-[-5%] mt-[-40%] px-2 h-auto flex justify-center items-center'>
-				<div
-					className='visme_d w-screen h-full bg-red-500'
-					data-title='Suggestion Form'
-					data-url='33pv4vm4-report-a-bug?fullPage=true'
-					data-domain='forms'
-					data-full-page='false'
-					data-min-height='90vh'
-					data-form-id='144054'></div>
+				<VismeForm />
 			</div>
 
 			{/* Load Visme Embed Script */}

@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
-import Script from 'next/script';
 import NavBar from '@/app/components/NavBar';
+import VismeForm from '@/app/components/VismeForm';
 
 const Page = () => {
 	return (
@@ -12,21 +12,11 @@ const Page = () => {
 			</h3>
 			{/* visme form */}
 			<div className='w-full iframe  md:px-4 md:mt-[-5%] mt-[-40%] px-2 h-auto flex justify-center items-center'>
-				<div
-					className='visme_d w-screen h-full bg-red-500'
-					data-title='Suggestion Form'
-					data-url='dwox7z77-suggestion-form?fullPage=true'
-					data-domain='forms'
-					data-full-page='false'
-					data-min-height='90vh'
-					data-form-id='144015'></div>
+				<VismeForm />
 			</div>
 
 			{/* Load Visme Embed Script */}
-			<Script
-				src='https://static-bundles.visme.co/forms/vismeforms-embed.js'
-				strategy='lazyOnload'
-			/>
+
 			<p className='fixed bottom-0 py-4 text-center bg-[#f4f4f4] w-full'>
 				Created by{' '}
 				<a
