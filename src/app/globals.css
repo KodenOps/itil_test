@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 
+body {
+	user-select: none;
+}
 :root {
 	--background: #ffffff;
 	--foreground: #171717;
