@@ -2,25 +2,25 @@ import ClientMaterial from './ClientMaterial/page';
 
 const materials = [
 	{
-		id: '1',
+		id: 'exam-guidelines',
 		title: 'Exam Guidelines',
 		type: 'pdf',
 		author: 'PeopleCerts Officials',
 	},
 	{
-		id: '2',
+		id: 'itil-textbook',
 		title: 'ITIL Foundation Textbook',
 		type: 'pdf',
 		author: 'Axelos Limited',
 	},
 	{
-		id: '3',
+		id: 'itil-exam-study',
 		title: 'ITIL Foundation Exam Study',
 		type: 'pdf',
 		author: 'Liz Gallacher and Helen Morris',
 	},
 	{
-		id: '4',
+		id: 'itil-slides',
 		title: 'ITIL Foundation Slide',
 		type: 'pdf',
 		author: 'Sanmi Samuel Ogunjobi',

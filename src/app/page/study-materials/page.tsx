@@ -14,27 +14,27 @@ interface Material {
 const Page = () => {
 	const materials: Material[] = [
 		{
-			id: '1',
+			id: 'exam-guidelines',
 			title: 'Exam Guidelines',
 			type: 'pdf',
 			colour: '#2660A4',
 		},
 		{
-			id: '2',
+			id: 'itil-textbook',
 			title: 'ITIL Foundation Textbook',
 			type: 'pdf',
 
 			colour: '#26a465',
 		},
 		{
-			id: '3',
+			id: 'itil-exam-study',
 			title: 'ITIL Foundation Exam Study',
 			type: 'pdf',
 
 			colour: '#171738',
 		},
 		{
-			id: '4',
+			id: 'itil-slides',
 			title: 'ITIL Foundation Slide',
 			type: 'pdf',
 

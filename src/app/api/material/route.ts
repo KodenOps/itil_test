@@ -15,10 +15,10 @@ export async function GET(req: NextRequest) {
 
 	// Map IDs to actual file names
 	const files: Record<string, string> = {
-		'1': 'exam_guideline.pdf',
-		'2': 'itil-textbook.pdf',
-		'3': 'itil-study.pdf',
-		'4': 'itil-slides.pdf',
+		'exam-guidelines': 'exam_guideline.pdf',
+		'itil-textbook': 'itil-textbook.pdf',
+		'itil-exam-study': 'itil-study.pdf',
+		'itil-slides': 'itil-slides.pdf',
 	};
 
 	const fileName = files[id];
