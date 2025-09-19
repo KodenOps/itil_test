@@ -26,3 +26,14 @@ body {
 		transform: translateX(-100%);
 	}
 }
+
+.visme_d iframe {
+	position: relative !important;
+	z-index: 0 !important;
+}
+
+.navbar {
+	position: sticky; /* or fixed */
+	top: 0;
+	z-index: 500 !important; /* higher than iframe */
+}

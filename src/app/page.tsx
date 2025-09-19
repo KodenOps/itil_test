@@ -9,7 +9,7 @@ import { GrKubernetes } from 'react-icons/gr';
 import { SiKubernetes } from 'react-icons/si';
 import { TbBrandAzure } from 'react-icons/tb';
 import { MdOutlineWorkOutline } from 'react-icons/md';
-
+import PreloadVismeForm from './components/PreloadVismeForm';
 const Page = () => {
 	const [loading, setLoading] = useState(true);
 	const [authenticated, setAuthenticated] = useState(false);
@@ -22,6 +22,7 @@ const Page = () => {
 
 	return (
 		<div>
+			<PreloadVismeForm />
 			<NavBar />
 			<div className='marquee py-2 mt-2 bg-[#b7d9ff]'></div>
 			<div className='w-full min-h-screen flex  md:items-start md:mt-[40px] mt-[20px] overflow-auto justify-center'>
