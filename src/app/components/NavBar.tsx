@@ -108,7 +108,6 @@ const NavBar = () => {
 						/>
 						My Blog
 					</Link>
-					~
 					<Link
 						href='/page/suggestion'
 						className='hover:text-[#2660A4] flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4]'>
