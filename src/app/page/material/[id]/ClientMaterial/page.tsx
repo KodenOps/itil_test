@@ -1,23 +1,26 @@
 import ClientMaterial from './ClientMaterial';
 
 type PageProps = {
-	params: {
+	params: Promise<{
 		id: string;
-	};
-	searchParams: {
+	}>;
+	searchParams: Promise<{
 		type?: string;
 		title?: string;
 		author?: string;
-	};
+	}>;
 };
 
-export default function Page({ params, searchParams }: PageProps) {
+export default async function Page({ params, searchParams }: PageProps) {
+	const { id } = await params;
+	const { type, title, author } = await searchParams;
+
 	return (
 		<ClientMaterial
-			materialId={params.id}
-			type={searchParams.type ?? ''}
-			title={searchParams.title ?? ''}
-			author={searchParams.author ?? ''}
+			materialId={id}
+			type={type ?? ''}
+			title={title ?? ''}
+			author={author ?? ''}
 		/>
 	);
 }
