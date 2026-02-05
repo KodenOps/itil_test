@@ -17,7 +17,7 @@ const NavBar = () => {
 	const closeMenu = () => setIsOpen(false);
 
 	return (
-		<nav className='navbar md:h-[80px] bg-whiteh-[60px] w-full flex items-center justify-between lg:px-[100px] md:px-[50px] px-[16px] shadow-md z-100 relative'>
+		<nav className='h-[80px] w-full flex items-center justify-between lg:px-[100px] md:px-[50px] px-[16px] shadow-md z-50 relative'>
 			{/* Logo / Brand */}
 			<div className='logo md:text-2xl text-lg font-bold text-[#2660A4]'>
 				<Link href='/'>
@@ -38,8 +38,8 @@ const NavBar = () => {
 					About
 				</Link> */}
 				<Link
-					href='https://kodenops.hashnode.dev/'
-					target='_blank'
+					href='/page/blog'
+					// target='_blank'
 					className='hover:text-[#2660A4]'>
 					My Blog
 				</Link>
@@ -80,7 +80,6 @@ const NavBar = () => {
 						className='self-end text-gray-600'>
 						<FaTimes size={24} />
 					</button>
-
 					<Link
 						href='/'
 						className='hover:text-[#2660A4] flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4] '>
@@ -100,14 +99,16 @@ const NavBar = () => {
 						About
 					</Link> */}
 					<Link
-						href='https://kodenops.hashnode.dev/'
-						className='hover:text-[#2660A4] flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4]'>
+						href='/page/blog'
+						className='hover:text-[#2660A4] flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4]'
+						onClick={closeMenu}>
 						<FaLightbulb
 							size={24}
 							color='#758173'
 						/>
 						My Blog
 					</Link>
+					~
 					<Link
 						href='/page/suggestion'
 						className='hover:text-[#2660A4] flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4]'>
