@@ -1,24 +1,18 @@
 import ClientMaterial, { ClientMaterialProps } from './ClientMaterial';
 
-type PageProps = {
-	params: {
-		id: string;
-	};
-	searchParams: {
-		type?: string;
-		title?: string;
-		author?: string;
-	};
-};
-
-export default async function Page({ params, searchParams }: PageProps) {
+export default function Page({
+	params,
+	searchParams,
+}: {
+	params: { id: string };
+	searchParams?: { type?: string; title?: string; author?: string };
+}) {
 	const { id } = params;
-	const { type, title, author } = searchParams;
+	const { type, title, author } = searchParams || {};
 
-	// Construct props for client component
 	const material: ClientMaterialProps = {
 		materialId: id,
-		type: type ?? 'pdf', // default type
+		type: type ?? 'pdf',
 		title: title ?? 'Untitled Material',
 		author: author ?? 'Unknown Author',
 	};
