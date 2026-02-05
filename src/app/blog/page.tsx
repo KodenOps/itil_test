@@ -16,15 +16,14 @@ type Post = {
 };
 
 type PageProps = {
-	searchParams: {
+	searchParams: Promise<{
 		cursor?: string;
-	};
+	}>;
 };
-
 const PAGE_SIZE = 10;
 
 const Page = async ({ searchParams }: PageProps) => {
-	const cursor = searchParams.cursor ?? null;
+	const { cursor } = await searchParams; 	
 
 	const data = await fetchHashnode<{
 		publication: {
