@@ -23,7 +23,7 @@ type PageProps = {
 const PAGE_SIZE = 10;
 
 const Page = async ({ searchParams }: PageProps) => {
-	const { cursor } = await searchParams; 	
+	const { cursor } = await searchParams;
 
 	const data = await fetchHashnode<{
 		publication: {
@@ -56,13 +56,13 @@ const Page = async ({ searchParams }: PageProps) => {
 					Here are some of my latest blog posts on Hashnode.
 				</p>
 
-				<div className='bloglist flex flex-wrap justify-center mt-8 gap-8 px-4'>
+				<div className='bloglist flex flex-wrap justify-center mt-8 gap-4 px-4'>
 					{posts.map((post) => (
 						<Link
 							key={post.slug}
 							href={post.url}
 							target='_blank'
-							className='blog-item border-[#c4c4c4] border-2 rounded-lg p-4 w-[300px]
+							className='blog-item border-[#c4c4c4] border-2 rounded-lg p-4 md:w-[300px]  w-full
                          hover:shadow-lg hover:border-[#2660A4] transition-all duration-300'>
 							{post.coverImage?.url && (
 								<img
