@@ -62,7 +62,7 @@ const Page = async ({ searchParams }: PageProps) => {
 							key={post.slug}
 							href={post.url}
 							target='_blank'
-							className='blog-item border-[#c4c4c4] border-2 rounded-lg p-4 md:w-[300px]  w-full
+							className='blog-item border-[#c4c4c4] bg-[#f5f5f5] rounded-lg p-4 md:w-[300px]  w-full
                          hover:shadow-lg hover:border-[#2660A4] transition-all duration-300'>
 							{post.coverImage?.url && (
 								<img
