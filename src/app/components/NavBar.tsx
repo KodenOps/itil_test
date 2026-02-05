@@ -38,7 +38,7 @@ const NavBar = () => {
 					About
 				</Link> */}
 				<Link
-					href='/page/blog'
+					href='/blog'
 					// target='_blank'
 					className='hover:text-[#2660A4]'>
 					My Blog
@@ -99,7 +99,7 @@ const NavBar = () => {
 						About
 					</Link> */}
 					<Link
-						href='/page/blog'
+						href='/blog'
 						className='hover:text-[#2660A4] flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4]'
 						onClick={closeMenu}>
 						<FaLightbulb
