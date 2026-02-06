@@ -43,22 +43,11 @@ const NavBar = () => {
 					className='hover:text-[#2660A4]'>
 					My Blog
 				</Link>
-				<Link
-					href='/playground'
-					// target='_blank'
-					className='hover:text-[#2660A4]'>
-					My Playground
-				</Link>
+
 				<Link
 					href='/page/suggestion'
 					className='hover:text-[#2660A4]'>
-					Feature Suggestion
-				</Link>
-
-				<Link
-					href='/page/report-bug'
-					className='hover:text-[#2660A4]'>
-					Report A bug
+					Feedback & Report Bug
 				</Link>
 			</div>
 
@@ -95,15 +84,7 @@ const NavBar = () => {
 						/>
 						Home
 					</Link>
-					{/* <Link
-						href='/page/about'
-						className='hover:text-[#2660A4] flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4]'>
-						<FaInfoCircle
-							size={24}
-							color='#758173'
-						/>
-						About
-					</Link> */}
+
 					<Link
 						href='/blog'
 						className='hover:text-[#2660A4] flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4]'
@@ -116,21 +97,13 @@ const NavBar = () => {
 					</Link>
 					<Link
 						href='/page/suggestion'
-						className='hover:text-[#2660A4] flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4]'>
+						className='hover:text-[#2660A4] flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4]'
+						onClick={closeMenu}>
 						<FaLightbulb
 							size={24}
 							color='#758173'
 						/>
-						Feature Suggestion
-					</Link>
-					<Link
-						href='/page/report-bug'
-						className='hover:text-[#2660A4] flex items-center gap-4 py-6 border-b-2 border-[#f4f4f4]'>
-						<FaBug
-							size={24}
-							color='#758173'
-						/>
-						Report A bug
+						Feedback & Report Bug
 					</Link>
 				</div>
 			</div>
