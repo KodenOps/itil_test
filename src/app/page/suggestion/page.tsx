@@ -62,12 +62,12 @@ const Page = () => {
 							<h3 className='text-lg font-mono text-[#2660A4]'>
 								Category (select one):{' '}
 							</h3>
-							<div className='w-full flex items-center gap-2 '>
+							<div className='w-full flex items-center flex-wrap gap-4 md:justify-start justify-center'>
 								{['Suggestion', 'Report Bug'].map((option) => (
 									<div
 										key={option}
 										onClick={() => setCategory(option)}
-										className={`cursor-pointer px-4 py-2 rounded-lg border 
+										className={`cursor-pointer px-4 py-2 rounded-lg border md:w-[30%] w-full text-center
                     ${category === option ? 'bg-[#2660A4] text-white border-[#2660A4]' : 'bg-[#707070] text-black hover:text-white border-gray-300'}
                     hover:bg-[#1a4a80] hover:text-slate-100 text-white transition-colors duration-200`}>
 										{option}
