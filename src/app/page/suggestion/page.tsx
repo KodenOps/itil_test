@@ -59,7 +59,7 @@ const Page = () => {
 
 						{/* Category toggle divs */}
 						<div className='flex gap-4 mb-4 items-center flex-wrap bg-[#e3e3e3] px-4 py-6 rounded-lg'>
-							<h3 className='text-lg font-mono text-[#2660A4]'>
+							<h3 className='md:text-lg text-md font-mono text-[#2660A4]'>
 								Category (select one):{' '}
 							</h3>
 							<div className='w-full flex items-center flex-wrap gap-4 md:justify-start justify-center'>
