@@ -44,6 +44,12 @@ const NavBar = () => {
 					My Blog
 				</Link>
 				<Link
+					href='/playground'
+					// target='_blank'
+					className='hover:text-[#2660A4]'>
+					My Playground
+				</Link>
+				<Link
 					href='/page/suggestion'
 					className='hover:text-[#2660A4]'>
 					Feature Suggestion
