@@ -13,7 +13,7 @@ type Post = {
 	brief: string;
 	publishedAt: string;
 	url: string;
-	coverImage?: { url: string } | null;
+	coverImage?: any;
 };
 
 export const dynamic = "force-static";
@@ -59,10 +59,12 @@ export default function Page() {
 								>
 									{post.coverImage?.url && (
 										<div className="h-48 overflow-hidden bg-gray-100 sm:h-52">
-											<Image
+											<img
 												className="h-full w-full object-cover  transition duration-500 group-hover:scale-105"
 												src={post.coverImage.url}
 												alt={post.title}
+												width={400}
+												height={300}
 											/>
 										</div>
 									)}
