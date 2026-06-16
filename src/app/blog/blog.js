@@ -12,7 +12,7 @@ export const blogPosts = [
   {
     title: "Working With Your First Pod",
     slug: "working-with-your-first-pod",
-    brief: "A beginner's guide to launching and managing your first Kubernetes pod.",
+    brief: "A beginner's guide to launching and managing your first Kubernetes pods.",
     publishedAt: "2025-09-13",
     url: "https://kodenops.hashnode.dev/working-with-your-first-pod",
     coverImage: {
