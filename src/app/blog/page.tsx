@@ -48,7 +48,7 @@ export default function Page() {
 					</p>
 				) : (
 					<div className="flex items-center justify-center flex-col w-full">
-						<div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+						<div className="mt-10 grid gap-4 sm:grid-cols-3 md:grid-cols-4">
 							{pagePosts.map((post) => (
 								<Link
 									key={post.slug}
