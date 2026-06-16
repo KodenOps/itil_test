@@ -5,6 +5,7 @@ import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
 import Link from "next/link";
 import { blogPosts } from "@/app/blog/blog";
+import Image from "next/image";
 
 type Post = {
 	title: string;
@@ -58,7 +59,7 @@ export default function Page() {
 								>
 									{post.coverImage?.url && (
 										<div className="h-48 overflow-hidden bg-gray-100 sm:h-52">
-											<img
+											<Image
 												className="h-full w-full object-cover  transition duration-500 group-hover:scale-105"
 												src={post.coverImage.url}
 												alt={post.title}
