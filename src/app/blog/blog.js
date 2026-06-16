@@ -1,3 +1,4 @@
+import dockerImage from "../../../public/images/docker1.webp";
 export const blogPosts = [
   {
     title: "Building Docker Images",
@@ -6,7 +7,7 @@ export const blogPosts = [
     publishedAt: "2026-03-14",
     url: "https://kodenops.hashnode.dev/building-docker-images",
     coverImage: {
-      url: "https://kodenops.hashnode.dev/_next/image?url=https%3A%2F%2Fcdn.hashnode.com%2Fuploads%2Fcovers%2F60c4e4414e04b16f7672fac8%2Fa8336932-0b27-4806-b357-c44676c13cb3.jpg&w=1200&q=75",
+      url: dockerImage,
     },
   },
   {
