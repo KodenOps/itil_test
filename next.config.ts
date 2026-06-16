@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "cdn.hashnode.com" },
       { protocol: "https", hostname: "kodenops.hashnode.dev" },
+	  { protocol: "https", hostname: "kodenops.hashnode.dev" }
     ],
   },
 };
