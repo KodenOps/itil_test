@@ -1,4 +1,6 @@
-import dockerImage from "../../../public/images/docker1.webp";
+import docker2  from "../../../public/images/docker1.webp";
+import github from "../../../public/images/github.webp";
+import dockerImage from "../../../public/images/docker.webp";
 export const blogPosts = [
   {
     title: "Building Docker Images",
@@ -17,7 +19,7 @@ export const blogPosts = [
     publishedAt: "2025-09-13",
     url: "https://kodenops.hashnode.dev/working-with-your-first-pod",
     coverImage: {
-      url: "https://kodenops.hashnode.dev/_next/image?url=https%3A%2F%2Fcdn.hashnode.com%2Fres%2Fhashnode%2Fimage%2Fstock%2Funsplash%2FYniQ5vouxqg%2Fupload%2Fa2b38438cf69033eed54d7a90b900678.jpeg&w=1200&q=75",
+      url: docker2,
     },
   },
   {
@@ -27,7 +29,7 @@ export const blogPosts = [
     publishedAt: "2026-04-01",
     url: "https://kodenops.hashnode.dev/setting-up-git-authentication-via-ubuntu-terminal",
     coverImage: {
-      url: "https://kodenops.hashnode.dev/_next/image?url=https%3A%2F%2Fcdn.hashnode.com%2Fuploads%2Fcovers%2F60c4e4414e04b16f7672fac8%2F1a463ef9-8bdc-48bb-9086-27b8cd21c3ea.jpg&w=3840&q=75",
+      url: github,
     },
   },
   {

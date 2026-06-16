@@ -64,7 +64,7 @@ export default function Page() {
 												src={post.coverImage.url}
 												alt={post.title}
 												width={400}
-												height={300}
+												height={200}
 											/>
 										</div>
 									)}
