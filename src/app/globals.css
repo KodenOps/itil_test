@@ -13,6 +13,8 @@ textarea {
 	border-radius: 5px;
 	background: #e3e3e3;
 }
+
+
 select {
 	padding: 150px;
 	border-radius: 5px;
@@ -33,6 +35,14 @@ textarea:focus {
 	padding-left: 100%;
 	animation: marquee 30s linear infinite;
 	content: '🚀 Yipeeee! Finally gave this web-app a facelift. A new modification just to accommodate other exams rather than sticking to ITIL alone. So, dont worry about the redirection to a new domain name. All the best in your next Exam!';
+}
+.newsletter input{
+	background: transparent;
+}
+.newsletter input:focus{
+	outline: none;
+	border: none;
+	color: #232323;
 }
 @keyframes marquee {
 	from {
