@@ -1,6 +1,13 @@
 import docker2  from "../../../public/images/docker1.webp";
 import github from "../../../public/images/github.webp";
 import dockerImage from "../../../public/images/docker.webp";
+import kuber from "../../../public/images/kuber1.webp"
+import kuber2 from "../../../public/images/kuber2.webp"
+import mq from "../../../public/images/mq.webp"
+import cdn from "../../../public/images/cdn.webp"
+import caching from "../../../public/images/80615804-8025-4b66-a072-7d5a323dff14.gif"
+import code_works from "../../../public/images/code_works.webp"
+import data_viz from "../../../public/images/data_viz.webp"
 export const blogPosts = [
   {
     title: "Building Docker Images",
@@ -39,7 +46,7 @@ export const blogPosts = [
     publishedAt: "2025-09-02",
     url: "https://kodenops.hashnode.dev/kubernetes-getting-started",
     coverImage: {
-      url: "https://kodenops.hashnode.dev/_next/image?url=https%3A%2F%2Fcdn.hashnode.com%2Fres%2Fhashnode%2Fimage%2Fstock%2Funsplash%2FZfVyuV8l7WU%2Fupload%2F9024acfdc40f93c541eb4265147e5363.jpeg&w=3840&q=75",
+      url: kuber,
     },
   },
   {
@@ -49,7 +56,7 @@ export const blogPosts = [
     publishedAt: "2025-09-01",
     url: "https://kodenops.hashnode.dev/kubernetes-architecture-explained",
     coverImage: {
-      url: "https://kodenops.hashnode.dev/_next/image?url=https%3A%2F%2Fcdn.hashnode.com%2Fres%2Fhashnode%2Fimage%2Fstock%2Funsplash%2F9cXMJHaViTM%2Fupload%2F5d77ff43ec84a740c314ca5c1ab2a568.jpeg&w=3840&q=75",
+      url: kuber2
     },
   },
   {
@@ -59,7 +66,7 @@ export const blogPosts = [
     publishedAt: "2025-09-01",
     url: "https://kodenops.hashnode.dev/kuber-what",
     coverImage: {
-      url: "https://kodenops.hashnode.dev/_next/image?url=https%3A%2F%2Fcdn.hashnode.com%2Fres%2Fhashnode%2Fimage%2Fstock%2Funsplash%2FZfVyuV8l7WU%2Fupload%2Fa821bddeed7ac96c5eb42b1310019c5a.jpeg&w=3840&q=75",
+      url: kuber2
     },
   },
   {
@@ -69,7 +76,7 @@ export const blogPosts = [
     publishedAt: "2025-08-20",
     url: "https://kodenops.hashnode.dev/message-queues-making-sure-nobody-fights-over-cake-or-data-or-both",
     coverImage: {
-      url: "https://kodenops.hashnode.dev/_next/image?url=https%3A%2F%2Fcdn.hashnode.com%2Fres%2Fhashnode%2Fimage%2Fstock%2Funsplash%2FBl9kfAFeVQs%2Fupload%2Fc8b44cde592bd96de3949372dda0985e.jpeg&w=3840&q=75",
+      url: mq
     },
   },
   {
@@ -79,7 +86,7 @@ export const blogPosts = [
     publishedAt: "2025-08-04",
     url: "https://kodenops.hashnode.dev/content-delivery-network-cdn",
     coverImage: {
-      url: "https://kodenops.hashnode.dev/_next/image?url=https%3A%2F%2Fcdn.hashnode.com%2Fres%2Fhashnode%2Fimage%2Fstock%2Funsplash%2F8bghKxNU1j0%2Fupload%2Fb0572fda411fb4cb6e0a594ec243a8c3.jpeg&w=3840&q=75",
+      url: cdn
     },
   },
   {
@@ -89,7 +96,7 @@ export const blogPosts = [
     publishedAt: "2025-08-02",
     url: "https://kodenops.hashnode.dev/caching-deliver-content-faster-than-bolt",
     coverImage: {
-      url: "https://kodenops.hashnode.dev/_next/image?url=https%3A%2F%2Fcdn.hashnode.com%2Fres%2Fhashnode%2Fimage%2Fstock%2Funsplash%2FzBLtU0zbJcU%2Fupload%2F3ff2d89ad8e1779cb1b8f60e176cfa51.jpeg&w=3840&q=75",
+      url: caching
     },
   },
   {
@@ -99,7 +106,7 @@ export const blogPosts = [
     publishedAt: "2025-08-02",
     url: "https://kodenops.hashnode.dev/why-your-code-works-on-your-machine-but-not-on-mine-and-how-to-fix-it",
     coverImage: {
-      url: "https://kodenops.hashnode.dev/_next/image?url=https%3A%2F%2Fcdn.hashnode.com%2Fres%2Fhashnode%2Fimage%2Fstock%2Funsplash%2F6k6N8HTrXyE%2Fupload%2F2920e57f552d5e91b30812e0eb461b47.jpeg&w=3840&q=75",
+      url: code_works
     },
   },
   {
@@ -109,7 +116,7 @@ export const blogPosts = [
     publishedAt: "2025-08-02",
     url: "https://kodenops.hashnode.dev/data-visualization-with-aws-cloudwatch",
     coverImage: {
-      url: "https://kodenops.hashnode.dev/_next/image?url=https%3A%2F%2Fcdn.hashnode.com%2Fres%2Fhashnode%2Fimage%2Fstock%2Funsplash%2Fshr_Xn8S8QU%2Fupload%2F512161246f9792a72515f75b9746941d.jpeg&w=3840&q=75",
+      url: data_viz
     },
   },
 ];

@@ -82,7 +82,7 @@ export default function Page() {
 							))}
 						</div>
 
-						<div className="mt-10 flex flex-col items-center justify-between gap-3 rounded-3xl border border-slate-200 bg-white px-4 py-4 shadow-sm sm:flex-row">
+						<div className="mt-10 flex flex-col items-center justify-between gap-3 rounded-3xl border border-slate-200 bg-white md:px-12 px-4 py-4 shadow-sm flex-row w-full ">
 							<p className="text-sm text-slate-600">
 								Page {currentPage} of {totalPages}
 							</p>
