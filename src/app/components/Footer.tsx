@@ -22,7 +22,7 @@ const Footer = () => {
         <p className='flex items-center gap-2' justify-center>
           Created with ❤️ by Lumi
         </p>
-        <p>|</p>
+        <p className='sm:flex hidden'>|</p>
         <Link
           href='https://ng.linkedin.com/in/femi-fadiya-segun-pelumi'
           target='_blank'
