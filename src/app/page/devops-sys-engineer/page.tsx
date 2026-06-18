@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import NavBar from "@/app/components/NavBar";
+import Footer from "@/app/components/Footer";
+import { MdPlayArrow } from "react-icons/md";
 
 type TopicGroup = {
   id: string;
@@ -103,6 +105,25 @@ const topicGroups: TopicGroup[] = [
     ],
     deepDive:
       "Production sense is the discipline of spotting what breaks in real life, measuring it clearly, and improving the system so the next incident is smaller, faster to understand, and easier to resolve.",
+  },
+  {
+    id: "hands-on-labs",
+    title: "Hands-on & Labs",
+    description:
+      "Apply concepts through realistic engineering exercises that mirror production challenges and day-to-day decision making.",
+    accent: "from-[#003D5B] to-[#30638E]",
+    topics: [
+      "system design workshops",
+      "incident simulations",
+      "architecture reviews",
+      "performance tuning exercises",
+      "debugging real-world failures",
+      "database optimization labs",
+      "deployment and rollback drills",
+      "observability and troubleshooting",
+    ],
+    deepDive:
+      "Knowledge becomes skill only when it is applied. These labs focus on realistic scenarios where participants investigate failures, make tradeoff decisions, improve system performance, and practice the same workflows used by experienced engineers in production environments.",
   },
 ];
 
@@ -294,13 +315,13 @@ export default function Page() {
                   </div>
                 </div>
 
-                <div className='mt-8 flex flex-col gap-3 sm:flex-row'>
+                <div className='mt-8 flex flex-col gap-3 sm:flex-row w-full md:justify-between'>
                   <button
                     type='button'
                     onClick={() => scrollToSection(selectedTopic.id)}
-                    className='rounded-full bg-slate-900 px-5 py-3 font-semibold text-white transition hover:bg-slate-800'
+                    className='rounded-full bg-slate-900 px-5 py-3 font-semibold text-white transition hover:bg-slate-800 flex items-center gap-2  items-center justify-center'
                   >
-                    Learn more
+                    Launch Learning Path <MdPlayArrow size={20} />
                   </button>
 
                   <button
@@ -316,6 +337,7 @@ export default function Page() {
           </div>
         </div>
       )}
+      <Footer />
     </div>
   );
 }
