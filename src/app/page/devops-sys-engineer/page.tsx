@@ -193,7 +193,7 @@ export default function Page() {
       </main>
 
       {selectedTopic && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center px-4 py-8'>
+        <div className='fixed overflow-y-scroll top-0 inset-0 z-50 flex items-center justify-center px-4 py-8'>
           <button
             type='button'
             aria-label='Close topic modal'
