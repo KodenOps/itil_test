@@ -5,12 +5,12 @@ body {
   background: #ffffff;
   color: #0f172a;
   width: 100vw;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 input,
 textarea {
