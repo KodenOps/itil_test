@@ -250,7 +250,7 @@ export default function Page() {
         </div>
       )}
       {selectedTopic && (
-        <div className='fixed inset-0 z-50 overflow-y-auto'>
+        <div className='fixed inset-0 z-50 overflow-y-auto min-h-screen w-full'>
           <button
             type='button'
             aria-label='Close topic modal'
