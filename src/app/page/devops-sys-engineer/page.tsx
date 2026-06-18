@@ -153,7 +153,7 @@ export default function Page() {
             </p>
           </div>
 
-          <div className='grid gap-4 sm:grid-cols-2 xl:grid-cols-3'>
+          <div className='relative grid gap-4 sm:grid-cols-2 xl:grid-cols-3'>
             {topicGroups.map((group) => (
               <button
                 key={group.id}
@@ -193,14 +193,14 @@ export default function Page() {
       </main>
 
       {selectedTopic && (
-        <div className='fixed overflow-y-scroll top-0 inset-0 z-50 flex items-center justify-center px-4 py-8'>
+        <div className='fixed  inset-0  z-50 flex items-center justify-center px-4 py-8 min-h-screen w-full'>
           <button
             type='button'
             aria-label='Close topic modal'
             onClick={() => setSelectedTopic(null)}
             className='absolute inset-0 bg-black/70 backdrop-blur-sm'
           />
-          <div className='relative z-10 w-full max-w-2xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl shadow-slate-400/20'>
+          <div className='relative z-10 w-full max-w-2xl overflow-x-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl shadow-slate-400/20'>
             <div
               className={`h-2 w-full bg-gradient-to-r ${selectedTopic.accent}`}
             />
@@ -244,6 +244,73 @@ export default function Page() {
                 >
                   Close
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {selectedTopic && (
+        <div className='fixed inset-0 z-50 overflow-y-auto'>
+          <button
+            type='button'
+            aria-label='Close topic modal'
+            onClick={() => setSelectedTopic(null)}
+            className='absolute inset-0 bg-black/70 backdrop-blur-sm'
+          />
+
+          <div className='flex min-h-full items-start justify-center px-4 py-6 sm:py-10'>
+            <div className='relative z-10 w-full max-w-2xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl shadow-slate-400/20'>
+              <div
+                className={`h-2 w-full bg-gradient-to-r ${selectedTopic.accent}`}
+              />
+
+              <div className='p-6 sm:p-8'>
+                <p className='text-xs font-semibold uppercase tracking-[0.3em] text-slate-500'>
+                  Quick info
+                </p>
+
+                <h2 className='mt-3 text-3xl font-bold text-slate-900'>
+                  {selectedTopic.title}
+                </h2>
+
+                <p className='mt-4 text-base leading-7 text-slate-600'>
+                  {selectedTopic.description}
+                </p>
+
+                <div className='mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5'>
+                  <p className='text-sm font-semibold uppercase tracking-[0.2em] text-slate-500'>
+                    Key topics
+                  </p>
+
+                  <div className='mt-4 flex flex-wrap gap-2'>
+                    {selectedTopic.topics.map((topic) => (
+                      <span
+                        key={topic}
+                        className='rounded-full border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700'
+                      >
+                        {topic}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className='mt-8 flex flex-col gap-3 sm:flex-row'>
+                  <button
+                    type='button'
+                    onClick={() => scrollToSection(selectedTopic.id)}
+                    className='rounded-full bg-slate-900 px-5 py-3 font-semibold text-white transition hover:bg-slate-800'
+                  >
+                    Learn more
+                  </button>
+
+                  <button
+                    type='button'
+                    onClick={() => setSelectedTopic(null)}
+                    className='rounded-full border border-slate-200 bg-white px-5 py-3 font-semibold text-slate-900 transition hover:bg-slate-50'
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
             </div>
           </div>
