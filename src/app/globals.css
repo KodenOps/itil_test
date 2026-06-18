@@ -4,10 +4,13 @@ body {
   user-select: none;
   background: #ffffff;
   color: #0f172a;
+  width: 100vw;
+  overflow: hidden;
 }
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  overflow: hidden;
 }
 input,
 textarea {
