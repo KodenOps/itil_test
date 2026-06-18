@@ -1,19 +1,14 @@
-// app/page.tsx
 "use client";
-import React, { useEffect, useState } from "react";
+
+import React from "react";
 import { useRouter } from "next/navigation";
 import NavBar from "./components/NavBar";
-import Image from "next/image";
-import { FaManatSign } from "react-icons/fa6";
-import { GrKubernetes } from "react-icons/gr";
+import { MdEngineering, MdOutlineWorkOutline } from "react-icons/md";
 import { SiKubernetes } from "react-icons/si";
-import { TbBrandAzure } from "react-icons/tb";
-import { MdOutlineWorkOutline } from "react-icons/md";
 import PreloadVismeForm from "./components/PreloadVismeForm";
 import Footer from "./components/Footer";
+
 const Page = () => {
-  const [loading, setLoading] = useState(true);
-  const [authenticated, setAuthenticated] = useState(false);
   const router = useRouter();
 
   const handleNavigation = (path: string) => {
@@ -22,67 +17,114 @@ const Page = () => {
   };
 
   return (
-    <div>
+    <div className='min-h-screen bg-white text-slate-900'>
       <PreloadVismeForm />
       <NavBar />
-      <div className='marquee py-2 mt-2 bg-[#b7d9ff]'></div>
-      <div className='w-full min-h-screen flex  md:items-start md:mt-[40px] mt-[20px] overflow-auto justify-center'>
-        {/* The rest of your protected content */}
+      <main className='relative overflow-hidden'>
+        <div className='absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(38,96,164,0.10),_transparent_30%),radial-gradient(circle_at_top_right,_rgba(31,138,112,0.08),_transparent_26%),linear-gradient(180deg,_#ffffff_0%,_#f8fafc_55%,_#eef2f7_100%)]' />
+        <div className='absolute left-[-8rem] top-24 -z-10 h-72 w-72 rounded-full bg-[#2660A4]/10 blur-3xl' />
+        <div className='absolute right-[-6rem] top-56 -z-10 h-80 w-80 rounded-full bg-[#F97316]/10 blur-3xl' />
 
-        <div className='title items-center flex flex-col'>
-          <h3 className='text-[#2660A4] font-bold md:text-4xl text-2xl md:px-10 px-6 text-center'>
-            Welcome To CertifyHub - Exam Prep Portal
-          </h3>
-          <p className='md:text-xl text-center mt-4 md:px-10 px-6 md:w-[70vw] w-full text-[#696969] font-medium'>
-            Kindly select the exam you want to prepare for below.
-          </p>
+        <section className='mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 py-14 md:px-10 lg:px-12'>
+          <div className='max-w-4xl'>
+            <div className='inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm shadow-slate-200/70 backdrop-blur'>
+              CertifyHub exam prep portal
+            </div>
+            <h1 className='mt-6 max-w-4xl text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-7xl'>
+              Pick a track, then study with a cleaner, sharper learning path.
+            </h1>
+            <p className='mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg'>
+              Choose the exam or learning lane you want to focus on. Each path
+              is designed to feel clear, visual, and immediately useful, so you
+              can move from overview to practice without friction.
+            </p>
+          </div>
 
-          <div className='flex flex-wrap items-center justify-center w-full mt-6 gap-4'>
+          <div className='grid gap-5 md:grid-cols-2 xl:grid-cols-3'>
             {[
               {
                 path: "/page/itil-v4",
                 label: "ITIL V4",
+                description:
+                  "Process thinking, service value, and exam practice built around the ITIL path.",
                 IconName: MdOutlineWorkOutline,
-                colour: "#2660A4",
+                accent: "from-[#2660A4] to-[#4F8FCA]",
               },
               {
                 path: "/page/kcna-home",
                 label: "KCNA",
+                description:
+                  "Kubernetes fundamentals, practice flow, and study structure for cloud-native learners.",
                 IconName: SiKubernetes,
-                colour: "#26a465",
+                accent: "from-[#26a465] to-[#39c682]",
               },
-              // {
-              // 	path: '/page/kcna',
-              // 	label: 'AZ-900',
-              // 	IconName: TbBrandAzure,
-              // 	colour: '#2660A4',
-              // },
-            ].map(({ path, label, IconName, colour }) => (
-              <div
+              {
+                path: "/page/devops-sys-engineer",
+                label: "DevOps & Sys Eng",
+                description:
+                  "Architecture, reliability, production sense, and the skills that make systems durable.",
+                IconName: MdEngineering,
+                accent: "from-[#6D2E46] to-[#A24E67]",
+              },
+            ].map(({ path, label, description, IconName, accent }) => (
+              <button
                 key={label}
+                type='button'
                 onClick={() => handleNavigation(path)}
-                style={{ backgroundColor: colour }}
-                className='cursor-pointer md:h-[280px] h-[200px] md:w-[200px] w-[160px]  rounded-sm   font-bold text-[#696969]  flex flex-col items-center justify-center gap-4  px-2'
+                className='group rounded-[28px] border border-slate-200 bg-white p-4 text-left shadow-lg shadow-slate-200/80 transition duration-300 hover:-translate-y-1 hover:shadow-2xl'
               >
-                <IconName size={60} color='#fff' className='' />
-                <h3 className='text-[#ffffff] md:text-5xl text-2xl w-full  text-center'>
-                  {label}
-                </h3>
+                <div
+                  className={`rounded-[22px] bg-gradient-to-br ${accent} p-6 text-white`}
+                >
+                  <div className='flex h-full min-h-[260px] flex-col justify-between gap-8 rounded-[18px] bg-slate-950/10 p-5 backdrop-blur-sm'>
+                    <div className='flex items-start justify-between gap-4'>
+                      <div>
+                        <p className='text-xs font-semibold uppercase tracking-[0.3em] text-white/80'>
+                          Learning track
+                        </p>
+                        <h2 className='mt-3 text-3xl font-black leading-tight'>
+                          {label}
+                        </h2>
+                      </div>
+                      <span className='rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-white'>
+                        Open
+                      </span>
+                    </div>
+
+                    <div className='space-y-4'>
+                      <div className='flex h-16 w-16 items-center justify-center rounded-2xl border border-white/15 bg-white/15'>
+                        <IconName size={36} />
+                      </div>
+                      <p className='max-w-sm text-sm leading-6 text-white/90'>
+                        {description}
+                      </p>
+                    </div>
+
+                    <div className='flex items-center justify-between gap-3 text-sm font-semibold text-white/85'>
+                      <span>Jump into the pathway</span>
+                      <span className='rounded-full border border-white/20 bg-white/10 px-4 py-2 transition group-hover:bg-white/20'>
+                        Continue
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          <div className='grid gap-4 rounded-[28px] border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/70 md:grid-cols-3'>
+            {[
+              "Clear exam entry points",
+              "Visually rich study paths",
+              "Fast navigation into practice or materials",
+            ].map((item) => (
+              <div key={item} className='rounded-2xl bg-slate-50 p-5'>
+                <p className='text-sm font-semibold text-slate-900'>{item}</p>
               </div>
             ))}
           </div>
-        </div>
-
-        {/* <p className='fixed bottom-0 py-4 text-center bg-[#f4f4f4] w-full'>
-					Created by{' '}
-					<a
-						href='https://www.linkedin.com/in/femi-fadiya-segun-pelumi'
-						className='underline text-blue-600'>
-						Kode-N-Ops
-					</a>
-					❤
-				</p> */}
-      </div>
+        </section>
+      </main>
       <Footer />
     </div>
   );

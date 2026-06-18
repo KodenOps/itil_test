@@ -63,7 +63,7 @@ export default function Page() {
                   className='group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg'
                 >
                   {post.coverImage?.url && (
-                    <div className='h-48 overflow-hidden bg-gray-100 sm:h-52'>
+                    <div className='h-48 overflow-hidden bg-slate-100 sm:h-52'>
                       <Image
                         className='h-full w-full object-cover  transition duration-500 group-hover:scale-105'
                         src={post.coverImage.url}

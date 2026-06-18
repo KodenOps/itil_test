@@ -22,99 +22,132 @@
 // };
 
 // export default page;
-// app/page.tsx
-'use client';
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import NavBar from '@/app/components/NavBar';
-import { FaThermometerFull } from 'react-icons/fa';
+"use client";
+import React from "react";
+import { useRouter } from "next/navigation";
+import NavBar from "@/app/components/NavBar";
+import { FaThermometerFull } from "react-icons/fa";
 
 const Page = () => {
-	const [loading, setLoading] = useState(true);
-	const [authenticated, setAuthenticated] = useState(false);
-	const router = useRouter();
+  const router = useRouter();
 
-	const handleNavigation = (path: string) => {
-		localStorage.clear();
-		router.push(path);
-	};
+  const handleNavigation = (path: string) => {
+    localStorage.clear();
+    router.push(path);
+  };
 
-	return (
-		<div>
-			<NavBar />
-			<div className='w-full h-full flex  md:items-start mt-[40px] overflow-auto min-h-screen justify-center'>
-				{/* The rest of your protected content */}
-				<div className='title items-center flex flex-col'>
-					<h3 className='text-[#2660A4] font-bold md:text-4xl text-2xl text-center'>
-						Welcome To Your Exam Section
-					</h3>
-					<p className='md:text-xl text-center mt-4 md:px-10 px-6 md:w-[70vw] w-full text-[#696969] font-medium'>
-						Get ready for your ITIL exam your way. Take a full timed simulation,
-						try a quick practice with instant feedback, or drill through the
-						entire question bank for maximum prep.
-					</p>
+  return (
+    <div className='min-h-screen bg-white text-slate-900'>
+      <NavBar />
+      <main className='relative overflow-hidden'>
+        <div className='absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(38,96,164,0.10),_transparent_30%),radial-gradient(circle_at_top_right,_rgba(31,138,112,0.08),_transparent_26%),linear-gradient(180deg,_#ffffff_0%,_#f8fafc_55%,_#eef2f7_100%)]' />
+        <section className='mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 py-14 md:px-10 lg:px-12'>
+          <div className='max-w-4xl'>
+            <div className='inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm shadow-slate-200/70 backdrop-blur'>
+              Exam section
+            </div>
+            <h1 className='mt-6 max-w-4xl text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-7xl'>
+              Welcome To Your Exam Section
+            </h1>
+            <p className='mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg'>
+              Get ready for your ITIL exam your way. Take a full timed
+              simulation, try a quick practice with instant feedback, or drill
+              through the entire question bank for maximum prep.
+            </p>
+          </div>
 
-					<div className='flex flex-wrap items-center justify-center w-full mt-6 gap-4'>
-						{[
-							{
-								path: '/page/itil-exam',
+          <div className='grid gap-5 md:grid-cols-2 xl:grid-cols-3'>
+            {[
+              {
+                path: "/page/itil-exam",
+                mode: "Full Exam Mode",
+                description:
+                  "Take a timed simulation that mirrors the exam room.",
+                IconName: FaThermometerFull,
+                accent: "from-[#2660A4] to-[#4F8FCA]",
+              },
+              {
+                path: "/page/itil-practise",
+                mode: "Partial Exam Mode",
+                description:
+                  "Work through questions with a lighter practice flow.",
+                IconName: FaThermometerFull,
+                accent: "from-[#26a465] to-[#39c682]",
+              },
+              {
+                path: "/page/itil-practise-extended",
+                mode: "Extended Question Bank",
+                description:
+                  "Cover the full bank when you want more depth and repetition.",
+                IconName: FaThermometerFull,
+                accent: "from-[#333] to-[#64748b]",
+              },
+            ].map(({ path, mode, description, IconName, accent }) => (
+              <button
+                type='button'
+                key={mode}
+                onClick={() => handleNavigation(path)}
+                className='group rounded-[28px] border border-slate-200 bg-white p-4 text-left shadow-lg shadow-slate-200/80 transition duration-300 hover:-translate-y-1 hover:shadow-2xl'
+              >
+                <div
+                  className={`rounded-[22px] bg-gradient-to-br ${accent} p-6 text-white`}
+                >
+                  <div className='flex h-full min-h-[240px] flex-col justify-between gap-8 rounded-[18px] bg-slate-950/10 p-5 backdrop-blur-sm'>
+                    <div className='flex items-start justify-between gap-4'>
+                      <div>
+                        <p className='text-xs font-semibold uppercase tracking-[0.3em] text-white/80'>
+                          Learning track
+                        </p>
+                        <h2 className='mt-3 text-3xl font-black leading-tight'>
+                          {mode}
+                        </h2>
+                      </div>
+                      <span className='rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-white'>
+                        Open
+                      </span>
+                    </div>
 
-								mode: 'Full Exam Mode',
-								IconName: FaThermometerFull,
-								colour: '#2660A4',
-							},
-							{
-								path: '/page/itil-practise',
+                    <div className='space-y-4'>
+                      <div className='flex h-16 w-16 items-center justify-center rounded-2xl border border-white/15 bg-white/15'>
+                        <IconName size={36} />
+                      </div>
+                      <p className='max-w-sm text-sm leading-6 text-white/90'>
+                        {description}
+                      </p>
+                    </div>
 
-								mode: 'Partial Exam Mode',
-								IconName: FaThermometerFull,
-								colour: '#26a465',
-							},
-							{
-								path: '/page/itil-practise-extended',
+                    <div className='flex items-center justify-between gap-3 text-sm font-semibold text-white/85'>
+                      <span>Jump in now</span>
+                      <span className='rounded-full border border-white/20 bg-white/10 px-4 py-2 transition group-hover:bg-white/20'>
+                        Open
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
 
-								mode: 'Extended Question Bank',
-								IconName: FaThermometerFull,
-								colour: '#333',
-							},
-						].map(({ path, mode, IconName, colour }) => (
-							<div
-								key={mode}
-								onClick={() => handleNavigation(path)}
-								style={{ backgroundColor: colour }}
-								className='cursor-pointer h-[180px] md:w-[200px] w-[160px]  rounded-sm   font-bold text-[#696969]  relative px-2'>
-								<div className=' h-full flex items-center justify-center flex-col w-full'>
-									<IconName
-										size={40}
-										color='#fff'
-										className='mb-8'
-									/>
-									<h3 className='text-[#ffffff] md:text-2xl text-xl  w-full bottom-8 text-center'>
-										{mode}
-									</h3>
-								</div>
-							</div>
-						))}
-					</div>
-					<a
-						href='/'
-						className='text-lg text-blue-600 underline mt-6 p-4 cursor-pointer'>
-						Go back Home
-					</a>
-				</div>
-
-				<p className='fixed bottom-0 py-4 text-center bg-[#f4f4f4] w-full'>
-					Created by{' '}
-					<a
-						href='https://www.linkedin.com/in/femi-fadiya-segun-pelumi'
-						className='underline text-blue-600'>
-						Kode-N-Ops
-					</a>
-					❤
-				</p>
-			</div>
-		</div>
-	);
+          <div className='grid gap-4 rounded-[28px] border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/70 md:grid-cols-3'>
+            {[
+              "Full timed simulations",
+              "Faster practice paths",
+              "Extended question coverage",
+            ].map((item) => (
+              <div key={item} className='rounded-2xl bg-slate-50 p-5'>
+                <p className='text-sm font-semibold text-slate-900'>{item}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      </main>
+      <div className='w-full border-t border-slate-200 bg-white px-6 py-4 text-center text-sm text-slate-600'>
+        <a href='/' className='font-semibold text-[#2660A4] underline'>
+          Go back Home
+        </a>
+      </div>
+    </div>
+  );
 };
 
 export default Page;

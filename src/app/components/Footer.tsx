@@ -1,37 +1,50 @@
 import Link from "next/link";
 import React from "react";
 import { IoLogoLinkedin } from "react-icons/io";
-import { MdMail, MdSend } from "react-icons/md";
 
 const Footer = () => {
   return (
-    <footer className='py-4 text-center bg-white border-1 border-slate-300 text-white w-full flex md:flex-row flex-col justify-between px-10 items-center gap-4'>
-      {/* links */}
-      <div className='links flex md:flex-row flex-col items-center justify-center w-full flex-wrap md:gap-4 gap-2'>
-        <h4 className='text-sm font-bold text-[#002a5d]  uppercase'>Links</h4>
-        <div className='flex items-start justify-left text-[#002a5d] text-sm '>
-          <Link href='/'>Home</Link>
-          <span className='mx-2'>|</span>
-          <Link href='/blog'>Blog</Link>
-          <span className='mx-2'>|</span>
-          <Link href='/page/suggestion'>Contact</Link>
+    <footer className='border-t border-slate-200 bg-white px-6 py-8 text-slate-700 shadow-[0_-1px_0_rgba(15,23,42,0.04)]'>
+      <div className='mx-auto flex w-full max-w-7xl flex-col gap-6 rounded-[28px] border border-slate-200 bg-slate-50 px-6 py-6 shadow-sm md:flex-row md:items-center md:justify-between'>
+        <div>
+          <p className='text-xs font-semibold uppercase tracking-[0.3em] text-slate-500'>
+            CertifyHub
+          </p>
+          <p className='mt-2 text-base font-semibold text-slate-900'>
+            Built for exam prep, learning paths, and steady momentum.
+          </p>
         </div>
-      </div>
-      {/* contact */}
-      <div className='contact flex items-center justify-center text-[#002a5d] text-sm flex-wrap gap-4 w-full'>
-        <p className='flex items-center gap-2' justify-center>
-          Created with ❤️ by Lumi
-        </p>
-        <p className='sm:flex hidden'>|</p>
-        <Link
-          href='https://ng.linkedin.com/in/femi-fadiya-segun-pelumi'
-          target='_blank'
-          rel='noopener noreferrer'
-          className='flex items-center gap-2'
-          justify-center
-        >
-          Connect with me on <IoLogoLinkedin size={20} />
-        </Link>
+
+        <div className='flex flex-wrap items-center gap-3 text-sm font-medium'>
+          <Link
+            href='/'
+            className='rounded-full border border-slate-200 bg-white px-4 py-2 transition hover:border-slate-300 hover:text-[#2660A4]'
+          >
+            Home
+          </Link>
+          <Link
+            href='/blog'
+            className='rounded-full border border-slate-200 bg-white px-4 py-2 transition hover:border-slate-300 hover:text-[#2660A4]'
+          >
+            Blog
+          </Link>
+          <Link
+            href='/page/suggestion'
+            className='rounded-full border border-slate-200 bg-white px-4 py-2 transition hover:border-slate-300 hover:text-[#2660A4]'
+          >
+            Contact
+          </Link>
+          <Link
+            href='https://ng.linkedin.com/in/femi-fadiya-segun-pelumi'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='rounded-full bg-[#2660A4] px-4 py-2 text-white transition hover:bg-[#1f4f8d] flex items-center gap-2'
+          >
+            <IoLogoLinkedin size={16} /> Connect
+          </Link>
+        </div>
+
+        <p className='text-sm text-slate-500'>Created with ❤️ by Lumi</p>
       </div>
     </footer>
   );

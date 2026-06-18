@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { itilQuestions } from '@/data/questionBank';
@@ -28,7 +29,6 @@ const Exam = ({ questionBank, qnumber }: any) => {
 	const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 	const [score, setScore] = useState<number>(0);
 
-	// Shuffle questions
 	const shuffle = (array: Question[]) => {
 		const newArray = [...array];
 		for (let i = newArray.length - 1; i > 0; i--) {
@@ -38,7 +38,6 @@ const Exam = ({ questionBank, qnumber }: any) => {
 		return newArray;
 	};
 
-	// Load saved state or init
 	useEffect(() => {
 		const savedState = localStorage.getItem(LOCAL_STORAGE_KEY);
 		if (savedState) {
@@ -56,7 +55,6 @@ const Exam = ({ questionBank, qnumber }: any) => {
 		}
 	}, []);
 
-	// Auto-save
 	useEffect(() => {
 		if (shuffledQuestions.length > 0) {
 			localStorage.setItem(
@@ -68,32 +66,22 @@ const Exam = ({ questionBank, qnumber }: any) => {
 					submittedQuestions,
 					score,
 					timeLeft,
-				})
+				}),
 			);
 		}
-	}, [
-		shuffledQuestions,
-		currentIndex,
-		selectedAnswers,
-		submittedQuestions,
-		score,
-		timeLeft,
-	]);
+	}, [shuffledQuestions, currentIndex, selectedAnswers, submittedQuestions, score, timeLeft]);
 
-	// Timer
 	useEffect(() => {
 		if (timeLeft <= 0) return;
 		const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
 		return () => clearInterval(timer);
 	}, [timeLeft]);
 
-	// Format time
 	const formatTime = (t: number): string =>
 		[Math.floor(t / 3600), Math.floor((t % 3600) / 60), t % 60]
 			.map((v) => (v < 10 ? `0${v}` : v))
 			.join(':');
 
-	// Handle selecting an option
 	const handleOptionSelect = (option: string) => {
 		if (isSubmitted) return;
 		setSelectedAnswers((prev) => ({
@@ -102,7 +90,6 @@ const Exam = ({ questionBank, qnumber }: any) => {
 		}));
 	};
 
-	// Submit current answer
 	const handleSubmitAnswer = () => {
 		if (!selectedAnswers[currentIndex]) return;
 		setSubmittedQuestions((prev) => ({
@@ -112,7 +99,6 @@ const Exam = ({ questionBank, qnumber }: any) => {
 		setIsSubmitted(true);
 	};
 
-	// Navigation
 	const handleNextQuestion = () => {
 		if (!isSubmitted) return;
 		const nextIndex = currentIndex + 1;
@@ -126,7 +112,6 @@ const Exam = ({ questionBank, qnumber }: any) => {
 		setIsSubmitted(!!submittedQuestions[prevIndex]);
 	};
 
-	// Finish and score
 	const handleFinish = () => {
 		const totalScore = Object.keys(selectedAnswers).reduce((acc, key) => {
 			const i = parseInt(key);
@@ -134,10 +119,7 @@ const Exam = ({ questionBank, qnumber }: any) => {
 		}, 0);
 
 		localStorage.setItem('finalScore', JSON.stringify(totalScore));
-		localStorage.setItem(
-			'totalQuestions',
-			JSON.stringify(shuffledQuestions.length)
-		);
+		localStorage.setItem('totalQuestions', JSON.stringify(shuffledQuestions.length));
 		localStorage.removeItem(LOCAL_STORAGE_KEY);
 		router.push('/score');
 
@@ -154,100 +136,129 @@ const Exam = ({ questionBank, qnumber }: any) => {
 	};
 
 	return (
-		<div>
+		<div className='min-h-screen bg-white text-slate-900'>
 			<NavBar />
-			{/* Top Navigation */}
-			<div className='topNav md:py-5 py-4 md:px-20 px-6 shadow-md w-full bg-white flex justify-between items-center'>
-				<div className='text-2xl text-green-600'>
-					Q{currentIndex + 1}/
-					<span className='text-lg text-gray-400'>
-						{shuffledQuestions.length}
-					</span>
-				</div>
-				<div className='text-2xl font-mono text-gray-400'>
-					{formatTime(timeLeft)}
-				</div>
-			</div>
+			<main className='relative overflow-hidden'>
+				<div className='absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(38,96,164,0.10),_transparent_30%),radial-gradient(circle_at_top_right,_rgba(31,138,112,0.08),_transparent_26%),linear-gradient(180deg,_#ffffff_0%,_#f8fafc_55%,_#eef2f7_100%)]' />
 
-			{/* Question */}
-			<div className='p-5 text-xl'>
-				{shuffledQuestions.length > 0 &&
-					shuffledQuestions[currentIndex].question}
-			</div>
-
-			{/* Options */}
-			<div className='p-5'>
-				{shuffledQuestions.length > 0 &&
-					shuffledQuestions[currentIndex].options.map((option, index) => {
-						const selected = selectedAnswers[currentIndex] === option;
-						const correct = shuffledQuestions[currentIndex].answer === option;
-						const isCorrect = isSubmitted && correct;
-						const isWrong = isSubmitted && selected && !correct;
-
-						return (
-							<div
-								key={index}
-								className={`flex items-center text-xl mb-5 p-4 cursor-pointer border 
-									${isCorrect ? 'border-green-500' : ''} 
-									${isWrong ? 'border-red-500' : ''} 
-									${!isCorrect && !isWrong ? 'border-transparent' : ''} 
-									hover:bg-gray-100 rounded-md`}>
-								<input
-									type='radio'
-									id={`option-${index}`}
-									className='w-6 h-6 accent-green-600 cursor-pointer'
-									name={`question-${currentIndex}`}
-									value={option}
-									checked={selected}
-									disabled={isSubmitted}
-									onChange={() => handleOptionSelect(option)}
-								/>
-								<label
-									htmlFor={`option-${index}`}
-									className='ml-2 cursor-pointer'>
-									{option}
-								</label>
+				<section className='mx-auto w-full max-w-6xl px-4 py-6 md:px-6 lg:px-8'>
+					<div className='mb-6 rounded-[28px] border border-slate-200 bg-white p-5 shadow-lg shadow-slate-200/70 md:p-6'>
+						<div className='flex flex-wrap items-center justify-between gap-4'>
+							<div>
+								<p className='text-xs font-semibold uppercase tracking-[0.3em] text-slate-500'>
+									Exam session
+								</p>
+								<h1 className='mt-2 text-2xl font-black text-slate-900 md:text-3xl'>
+									Question {currentIndex + 1}
+								</h1>
 							</div>
-						);
-					})}
-			</div>
+							<div className='flex items-center gap-3'>
+								<div className='rounded-full bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700'>
+									{shuffledQuestions.length} questions
+								</div>
+								<div className='rounded-full bg-[#2660A4] px-4 py-2 text-sm font-semibold text-white'>
+									{formatTime(timeLeft)}
+								</div>
+							</div>
+						</div>
+						<div className='mt-5 h-2 w-full overflow-hidden rounded-full bg-slate-100'>
+							<div
+								className='h-full rounded-full bg-gradient-to-r from-[#2660A4] via-[#26a465] to-[#7A4DFF] transition-all duration-300'
+								style={{
+									width: `${shuffledQuestions.length ? ((currentIndex + 1) / shuffledQuestions.length) * 100 : 0}%`,
+								}}
+							/>
+						</div>
+					</div>
 
-			{/* Navigation Buttons */}
-			<div className='p-5 flex justify-center gap-6'>
-				{/* Previous */}
-				<button
-					onClick={handlePreviousQuestion}
-					disabled={currentIndex === 0}
-					className='px-10 py-4 bg-green-600 text-white rounded-lg disabled:bg-gray-400'>
-					Previous
-				</button>
+					<div className='grid gap-6 lg:grid-cols-[1.2fr_0.8fr]'>
+						<div className='rounded-[28px] border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/70 md:p-8'>
+							<p className='text-lg leading-8 text-slate-800 md:text-xl'>
+								{shuffledQuestions.length > 0 && shuffledQuestions[currentIndex].question}
+							</p>
 
-				{/* Submit or Next */}
-				{!isSubmitted ? (
-					<button
-						onClick={handleSubmitAnswer}
-						disabled={!selectedAnswers[currentIndex]}
-						className={`px-10 py-4 ${
-							selectedAnswers[currentIndex]
-								? 'bg-blue-600'
-								: 'bg-gray-400 cursor-not-allowed'
-						} text-white rounded-lg`}>
-						Submit
-					</button>
-				) : currentIndex < shuffledQuestions.length - 1 ? (
-					<button
-						onClick={handleNextQuestion}
-						className='px-10 py-4 bg-green-600 text-white rounded-lg'>
-						Next
-					</button>
-				) : (
-					<button
-						onClick={handleFinish}
-						className='px-10 py-4 bg-red-600 text-white rounded-lg'>
-						Finish
-					</button>
-				)}
-			</div>
+							<div className='mt-6 space-y-3'>
+								{shuffledQuestions.length > 0 &&
+									shuffledQuestions[currentIndex].options.map((option, index) => {
+										const selected = selectedAnswers[currentIndex] === option;
+										const correct = shuffledQuestions[currentIndex].answer === option;
+										const isCorrect = isSubmitted && correct;
+										const isWrong = isSubmitted && selected && !correct;
+
+										return (
+											<div
+												key={index}
+												className={`flex items-center border rounded-2xl bg-slate-50/70 p-4 text-lg transition hover:bg-slate-100 md:text-xl ${isCorrect ? 'border-green-500' : ''} ${isWrong ? 'border-red-500' : ''} ${!isCorrect && !isWrong ? 'border-transparent' : ''}`}
+											>
+												<input
+													type='radio'
+													id={`option-${index}`}
+													className='h-6 w-6 cursor-pointer accent-green-600'
+													name={`question-${currentIndex}`}
+													value={option}
+													checked={selected}
+													disabled={isSubmitted}
+													onChange={() => handleOptionSelect(option)}
+												/>
+												<label
+													htmlFor={`option-${index}`}
+													className='ml-3 cursor-pointer text-slate-800'
+												>
+													{option}
+												</label>
+											</div>
+										);
+									})}
+							</div>
+						</div>
+
+						<div className='rounded-[28px] border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/70'>
+							<div className='flex flex-col gap-3'>
+								<p className='text-xs font-semibold uppercase tracking-[0.3em] text-slate-500'>
+									Session controls
+								</p>
+								<p className='text-sm leading-6 text-slate-600'>
+									Move through the set with deliberate pacing. Submit when you are ready to lock in an answer.
+								</p>
+							</div>
+
+							<div className='mt-6 flex flex-wrap gap-3'>
+								<button
+									onClick={handlePreviousQuestion}
+									disabled={currentIndex === 0}
+									className='rounded-full border border-slate-200 bg-white px-6 py-3 font-semibold text-slate-900 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50'
+								>
+									Previous
+								</button>
+
+								{!isSubmitted ? (
+									<button
+										onClick={handleSubmitAnswer}
+										disabled={!selectedAnswers[currentIndex]}
+										className={`rounded-full px-6 py-3 font-semibold text-white transition ${selectedAnswers[currentIndex] ? 'bg-[#2660A4] hover:bg-[#1f4f8d]' : 'cursor-not-allowed bg-slate-300'}`}
+									>
+										Submit
+									</button>
+								) : currentIndex < shuffledQuestions.length - 1 ? (
+									<button
+										onClick={handleNextQuestion}
+										className='rounded-full bg-[#26a465] px-6 py-3 font-semibold text-white transition hover:bg-[#208a56]'
+									>
+										Next
+									</button>
+								) : (
+									<button
+										onClick={handleFinish}
+										className='rounded-full bg-slate-900 px-6 py-3 font-semibold text-white transition hover:bg-slate-800'
+									>
+										Finish
+									</button>
+								)}
+							</div>
+						</div>
+					</div>
+				</section>
+			</main>
 		</div>
 	);
 };

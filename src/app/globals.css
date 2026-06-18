@@ -1,65 +1,70 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 body {
-	user-select: none;
+  user-select: none;
+  background: #ffffff;
+  color: #0f172a;
 }
 :root {
-	--background: #ffffff;
-	--foreground: #171717;
+  --background: #ffffff;
+  --foreground: #171717;
 }
 input,
 textarea {
-	padding: 15px;
-	border-radius: 5px;
-	background: #e3e3e3;
+  padding: 15px;
+  border-radius: 5px;
+  background: #e3e3e3;
 }
 
-
 select {
-	padding: 150px;
-	border-radius: 5px;
-	background: #e3e3e3;
+  padding: 150px;
+  border-radius: 5px;
+  background: #e3e3e3;
 }
 input:focus,
 textarea:focus {
-	outline: none;
-	border: 2px solid #2660a4;
+  outline: none;
+  border: 2px solid #2660a4;
 }
 .marquee {
-	white-space: nowrap;
-	overflow: hidden;
-	display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  display: block;
 }
 .marquee::after {
-	display: inline-block;
-	padding-left: 100%;
-	animation: marquee 30s linear infinite;
-	content: '🚀 Yipeeee! Finally gave this web-app a facelift. A new modification just to accommodate other exams rather than sticking to ITIL alone. So, dont worry about the redirection to a new domain name. All the best in your next Exam!';
+  display: inline-block;
+  padding-left: 100%;
+  animation: marquee 30s linear infinite;
+  content: "🚀 Yipeeee! Finally gave this web-app a facelift. A new modification just to accommodate other exams rather than sticking to ITIL alone. So, dont worry about the redirection to a new domain name. All the best in your next Exam!";
 }
-.newsletter input{
-	background: transparent;
+.newsletter input {
+  background: transparent;
 }
-.newsletter input:focus{
-	outline: none;
-	border: none;
-	color: #232323;
+.newsletter input:focus {
+  outline: none;
+  border: none;
+  color: #232323;
 }
 @keyframes marquee {
-	from {
-		transform: translateX(0%);
-	}
-	to {
-		transform: translateX(-100%);
-	}
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
 }
 
 .visme_d iframe {
-	position: relative !important;
-	z-index: 0 !important;
+  position: relative !important;
+  z-index: 0 !important;
 }
 
 .navbar {
-	position: sticky; /* or fixed */
-	top: 0;
-	z-index: 500 !important; /* higher than iframe */
+  position: sticky; /* or fixed */
+  top: 0;
+  z-index: 500 !important; /* higher than iframe */
+}
+
+main {
+  position: relative;
 }
