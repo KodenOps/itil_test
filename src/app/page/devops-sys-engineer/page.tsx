@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
 import { MdPlayArrow } from "react-icons/md";
+import Link from "next/link";
 
 type TopicGroup = {
   id: string;
@@ -316,13 +317,14 @@ export default function Page() {
                 </div>
 
                 <div className='mt-8 flex flex-col gap-3 sm:flex-row w-full md:justify-between'>
-                  <button
+                  <Link
                     type='button'
-                    onClick={() => scrollToSection(selectedTopic.id)}
+                    href='/page/learning/'
+                    // onClick={() => scrollToSection(selectedTopic.id)}
                     className='rounded-full bg-slate-900 px-5 py-3 font-semibold text-white transition hover:bg-slate-800 flex items-center gap-2  items-center justify-center'
                   >
                     Launch Learning Path <MdPlayArrow size={20} />
-                  </button>
+                  </Link>
 
                   <button
                     type='button'
