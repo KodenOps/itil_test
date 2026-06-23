@@ -13,6 +13,7 @@ type TopicGroup = {
   accent: string;
   topics: string[];
   deepDive: string;
+  learningPlaylist?: string[];
 };
 
 const topicGroups: TopicGroup[] = [
@@ -33,6 +34,10 @@ const topicGroups: TopicGroup[] = [
     ],
     deepDive:
       "Strong architecture is about making the next change easier, not just the current one faster. Focus on clear boundaries, stable contracts, and enough simplicity that future teams can safely extend the system without creating fragile dependencies.",
+    learningPlaylist: [
+      "https://www.youtube.com/watch?v=8bZh5LMaSmE&list=PL9ooVrP1hQOHUKuqGuiWLQoJ-LD0c3Z2y",
+      "https://www.youtube.com/watch?v=O5nskjZ_GoI&list=PL9ooVrP1hQOG6aXK4g7kW8z0vYp6x7FqM",
+    ],
   },
   {
     id: "scalability-reliability",

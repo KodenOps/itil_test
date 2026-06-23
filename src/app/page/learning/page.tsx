@@ -3,7 +3,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
-
+import Link from "next/link";
+import thumbnailPic from "../../../../public/images/docker.webp";
+import Image from "next/image";
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 type TopicLesson = {
@@ -18,8 +20,12 @@ type TopicLesson = {
     | "checklist"
     | "table";
   visualData?: Record<string, string[]> | string[] | string | string[][];
+  learningPlaylistUrl?: urlObject[];
 };
-
+type urlObject = {
+  url: string;
+  title: string;
+};
 type Category = {
   id: string;
   title: string;
@@ -27,6 +33,7 @@ type Category = {
   accent: string; // Tailwind gradient classes (same as landing page)
   accentHex: string; // raw hex for inline styles / rings
   lessons: TopicLesson[];
+  learningPlaylistUrl?: urlObject[];
 };
 
 // ─── Data ────────────────────────────────────────────────────────────────────
@@ -56,6 +63,16 @@ const categories: Category[] = [
           "Layer 2 – Domain": ["business logic", "domain events", "validators"],
           "Layer 3 – Storage": ["single writer rule", "migrations", "backups"],
         },
+        learningPlaylistUrl: [
+          {
+            url: "https://www.youtube.com/watch?v=8bZh5LMaSmE&list=PL9ooVrP1hQOHUKuqGuiWLQoJ-LD0c3Z2y",
+            title: "Intro to System Design",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=8bZh5LMaSmE&list=PL9ooVrP1hQOHUKuqGuiWLQoJ-LD0c3Z2y",
+            title: "Advanced System Design",
+          },
+        ],
       },
       {
         id: "api-design",
@@ -1199,7 +1216,7 @@ export default function LearnPage() {
         </div>
 
         {/* ── Two-column layout ── */}
-        <div className='flex gap-10 pb-24'>
+        <div className='flex gap-10 pb-4'>
           {/* Lessons content */}
           <div className='min-w-0 flex-1'>
             {activeCategory.lessons.map((lesson) => (
@@ -1254,6 +1271,34 @@ export default function LearnPage() {
             </div>
           </aside>
         </div>
+        {/* ── Playlists ── */}
+        {(() => {
+          const playlistUrls = activeCategory.lessons.flatMap(
+            (l) => l.learningPlaylistUrl ?? [],
+          );
+          if (playlistUrls.length === 0) return null;
+          return (
+            <div className='border-t border-slate-200 pt-10 pb-16'>
+              <p className='text-xs font-bold uppercase tracking-widest text-slate-400 mb-4'>
+                Learn More: Playlists
+              </p>
+              <div className='flex flex-wrap gap-3'>
+                {playlistUrls.map((url, i) => (
+                  <Link
+                    key={i}
+                    href={url.url}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors'
+                  >
+                    <span className='text-base'>▶</span>
+                    {url.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
       </main>
 
       <Footer />
