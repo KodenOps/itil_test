@@ -5,7 +5,9 @@ import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
 import Link from "next/link";
 import thumbnailPic from "../../../../public/images/docker.webp";
+import thumbnailUrl from "../../../../public/images/thumbnail.avif";
 import Image from "next/image";
+import { MdPlayArrow } from "react-icons/md";
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 type TopicLesson = {
@@ -65,12 +67,16 @@ const categories: Category[] = [
         },
         learningPlaylistUrl: [
           {
-            url: "https://www.youtube.com/watch?v=8bZh5LMaSmE&list=PL9ooVrP1hQOHUKuqGuiWLQoJ-LD0c3Z2y",
-            title: "Intro to System Design",
+            url: "https://www.youtube.com/watch?v=SqcXvc3ZmRU&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX",
+            title: "System Design Playlist A",
           },
           {
-            url: "https://www.youtube.com/watch?v=8bZh5LMaSmE&list=PL9ooVrP1hQOHUKuqGuiWLQoJ-LD0c3Z2y",
-            title: "Advanced System Design",
+            url: "https://www.youtube.com/watch?v=C842vFY5kRo",
+            title: "Architecture-Focused System Design (Video)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=Vnm-ycSfJx4",
+            title: "System Design In One Shot (Video)",
           },
         ],
       },
@@ -211,6 +217,37 @@ GET /v1/getOrderDetails?orderId=123`,
     lessons: [
       {
         id: "caching-strategy",
+        learningPlaylistUrl: [
+          {
+            url: "https://www.youtube.com/watch?v=TXJP0gzCXFQ",
+            title: "System Design: Scalability - The Ultimate Guide (Video)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=gXPd79kIXG8",
+            title: "RELIABILITY for SREs - System Design for Beginners (Video)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=1NngTUYPdpI",
+            title:
+              "Caching in System Design Interviews w/ Meta Staff Engineer (Video)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=9CIjoWPwAhU",
+            title: "What is Rate Limiting? (Video)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=Akri1BlGp10",
+            title: "SLO vs SLI vs SLA vs Error Budget (Video)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=e5pnfD0rudY&t=1s",
+            title: "The Circuit Breaker Pattern (Video)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=nH4qjmP2KEE",
+            title: "Top 7 Most-Used Distributed System Patterns (Video)",
+          },
+        ],
         title: "Caching strategy",
         body: "Caching is a deliberate tradeoff: you accept that some reads may return stale data in exchange for lower latency and reduced load on the origin. The right caching strategy depends on your staleness tolerance. A product page can tolerate minutes of staleness; a bank balance cannot tolerate any.\n\nCommon patterns: Cache-aside (application checks cache, misses load from DB and populate cache), Write-through (every write goes to cache and DB simultaneously), and Write-behind (writes go to cache immediately, DB asynchronously). Cache-aside is the safest default because it degrades gracefully when the cache is unavailable.",
         takeaway:
@@ -377,9 +414,28 @@ async function retryWithBackoff(fn, maxAttempts = 5) {
       "Understand storage and query choices that determine correctness, performance, and evolvability.",
     accent: "from-[#6D2E46] to-[#9B4D57]",
     accentHex: "#6D2E46",
+
     lessons: [
       {
         id: "data-modeling",
+        learningPlaylistUrl: [
+          {
+            url: "https://www.youtube.com/watch?v=TUcPS6dsWx4",
+            title: "Data Modeling in System Design (Video)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=6GebEqt6Ynk",
+            title: "Choosing a Database for Systems Design (Video)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=0SAx45UFS3E",
+            title: "Read vs Write Heavy Systems (Video)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=V7F7kkSesps",
+            title: "Read vs Write Heavy Systems 2 (Video)",
+          },
+        ],
         title: "Data modeling",
         body: "Data modeling is the process of deciding how information is structured in storage. A good model reflects the domain — tables and relationships that map naturally to the real-world concepts your system handles. A model that fights the domain (e.g. storing structured data as JSON blobs to 'be flexible') creates correctness problems and makes queries expensive.\n\nNormalization reduces data duplication and update anomalies. In an OLTP (transactional) database, start normalized (3NF) and denormalize deliberately for performance, not by default. In an OLAP (analytical) database, denormalization is often appropriate to optimize read performance across large scans.",
         takeaway:
@@ -1271,6 +1327,7 @@ export default function LearnPage() {
             </div>
           </aside>
         </div>
+
         {/* ── Playlists ── */}
         {(() => {
           const playlistUrls = activeCategory.lessons.flatMap(
@@ -1278,21 +1335,32 @@ export default function LearnPage() {
           );
           if (playlistUrls.length === 0) return null;
           return (
-            <div className='border-t border-slate-200 pt-10 pb-16'>
+            <div className='border-t border-slate-200 pt-10 pb-16 w-full'>
               <p className='text-xs font-bold uppercase tracking-widest text-slate-400 mb-4'>
                 Learn More: Playlists
               </p>
-              <div className='flex flex-wrap gap-3'>
+              <div className='flex flex-wrap gap-3 w-full'>
                 {playlistUrls.map((url, i) => (
                   <Link
-                    key={i}
+                    className=' relative'
                     href={url.url}
                     target='_blank'
-                    rel='noopener noreferrer'
-                    className='inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors'
+                    key={i}
                   >
-                    <span className='text-base'>▶</span>
-                    {url.title}
+                    {" "}
+                    <Image
+                      src={thumbnailUrl}
+                      alt={url.title}
+                      width={320}
+                      height={180}
+                      className='rounded-xl border border-slate-200'
+                    />
+                    <p className='absolute top-0 text-white font-bold  mt-2 w-full px-2 text-lg text-center flex flex-col items-center justify-center h-full'>
+                      <span className='inline-flex items-center justify-center rounded-full bg-white/80 p-1 text-slate-900 shadow-sm mb-6'>
+                        <MdPlayArrow size={24} />
+                      </span>{" "}
+                      {url.title}
+                    </p>
                   </Link>
                 ))}
               </div>
