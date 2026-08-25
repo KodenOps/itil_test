@@ -43,6 +43,14 @@ const Page = () => {
           <div className='grid gap-5 md:grid-cols-2 xl:grid-cols-3'>
             {[
               {
+                path: "/page/excel-for-beginners",
+                label: "Excel 101",
+                description:
+                  "Learn the basics of Excel, including formulas, functions, and data visualization.",
+                IconName: MdOutlineWorkOutline,
+                accent: "from-[#247BA0] to-[#3C1642]",
+              },
+              {
                 path: "/page/itil-v4",
                 label: "ITIL V4",
                 description:
