@@ -33,7 +33,6 @@ export const quizCategories: QuizCategory[] = [
       {
         id: "gs-1",
         question: "What is a workbook in Excel?",
-        image: img1,
         options: [
           "A single formula",
           "A file containing one or more worksheets",
