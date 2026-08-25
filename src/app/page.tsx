@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import NavBar from "./components/NavBar";
 import { MdEngineering, MdOutlineWorkOutline } from "react-icons/md";
 import { SiKubernetes } from "react-icons/si";
-import PreloadVismeForm from "./components/PreloadVismeForm";
 import Footer from "./components/Footer";
 
 const Page = () => {
@@ -18,7 +17,6 @@ const Page = () => {
 
   return (
     <div className='min-h-screen bg-white text-slate-900'>
-      <PreloadVismeForm />
       <NavBar />
       <main className='relative overflow-hidden'>
         <div className='absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(38,96,164,0.10),_transparent_30%),radial-gradient(circle_at_top_right,_rgba(31,138,112,0.08),_transparent_26%),linear-gradient(180deg,_#ffffff_0%,_#f8fafc_55%,_#eef2f7_100%)]' />
