@@ -1012,7 +1012,7 @@ export default function LearnPage() {
             type='button'
             key={label}
             onClick={() => handleNavigation(path)}
-            className='group rounded-[28px] border border-slate-200 bg-white p-4 text-left shadow-lg shadow-slate-200/80 transition duration-300 hover:-translate-y-1 hover:shadow-2xl'
+            className='group rounded-[28px] border border-slate-200 bg-white text-left shadow-lg shadow-slate-200/80 transition duration-300 hover:-translate-y-1 hover:shadow-2xl'
           >
             <div
               className={`rounded-[22px] bg-gradient-to-br ${accent} p-6 text-white`}
