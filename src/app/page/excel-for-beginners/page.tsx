@@ -4,9 +4,10 @@ import Footer from "@/app/components/Footer";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { BiBook } from "react-icons/bi";
-import { MdOutlineQuiz } from "react-icons/md";
+import { MdBookOnline, MdCheckBox, MdOutlineQuiz } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import NavBar from "@/app/components/NavBar";
+import { IoBook } from "react-icons/io5";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -995,8 +996,16 @@ export default function LearnPage() {
             label: "Exam Mode",
             description:
               "Test your knowledge with timed Excel exercises and quizzes, designed to simulate real-world scenarios and reinforce learning.",
-            IconName: MdOutlineQuiz,
+            IconName: MdCheckBox,
             accent: "from-[#2660A4] to-[#4F8FCA]",
+          },
+          {
+            path: "/page/practical-excel",
+            label: "Assessment Mode",
+            description:
+              "Evaluate your Excel skills with practical tasks and challenges, providing instructor feedback to help you improve and master the application.",
+            IconName: IoBook,
+            accent: "from-[#40531B] to-[#3A2D32]",
           },
         ].map(({ path, label, description, IconName, accent }) => (
           <button
@@ -1034,9 +1043,6 @@ export default function LearnPage() {
 
                 <div className='flex items-center justify-between gap-3 text-sm font-semibold text-white/85'>
                   <span>Jump in now</span>
-                  <span className='rounded-full border border-white/20 bg-white/10 px-4 py-2 transition group-hover:bg-white/20'>
-                    Open
-                  </span>
                 </div>
               </div>
             </div>

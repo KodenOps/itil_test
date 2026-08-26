@@ -14,45 +14,33 @@ import {
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 // Point this at your actual workbook, e.g. a file placed in /public/assessments/
-const WORKBOOK_DOWNLOAD_URL = "/assessments/practical-excel-assessment.xlsx";
-const WORKBOOK_FILENAME = "practical-excel-assessment.xlsx";
+const WORKBOOK_DOWNLOAD_URL = "/Excel_task_beginner.xlsx";
+const WORKBOOK_FILENAME = "Excel_task_beginner.xlsx";
 
 const ACCENT = "#217346";
 const ACCENT_GRADIENT = "from-[#217346] to-[#33C481]";
 
-const ESTIMATED_TIME = "90 minutes";
+const ESTIMATED_TIME = "10 minutes";
 const MAX_FILE_SIZE_MB = 15;
 const ACCEPTED_EXTENSIONS = [".xlsx", ".xlsm"];
 
 const instructions: string[] = [
-  "Download the workbook below — it contains the raw data and a tab for each task.",
-  "Work through all 20 tasks directly inside the workbook. Do not rename the sheet tabs.",
+  "Download the workbook below — it contains the raw data and a tab for the solution",
+  "Work through all 8 Tasks directly inside the 'WRITE HERE' sheet. Do not rename the sheet tabs.",
   "Save your work regularly. When finished, save the file with your name in the filename, e.g. Jane_Doe_Assessment.xlsx.",
   "Return to this page and submit the completed file using the form at the bottom, along with your name and email.",
-  "You'll receive a confirmation once your submission is received. Results are currently graded manually, so allow a few business days for feedback.",
+  "You'll receive a confirmation once your submission is received. Results are currently graded manually, so allow a few minutes for feedback.",
 ];
 
 const questions: string[] = [
-  "Clean the raw data on the 'Raw Data' tab: trim extra spaces, fix inconsistent casing, and remove exact duplicate rows.",
-  "Convert the cleaned range into an Excel Table and give it a descriptive name.",
-  "Add a column that calculates each order's total (Quantity × Unit Price).",
-  "Use a SUMIFS formula to calculate total revenue per region on the 'Summary' tab.",
-  "Use a COUNTIFS formula to count how many orders each sales rep closed.",
-  "Write an IF formula that flags any order with a total above $5,000 as 'High Value'.",
-  "Use XLOOKUP (or INDEX/MATCH) to pull each product's category from the 'Products' tab into the main table.",
-  "Apply conditional formatting to highlight all orders that are past their due date.",
-  "Set up data validation on the 'Region' column so only valid region names can be entered.",
-  "Build a PivotTable summarizing total revenue by region and by month.",
-  "Add a PivotChart based on that PivotTable showing the monthly revenue trend.",
-  "Insert a slicer connected to the PivotTable to filter by sales rep.",
-  "Calculate the median and standard deviation of order values on the 'Summary' tab.",
-  "Use Goal Seek to determine what average order value would be needed to hit a $500,000 revenue target.",
-  "Create a column chart comparing revenue across all regions, with a clear title and axis labels.",
-  "Use TEXT and date functions to build a formatted 'Month-Year' label for each order.",
-  "Wrap at least one lookup formula in IFERROR (or IFNA) to handle missing matches gracefully.",
-  "Freeze the header row and the first two columns on the 'Raw Data' tab.",
-  "Apply a custom number format to the currency columns so negative values display in red parentheses.",
-  "Write a short (2-3 sentence) summary of your key findings on a new 'Notes' tab.",
+  "Add a column named AMOUNT_SOLD_PER_PRODUCT and calculate the quantity sold for each product this month and the revenue earned for that product.",
+  "Compute the number of cartons remaining (Closing Stock) at the end of each day.",
+  "Add a BUYING_COST column that calculates the total purchase cost for each product.",
+  "Add a PROFIT/LOSS column showing profit or loss per product; note some items may still show a loss if not all purchased stock has been sold.",
+  "Calculate the total revenue generated this month.",
+  "Calculate the total amount spent to purchase all items in the store.",
+  "Sum the PROFIT/LOSS column to determine whether the month ended in an overall profit or loss (a negative total indicates a loss).",
+  "Create a STOCK_STATUS column that flags items as LOW-IN-STOCK when Closing Stock is less than 50, otherwise mark them IN-STOCK.",
 ];
 
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
@@ -176,8 +164,8 @@ export default function PracticalAssessmentPage() {
               Excel Practical Assessment
             </h1>
             <p className='mt-3 max-w-2xl text-base leading-7 text-slate-600'>
-              Download the workbook, complete all 20 tasks at your own pace,
-              then upload your finished file below for grading.
+              Download the workbook, complete all 8 Tasks at your own pace, then
+              upload your finished file below for grading.
             </p>
             <div className='mt-6 flex flex-wrap items-center gap-4'>
               <span className='inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700'>
@@ -185,8 +173,7 @@ export default function PracticalAssessmentPage() {
                 Estimated time: {ESTIMATED_TIME}
               </span>
               <span className='inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700'>
-                <MdOutlineDescription size={18} />
-                20 tasks
+                <MdOutlineDescription size={18} />8 Tasks
               </span>
             </div>
           </div>
@@ -226,12 +213,10 @@ export default function PracticalAssessmentPage() {
 
         {/* Questions */}
         <section className='mb-12'>
-          <h2 className='text-xl font-bold text-slate-900 mb-4'>
-            The 20 tasks
-          </h2>
+          <h2 className='text-xl font-bold text-slate-900 mb-4'>The 8 Tasks</h2>
           <p className='text-sm text-slate-500 mb-5'>
-            These map to the tabs inside the downloaded workbook — complete each
-            one directly in the file.
+            Find below everything you are meant to do in the workbook. Each task
+            is clearly labeled in the "Introduction" sheet of the workbook.
           </p>
           <div className='space-y-2.5'>
             {questions.map((q, i) => (
