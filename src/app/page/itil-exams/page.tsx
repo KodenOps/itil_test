@@ -23,7 +23,7 @@ const Page = () => {
               Exam section
             </div>
             <h1 className='mt-6 max-w-4xl text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-7xl'>
-              Welcome To Your Exam Section
+              Welcome To Your ITIL Exams Section
             </h1>
             <p className='mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg'>
               Get ready for your ITIL exam your way. Take a full timed
@@ -35,23 +35,33 @@ const Page = () => {
           <div className='grid gap-5 md:grid-cols-2 xl:grid-cols-3'>
             {[
               {
-                path: "/page/itil-exams",
-                name: "ITIL Exams",
-                description: "Navigate to the exam section for ITIL V5",
+                path: "/page/itil-exam",
+                mode: "Full Exam Mode",
+                description:
+                  "Take a timed simulation that mirrors the exam room.",
                 IconName: FaThermometerFull,
                 accent: "from-[#2660A4] to-[#4F8FCA]",
               },
               {
-                path: "/page/excel-test",
-                name: "Excel Test",
-                description: "Navigate to the Excel test section",
+                path: "/page/itil-practise",
+                mode: "Partial Exam Mode",
+                description:
+                  "Work through questions with a lighter practice flow.",
                 IconName: FaThermometerFull,
                 accent: "from-[#26a465] to-[#39c682]",
               },
-            ].map(({ path, name, description, IconName, accent }) => (
+              {
+                path: "/page/itil-practise-extended",
+                mode: "Extended Question Bank",
+                description:
+                  "Cover the full bank when you want more depth and repetition.",
+                IconName: FaThermometerFull,
+                accent: "from-[#333] to-[#64748b]",
+              },
+            ].map(({ path, mode, description, IconName, accent }) => (
               <button
                 type='button'
-                key={description}
+                key={mode}
                 onClick={() => handleNavigation(path)}
                 className='group rounded-[28px] border border-slate-200 bg-white p-4 text-left shadow-lg shadow-slate-200/80 transition duration-300 hover:-translate-y-1 hover:shadow-2xl'
               >
@@ -65,7 +75,7 @@ const Page = () => {
                           Learning track
                         </p>
                         <h2 className='mt-3 text-3xl font-black leading-tight'>
-                          {name}
+                          {mode}
                         </h2>
                       </div>
                       <span className='rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-white'>
