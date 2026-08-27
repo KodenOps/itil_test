@@ -2,6 +2,7 @@
 
 import Footer from "@/app/components/Footer";
 import NavBar from "@/app/components/NavBar";
+import Link from "next/link";
 import React, { useRef, useState } from "react";
 import {
   MdOutlineTimer,
@@ -25,8 +26,8 @@ const MAX_FILE_SIZE_MB = 15;
 const ACCEPTED_EXTENSIONS = [".xlsx", ".xlsm"];
 
 const instructions: string[] = [
-  "Download the workbook below — it contains the raw data and a tab for the solution",
-  "Work through all 8 Tasks directly inside the 'WRITE HERE' sheet. Do not rename the sheet tabs.",
+  "Click on each section to download the workbook and review the basic concepts for each task.",
+  "Work through all Tasks directly inside the 'WRITE HERE' sheet. Do not rename the sheet tabs.",
   "Save your work regularly. When finished, save the file with your name in the filename, e.g. Jane_Doe_Assessment.xlsx.",
   "Return to this page and submit the completed file using the form at the bottom, along with your name and email.",
   "You'll receive a confirmation once your submission is received. Results are currently graded manually, so allow a few minutes for feedback.",
@@ -50,6 +51,7 @@ type SubmitStatus = "idle" | "submitting" | "success" | "error";
 export default function PracticalAssessmentPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [taskName, setTaskName] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<SubmitStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -106,6 +108,10 @@ export default function PracticalAssessmentPage() {
       setErrorMessage("Please enter a valid email address.");
       return;
     }
+    if (!taskName) {
+      setErrorMessage("Please select a task.");
+      return;
+    }
     if (!file) {
       setErrorMessage("Please attach your completed workbook.");
       return;
@@ -116,6 +122,7 @@ export default function PracticalAssessmentPage() {
       const formData = new FormData();
       formData.append("name", name.trim());
       formData.append("email", email.trim());
+      formData.append("taskName", taskName);
       formData.append("file", file);
 
       const res = await fetch("/api/submit-assessment", {
@@ -199,44 +206,109 @@ export default function PracticalAssessmentPage() {
               </li>
             ))}
           </ol>
-
-          <a
-            href={WORKBOOK_DOWNLOAD_URL}
-            download={WORKBOOK_FILENAME}
-            className='mt-8 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:brightness-110'
-            style={{ backgroundColor: ACCENT }}
-          >
-            <MdOutlineFileDownload size={20} />
-            Download the assessment workbook
-          </a>
         </section>
-
-        {/* Questions */}
-        <section className='mb-12'>
-          <h2 className='text-xl font-bold text-slate-900 mb-4'>The 8 Tasks</h2>
-          <p className='text-sm text-slate-500 mb-5'>
-            Find below everything you are meant to do in the workbook. Each task
-            is clearly labeled in the "Introduction" sheet of the workbook.
-          </p>
-          <div className='space-y-2.5'>
-            {questions.map((q, i) => (
-              <div
-                key={i}
-                className='flex items-start gap-4 rounded-2xl border border-slate-200 bg-white px-5 py-4'
+        <div className='grid grid-cols-1 gap-6 md:grid-cols-2 mb-12 justify-items-center align-items-center'>
+          {[
+            {
+              id: 1,
+              title: "Task 1",
+              description: "Getting Started with the Workbooks and Excels",
+              link: WORKBOOK_DOWNLOAD_URL,
+              download: WORKBOOK_FILENAME,
+              status: "open",
+              bg: "#f2f4f3",
+              basic_concept: [
+                "Basic addition and subtractions",
+                "Basic multiplication and division",
+                "Using Sum Formula",
+              ],
+            },
+            {
+              id: 2,
+              title: "Task 2",
+              description: "Working with Data in Excel",
+              link: WORKBOOK_DOWNLOAD_URL,
+              bg: "#f2f4f3",
+              status: "locked",
+              download: WORKBOOK_FILENAME,
+              basic_concept: [
+                "Sorting data",
+                "Table formatting",
+                "Conditional formatting",
+              ],
+            },
+            {
+              id: 3,
+              title: "Task 3",
+              description: "Charts and Graphs in Excel",
+              link: WORKBOOK_DOWNLOAD_URL,
+              bg: "#f2f4f3",
+              status: "locked",
+              download: WORKBOOK_FILENAME,
+              basic_concept: [
+                "Creating charts",
+                "Formatting charts",
+                "Adding data labels",
+              ],
+            },
+          ].map((n) =>
+            n.status === "open" ? (
+              <a
+                key={n.id}
+                href={n.link}
+                download={n.download}
+                style={{ backgroundColor: n.bg }}
+                className='mb-6 rounded-lg relative p-4 shadow-md hover:shadow-lg transition-shadow w-full max-w-sm'
               >
-                <span
-                  className='text-xs font-mono font-bold shrink-0 opacity-60 mt-0.5'
-                  style={{ color: ACCENT }}
-                >
-                  {String(i + 1).padStart(2, "0")}
+                <span className='absolute top-4 right-4 bg-slate-200 text-slate-800 text-xs font-bold px-2 py-1 rounded-full'>
+                  {n.status}
                 </span>
-                <span className='text-sm md:text-base leading-6 text-slate-700'>
-                  {q}
+                <h3 className='text-lg font-bold text-slate-900 mb-2'>
+                  {n.title}
+                </h3>
+                <p className='text-sm text-slate-500'>{n.description}</p>
+                <div className='mt-4'>
+                  <h4 className='text-md font-bold text-slate-900 mb-2'>
+                    Basic Concepts
+                  </h4>
+                  <ul className='space-y-2 list-decimal list-inside ml-4'>
+                    {n.basic_concept.map((concept, j) => (
+                      <li key={j} className='text-sm text-slate-600 '>
+                        {concept}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </a>
+            ) : (
+              <div
+                key={n.id}
+                style={{ backgroundColor: n.bg }}
+                className='mb-6 rounded-lg relative p-4 shadow-md w-full max-w-sm opacity-50 cursor-not-allowed'
+              >
+                <span className='absolute top-4 right-4 bg-slate-200 text-slate-800 text-xs font-bold px-2 py-1 rounded-full'>
+                  {n.status}
                 </span>
+                <h3 className='text-lg font-bold text-slate-900 mb-2'>
+                  {n.title}
+                </h3>
+                <p className='text-sm text-slate-500'>{n.description}</p>
+                <div className='mt-4'>
+                  <h4 className='text-md font-bold text-slate-900 mb-2'>
+                    Basic Concepts
+                  </h4>
+                  <ul className='space-y-2 list-decimal list-inside ml-4'>
+                    {n.basic_concept.map((concept, j) => (
+                      <li key={j} className='text-sm text-slate-600 '>
+                        {concept}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-            ))}
-          </div>
-        </section>
+            ),
+          )}
+        </div>
 
         {/* Submission form */}
         <section className='mb-24'>
@@ -300,7 +372,25 @@ export default function PracticalAssessmentPage() {
                   />
                 </div>
               </div>
-
+              <div className='w-full '>
+                <label className='block text-sm font-semibold text-slate-700 mb-1.5'>
+                  Task Name
+                </label>
+                <select
+                  name='task-id'
+                  id='task-id'
+                  required
+                  className=' w-full rounded-xl border border-slate-200 px-4 py-4 text-sm text-slate-900 outline-none transition focus:border-slate-400'
+                  value={taskName}
+                  onChange={(e) => setTaskName(e.target.value)}
+                >
+                  <option value=''>Select Task</option>
+                  <option value='task-1'>Task 1</option>
+                  <option value='task-2' disabled>
+                    Task 2
+                  </option>
+                </select>
+              </div>
               <div>
                 <label className='block text-sm font-semibold text-slate-700 mb-1.5'>
                   Completed workbook

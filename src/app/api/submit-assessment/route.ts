@@ -40,6 +40,7 @@ export async function POST(req: Request) {
     const formData = await req.formData();
     const name = formData.get("name");
     const email = formData.get("email");
+    const taskName = formData.get("taskName");
     const file = formData.get("file");
 
     if (typeof name !== "string" || !name.trim()) {
@@ -88,6 +89,7 @@ export async function POST(req: Request) {
       html: `
         <p><strong>Name:</strong> ${escapeHtml(name.trim())}</p>
         <p><strong>Email:</strong> ${escapeHtml(email.trim())}</p>
+        <p><strong>Task:</strong> ${escapeHtml(typeof taskName === "string" ? taskName : "")}</p>
         <p><strong>File:</strong> ${escapeHtml(file.name)} (${(file.size / 1024).toFixed(1)} KB)</p>
         <p>Submitted via the Excel Practical Assessment page.</p>
       `,
