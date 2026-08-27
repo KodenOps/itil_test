@@ -1,7 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { MdOutlineTimer, MdCheckCircle, MdCancel } from "react-icons/md";
 import NavBar from "../NavBar";
+
+// ─── Types (unchanged) ───────────────────────────────────────────────────────
 
 interface Question {
   id: string;
@@ -15,14 +18,38 @@ interface PractiseProps {
   questionBank: Question[];
   qnumber: number;
   duration?: number;
+  /** Optional theming so this component can be reused across different quiz
+   * categories without a code change — defaults match the Excel quiz look. */
+  accentHex?: string;
+  title?: string;
 }
 
 const LOCAL_STORAGE_KEY = "quizState";
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+const formatTime = (t: number): string =>
+  [Math.floor(t / 3600), Math.floor((t % 3600) / 60), t % 60]
+    .map((v) => (v < 10 ? `0${v}` : `${v}`))
+    .join(":");
+
+const shuffle = (array: Question[]) => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 const Practise = ({
   questionBank,
   qnumber,
   duration = 3600,
+  accentHex = "#217346",
+  title = "Assessment",
 }: PractiseProps) => {
   const router = useRouter();
   const [timeLeft, setTimeLeft] = useState<number>(duration);
@@ -36,17 +63,9 @@ const Practise = ({
   }>({});
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [showFeedback, setShowFeedback] = useState<boolean>(false);
 
-  const shuffle = (array: Question[]) => {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-  };
-
+  // ── Load / restore ──
   useEffect(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (saved) {
@@ -56,14 +75,17 @@ const Practise = ({
       setSelectedAnswers(parsed.selectedAnswers);
       setSubmittedQuestions(parsed.submittedQuestions || {});
       setIsSubmitted(!!parsed.submittedQuestions?.[parsed.currentIndex]);
+      setShowFeedback(!!parsed.submittedQuestions?.[parsed.currentIndex]);
       setTimeLeft(parsed.timeLeft);
       setScore(parsed.score);
     } else {
       const shuffled = shuffle(questionBank).slice(0, qnumber);
       setShuffledQuestions(shuffled);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questionBank, qnumber]);
 
+  // ── Persist ──
   useEffect(() => {
     if (shuffledQuestions.length > 0) {
       localStorage.setItem(
@@ -87,6 +109,7 @@ const Practise = ({
     timeLeft,
   ]);
 
+  // ── Countdown ──
   useEffect(() => {
     if (timeLeft === 0) {
       handleFinish();
@@ -94,12 +117,8 @@ const Practise = ({
     }
     const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft]);
-
-  const formatTime = (t: number): string =>
-    [Math.floor(t / 3600), Math.floor((t % 3600) / 60), t % 60]
-      .map((v) => (v < 10 ? `0${v}` : v))
-      .join(":");
 
   const handleOptionSelect = (option: string) => {
     if (isSubmitted) return;
@@ -116,7 +135,7 @@ const Practise = ({
     setScore((prev) => prev + (isCorrect ? 1 : 0));
     setSubmittedQuestions((prev) => ({ ...prev, [currentIndex]: true }));
     setIsSubmitted(true);
-    setIsModalOpen(true);
+    setShowFeedback(true);
   };
 
   const handleMove = (direction: "prev" | "next") => {
@@ -125,8 +144,17 @@ const Practise = ({
       setCurrentIndex(newIndex);
       const alreadySubmitted = !!submittedQuestions[newIndex];
       setIsSubmitted(alreadySubmitted);
-      setIsModalOpen(alreadySubmitted); // 👈 Automatically show modal if already submitted
+      setShowFeedback(alreadySubmitted);
     }
+  };
+
+  const handleJumpTo = (index: number) => {
+    // Only allow jumping to questions already answered, preserving the
+    // original linear, lock-as-you-go assessment flow.
+    if (!submittedQuestions[index]) return;
+    setCurrentIndex(index);
+    setIsSubmitted(true);
+    setShowFeedback(true);
   };
 
   const handleFinish = () => {
@@ -139,140 +167,243 @@ const Practise = ({
     router.push("/score");
   };
 
+  const isLowTime = timeLeft <= 60;
+  const currentQuestion = shuffledQuestions[currentIndex];
+  const answeredCount = Object.keys(submittedQuestions).length;
+  const isLastQuestion = currentIndex === shuffledQuestions.length - 1;
+
+  if (shuffledQuestions.length === 0) {
+    return (
+      <div className='min-h-screen bg-white'>
+        <NavBar />
+        <div className='mx-auto flex max-w-3xl items-center justify-center px-4 py-24'>
+          <p className='text-sm font-semibold text-slate-400'>
+            Loading assessment…
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div>
+    <div className='min-h-screen bg-white text-slate-900'>
       <NavBar />
-      {/* Top Bar */}
-      <div className='topNav md:py-5 py-4 md:px-20 px-6 shadow-md w-full bg-white flex justify-between items-center'>
-        <div className='text-2xl text-green-600'>
-          Q{currentIndex + 1}/
-          <span className='text-lg text-gray-400'>
-            {shuffledQuestions.length}
-          </span>
-        </div>
-        <div className='text-2xl font-mono text-gray-400'>
-          {formatTime(timeLeft)}
-        </div>
-      </div>
-
-      {/* Question */}
-      <div className='p-5 text-xl'>
-        {shuffledQuestions.length > 0 &&
-          shuffledQuestions[currentIndex].question}
-      </div>
-
-      {/* Options */}
-      <div className='p-5'>
-        {shuffledQuestions.length > 0 &&
-          shuffledQuestions[currentIndex].options.map((option, index) => {
-            const selected = selectedAnswers[currentIndex] === option;
-            const correct = shuffledQuestions[currentIndex].answer === option;
-            const isCorrect = isSubmitted && correct;
-            const isWrong = isSubmitted && selected && !correct;
-
-            return (
-              <div
-                key={index}
-                className={`flex items-center text-xl mb-5 p-4 cursor-pointer border 
-                ${isCorrect ? "border-green-500" : ""} 
-                ${isWrong ? "border-red-500" : ""} 
-                ${!isCorrect && !isWrong ? "border-transparent" : ""} 
-								hover:bg-slate-50 rounded-md`}
-              >
-                <input
-                  type='radio'
-                  id={`option-${index}`}
-                  className='w-6 h-6 accent-green-600 cursor-pointer'
-                  name={`question-${currentIndex}`}
-                  value={option}
-                  checked={selected}
-                  disabled={isSubmitted}
-                  onChange={() => handleOptionSelect(option)}
-                />
-                <label
-                  htmlFor={`option-${index}`}
-                  className='ml-2 cursor-pointer'
-                >
-                  {option}
-                </label>
-              </div>
-            );
-          })}
-      </div>
-
-      {/* Submit Button */}
-      {!isSubmitted && (
-        <div className='p-5 flex justify-center'>
-          <button
-            onClick={handleSubmitAnswer}
-            disabled={!selectedAnswers[currentIndex]}
-            className={`px-10 py-4 ${
-              selectedAnswers[currentIndex]
-                ? "bg-blue-600"
-                : "bg-gray-400 cursor-not-allowed"
-            } text-white rounded-lg`}
-          >
-            Submit
-          </button>
-        </div>
-      )}
-
-      {/* Modal or Inline Feedback */}
-      {isModalOpen && (
-        <div
-          className={`
-            w-full px-4 py-6 
-            bg-white border-t mt-4 
-            md:fixed md:inset-0 md:flex md:items-center md:justify-center 
-            md:bg-[#0009] md:bg-opacity-50 md:z-50
-          `}
-        >
-          <div className='bg-white p-6 rounded-lg shadow-lg w-full md:w-96 text-center'>
-            <h2 className='text-xl font-semibold text-green-700 mb-2'>
-              ✨ Notification ✨
-            </h2>
-            <div className='flex items-center justify-center mb-3'>
-              {selectedAnswers[currentIndex] ===
-              shuffledQuestions[currentIndex].answer ? (
-                <p className='text-green-600 font-semibold'>
-                  ✅ You got it right!
-                </p>
-              ) : (
-                <p className='text-red-600 font-semibold'>❌ Incorrect</p>
-              )}
+      <main className='mx-auto max-w-3xl px-4 md:px-8'>
+        {/* Sticky timer + progress bar */}
+        <div className='sticky top-[57px] z-30 -mx-4 md:-mx-8 mb-8 border-b border-slate-200 bg-white/95 px-4 py-4 backdrop-blur md:px-8'>
+          <div className='flex items-center justify-between gap-4'>
+            <div>
+              <p className='text-xs font-semibold uppercase tracking-widest text-slate-400'>
+                {title}
+              </p>
+              <p className='text-sm font-bold text-slate-900'>
+                Question {currentIndex + 1} of {shuffledQuestions.length}
+              </p>
             </div>
-            <p className='text-gray-700'>
-              {shuffledQuestions[currentIndex].ShortExplanation}
-            </p>
-
-            <div className='mt-4 flex justify-between gap-4'>
-              {currentIndex > 0 && (
-                <button
-                  onClick={() => handleMove("prev")}
-                  className='px-6 py-2 bg-gray-600 text-white rounded-lg'
-                >
-                  Previous
-                </button>
-              )}
-              {currentIndex < shuffledQuestions.length - 1 ? (
-                <button
-                  onClick={() => handleMove("next")}
-                  className='px-6 py-2 bg-green-600 text-white rounded-lg'
-                >
-                  Next
-                </button>
-              ) : (
-                <button
-                  onClick={handleFinish}
-                  className='px-6 py-2 bg-red-600 text-white rounded-lg'
-                >
-                  Finish
-                </button>
-              )}
+            <div
+              className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold tabular-nums ${
+                isLowTime
+                  ? "bg-red-50 text-red-600 animate-pulse"
+                  : "bg-slate-100 text-slate-700"
+              }`}
+            >
+              <MdOutlineTimer size={18} />
+              {formatTime(timeLeft)}
             </div>
           </div>
+          <div className='mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-100'>
+            <div
+              className='h-full rounded-full transition-all duration-300'
+              style={{
+                width: `${(answeredCount / shuffledQuestions.length) * 100}%`,
+                backgroundColor: accentHex,
+              }}
+            />
+          </div>
         </div>
-      )}
+
+        {/* Question card */}
+        <div className='rounded-3xl border border-slate-200 bg-white p-6 md:p-10 shadow-sm mb-6'>
+          <div
+            className='mb-1 h-1 w-10 rounded-full'
+            style={{ backgroundColor: accentHex }}
+          />
+          <h2 className='text-xl md:text-2xl font-bold text-slate-900 mb-6 leading-snug'>
+            {currentQuestion.question}
+          </h2>
+
+          <div className='space-y-3'>
+            {currentQuestion.options.map((option, index) => {
+              const isSelected = selectedAnswers[currentIndex] === option;
+              const isCorrectOption = currentQuestion.answer === option;
+              const showAsCorrect = isSubmitted && isCorrectOption;
+              const showAsWrong = isSubmitted && isSelected && !isCorrectOption;
+
+              let stateClasses =
+                "border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50";
+              let badgeClasses = "border-slate-300 text-slate-400";
+              let inlineStyle: React.CSSProperties | undefined;
+
+              if (!isSubmitted && isSelected) {
+                stateClasses = "border-transparent text-white shadow-sm";
+                badgeClasses = "border-white/40 text-white";
+                inlineStyle = { backgroundColor: accentHex };
+              } else if (showAsCorrect) {
+                stateClasses =
+                  "border-emerald-200 bg-emerald-50 text-emerald-800 font-semibold";
+                badgeClasses = "border-emerald-400 text-emerald-600";
+              } else if (showAsWrong) {
+                stateClasses =
+                  "border-red-200 bg-red-50 text-red-700 font-semibold";
+                badgeClasses = "border-red-400 text-red-500";
+              } else if (isSubmitted) {
+                stateClasses = "border-slate-100 text-slate-400";
+              }
+
+              return (
+                <button
+                  key={index}
+                  type='button'
+                  disabled={isSubmitted}
+                  onClick={() => handleOptionSelect(option)}
+                  className={`flex w-full items-center gap-3 rounded-2xl border px-5 py-4 text-left text-sm md:text-base transition-all duration-150 ${stateClasses} ${
+                    isSubmitted ? "cursor-default" : ""
+                  }`}
+                  style={inlineStyle}
+                >
+                  <span
+                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-bold ${badgeClasses}`}
+                  >
+                    {showAsCorrect ? (
+                      <MdCheckCircle size={16} />
+                    ) : showAsWrong ? (
+                      <MdCancel size={16} />
+                    ) : (
+                      String.fromCharCode(65 + index)
+                    )}
+                  </span>
+                  <span>{option}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {!isSubmitted && (
+            <div className='mt-6 flex justify-end'>
+              <button
+                type='button'
+                onClick={handleSubmitAnswer}
+                disabled={!selectedAnswers[currentIndex]}
+                className={`rounded-full px-6 py-2.5 text-sm font-bold text-white shadow-sm transition ${
+                  selectedAnswers[currentIndex]
+                    ? "hover:brightness-110"
+                    : "cursor-not-allowed opacity-40"
+                }`}
+                style={{ backgroundColor: accentHex }}
+              >
+                Submit answer
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Inline feedback panel (replaces the old modal) */}
+        {showFeedback && (
+          <div
+            className={`rounded-2xl border px-5 py-4 mb-6 ${
+              selectedAnswers[currentIndex] === currentQuestion.answer
+                ? "border-emerald-200 bg-emerald-50"
+                : "border-red-200 bg-red-50"
+            }`}
+          >
+            <div className='flex items-center gap-2 mb-1.5'>
+              {selectedAnswers[currentIndex] === currentQuestion.answer ? (
+                <>
+                  <MdCheckCircle size={18} className='text-emerald-600' />
+                  <p className='text-sm font-bold text-emerald-800'>Correct!</p>
+                </>
+              ) : (
+                <>
+                  <MdCancel size={18} className='text-red-600' />
+                  <p className='text-sm font-bold text-red-700'>Incorrect</p>
+                </>
+              )}
+            </div>
+            <p className='text-sm leading-6 text-slate-600'>
+              {currentQuestion.ShortExplanation}
+            </p>
+          </div>
+        )}
+
+        {/* Navigation */}
+        <div className='flex items-center justify-between gap-4 pb-24'>
+          <button
+            type='button'
+            disabled={currentIndex === 0}
+            onClick={() => handleMove("prev")}
+            className='rounded-full border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-30 disabled:hover:bg-transparent'
+          >
+            ← Previous
+          </button>
+
+          <div className='hidden md:flex flex-wrap items-center justify-center gap-1.5 max-w-md'>
+            {shuffledQuestions.map((q, i) => {
+              const submitted = submittedQuestions[i];
+              const wasCorrect =
+                submitted && selectedAnswers[i] === shuffledQuestions[i].answer;
+              return (
+                <button
+                  key={q.id}
+                  type='button'
+                  disabled={!submitted}
+                  onClick={() => handleJumpTo(i)}
+                  className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition ${
+                    i === currentIndex
+                      ? "text-white"
+                      : submitted
+                        ? wasCorrect
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-red-100 text-red-600"
+                        : "bg-slate-50 text-slate-300 border border-slate-200 cursor-not-allowed"
+                  }`}
+                  style={
+                    i === currentIndex
+                      ? { backgroundColor: accentHex }
+                      : undefined
+                  }
+                >
+                  {i + 1}
+                </button>
+              );
+            })}
+          </div>
+
+          {isSubmitted ? (
+            isLastQuestion ? (
+              <button
+                type='button'
+                onClick={handleFinish}
+                className='rounded-full px-6 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-110 bg-red-600'
+              >
+                Finish
+              </button>
+            ) : (
+              <button
+                type='button'
+                onClick={() => handleMove("next")}
+                className='rounded-full px-6 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-110'
+                style={{ backgroundColor: accentHex }}
+              >
+                Next →
+              </button>
+            )
+          ) : (
+            <span className='rounded-full px-6 py-2.5 text-sm font-bold text-slate-300'>
+              {isLastQuestion ? "Finish" : "Next →"}
+            </span>
+          )}
+        </div>
+      </main>
     </div>
   );
 };

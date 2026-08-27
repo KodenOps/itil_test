@@ -40,21 +40,21 @@ const categories: Category[] = [
     id: "introduction",
     title: "Introduction",
     description:
-      "Understand the modern IT service management landscape and the purpose and structure of the ITIL 4 framework.",
+      "Understand the modern IT service management landscape and the purpose and structure of the ITIL 5 framework.",
     accent: "from-[#2660A4] to-[#3C8DAD]",
     accentHex: "#2660A4",
     lessons: [
       {
         id: "itsm-modern-world",
         title: "IT Service Management in the Modern World",
-        body: "Services are the main way that organizations create value for themselves and their customers. As businesses become more digital, the discipline of IT service management has had to evolve accordingly.\n\nITIL 4 brings ITIL up to date by reshaping much of the established ITSM practices in the wider context of customer experience, value streams, and digital transformation. It also embraces new ways of working, such as Lean, Agile, and DevOps, making it relevant to modern engineering and operations teams.",
+        body: "Services are the main way that organizations create value for themselves and their customers. As businesses become more digital, the discipline of IT service management has had to evolve accordingly.\n\nITIL 5 brings ITIL up to date by reshaping much of the established ITSM practices in the wider context of customer experience, value streams, and digital transformation. It also embraces new ways of working, such as Lean, Agile, and DevOps, making it relevant to modern engineering and operations teams.",
         takeaway:
-          "ITIL 4 modernises ITSM by embedding customer experience, value streams, and Agile/DevOps thinking.",
+          "ITIL 5 modernises ITSM by embedding customer experience, value streams, and Agile/DevOps thinking.",
       },
       {
         id: "itil4-framework",
-        title: "Structure and Benefits of the ITIL 4 Framework",
-        body: "The key component of the ITIL 4 framework is the ITIL Service Value System (SVS). The SVS represents how the various components and activities of the organization work together to facilitate value creation through IT-enabled services.\n\nThe SVS facilitates the integration and coordination of these components and provides a strong, unified, value-focused direction for the entire organization. It is designed to be flexible — it can operate in a wide variety of environments, from traditional waterfall organisations to fully Agile DevOps shops.",
+        title: "Structure and Benefits of the ITIL 5 Framework",
+        body: "The key component of the ITIL 5 framework is the ITIL Service Value System (SVS). The SVS represents how the various components and activities of the organization work together to facilitate value creation through IT-enabled services.\n\nThe SVS facilitates the integration and coordination of these components and provides a strong, unified, value-focused direction for the entire organization. It is designed to be flexible — it can operate in a wide variety of environments, from traditional waterfall organisations to fully Agile DevOps shops.",
         takeaway:
           "The ITIL SVS is the central model that integrates all components and activities toward value creation.",
         visual: "checklist",
@@ -147,14 +147,14 @@ const categories: Category[] = [
     id: "four-dimensions",
     title: "The 4-Dimensional Model",
     description:
-      "Explore the four dimensions ITIL 4 uses to ensure every component of the SVS is considered holistically.",
+      "Explore the four dimensions ITIL 5 uses to ensure every component of the SVS is considered holistically.",
     accent: "from-[#6D2E46] to-[#9B4D57]",
     accentHex: "#6D2E46",
     lessons: [
       {
         id: "four-dimensions-overview",
         title: "Overview of the Four Dimensions",
-        body: "ITIL 4 defines four dimensions of service management that collectively are critical to the effective and efficient facilitation of value for customers and other stakeholders. Every component of the Service Value System should be considered through all four lenses.\n\nThe four dimensions are: organizations and people; information and technology; partners and suppliers; and value streams and processes. These dimensions are also constrained or influenced by several external factors — captured by the PESTLE acronym (political, economic, social, technological, legal, and environmental) — that are often beyond the control of the service provider.",
+        body: "ITIL 5 defines four dimensions of service management that collectively are critical to the effective and efficient facilitation of value for customers and other stakeholders. Every component of the Service Value System should be considered through all four lenses.\n\nThe four dimensions are: organizations and people; information and technology; partners and suppliers; and value streams and processes. These dimensions are also constrained or influenced by several external factors — captured by the PESTLE acronym (political, economic, social, technological, legal, and environmental) — that are often beyond the control of the service provider.",
         takeaway:
           "All four dimensions must be considered together. External PESTLE factors constrain but don't control the SVS.",
         visual: "diagram-layered",
@@ -348,7 +348,7 @@ const categories: Category[] = [
     id: "management-practices",
     title: "ITIL Management Practices",
     description:
-      "Deep-dive into the key ITIL 4 management practices: their purpose, definitions, and contribution to the service value chain.",
+      "Deep-dive into the key ITIL 5 management practices: their purpose, definitions, and contribution to the service value chain.",
     accent: "from-[#F97316] to-[#F59E0B]",
     accentHex: "#F97316",
     lessons: [
@@ -792,7 +792,7 @@ export default function LearnPage() {
               className='inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest text-white mb-4'
               style={{ backgroundColor: activeCategory.accentHex }}
             >
-              ITIL V4 Foundation
+              ITIL V5 Foundation
             </div>
             <h1 className='text-3xl font-black tracking-tight text-slate-900 sm:text-4xl md:text-5xl'>
               {activeCategory.title}

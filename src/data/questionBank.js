@@ -1,6 +1,6 @@
 export const itilQuestions = [
   {
-    id: "70c936d5-46b3-4d1d-8aaf-1b7670ab41a4",
+    id: "70c936d5-46b3-4d1d-8aaf-1b7670ab41a4-dup-1",
     question:
       "Which concept is illustrated when an employee is granted permission to the company’s new file-sharing platform for daily use?",
     options: ["Warranty", "Goods", "Utility", "Access to resources"],
@@ -1016,7 +1016,7 @@ export const itilQuestions = [
       "Evaluates potential impacts on service quality from changes in supplier contracts.",
   },
   {
-    id: "new-1",
+    id: "new-1-dup-2",
     question: "What is MOST LIKELY to be handled as a service request?",
     options: [
       "Managing an interruption to a service",
@@ -1029,7 +1029,7 @@ export const itilQuestions = [
       "Routine provisioning requests (such as providing virtual servers) are typically handled as service requests.",
   },
   {
-    id: "new-2",
+    id: "new-2-dup-3",
     question:
       "Identify the missing word(s) in the following sentence. Utility is the [?] offered by a product or service to meet a particular need.",
     options: ["Assurance", "Promise", "Functionality", "Outcome"],
@@ -1038,7 +1038,7 @@ export const itilQuestions = [
       "Utility refers to the functionality that a product or service provides to satisfy a need.",
   },
   {
-    id: "new-3",
+    id: "new-3-dup-4",
     question:
       "Identify the missing word in the following sentence. [?] is the practice of ensuring that risks are properly assessed, authorizing changes to proceed, and managing a change schedule in order to maximize the number of successful IT changes.",
     options: [
@@ -1052,7 +1052,7 @@ export const itilQuestions = [
       "Change enablement ensures that risks are assessed and that changes are properly authorized and scheduled.",
   },
   {
-    id: "new-4",
+    id: "new-4-dup-5",
     question:
       "Identify the missing word(s) in the following sentence. An event is any change of state that has significance for the management of a(n) [?] or other configuration items.",
     options: ["Output", "Product", "Service", "Outcome"],
@@ -1061,7 +1061,7 @@ export const itilQuestions = [
       "An event is significant if it affects a service or its related configuration items.",
   },
   {
-    id: "new-5",
+    id: "new-5-dup-6",
     question:
       "What is the purpose of the 'information security management' practice?",
     options: [
@@ -1076,7 +1076,7 @@ export const itilQuestions = [
       "This practice focuses on protecting the organization’s information assets.",
   },
   {
-    id: "new-6",
+    id: "new-edfinrjndbfgbtrjenr",
     question:
       "What is the purpose of the 'monitoring and event management' practice?",
     options: [
@@ -1091,7 +1091,7 @@ export const itilQuestions = [
       "This practice ensures that important events are captured and can be responded to in a timely manner.",
   },
   {
-    id: "new-7",
+    id: "new-7-dup-7",
     question: "What is the purpose of the 'incident management' practice?",
     options: [
       "Supporting the agreed quality of a service by handling all pre-defined, user-initiated service requests in an effective and user-friendly manner",
@@ -1105,7 +1105,7 @@ export const itilQuestions = [
       "Incident management focuses on rapid restoration of normal service following an interruption.",
   },
   {
-    id: "new-8",
+    id: "new-8-dup-8",
     question:
       "What is defined as the practice of ensuring that accurate and reliable information about the configuration of services, and the configuration items that support them, is available when and where needed?",
     options: [
@@ -1119,7 +1119,7 @@ export const itilQuestions = [
       "This practice ensures that configuration data for services and CIs is accurate and accessible.",
   },
   {
-    id: "new-9",
+    id: "new-9-dup-9",
     question:
       "Identify the missing word in the following sentence. The [?] is the practice of capturing demand for incident resolution and service requests.",
     options: [
@@ -1133,7 +1133,7 @@ export const itilQuestions = [
       "This practice involves capturing and processing requests from users.",
   },
   {
-    id: "new-10",
+    id: "new-10-dup-10",
     question:
       "Dion Training has decided to offer two membership levels to their training programs. The first membership level includes all of their video courses, practice exams, and study guides for a single monthly fee. This plan does not provide the students with the actual exam voucher to take the certification exams, though. What term best describes this membership level which provides several services for a single price?",
     options: ["An outcome", "Value", "A service offering", "An output"],
@@ -1142,7 +1142,7 @@ export const itilQuestions = [
       "A service offering bundles several services into one package for a single fee.",
   },
   {
-    id: "new-11",
+    id: "new-11-dup-11",
     question: "Which describes outputs?",
     options: [
       "Tangible or intangible deliverables",
@@ -1154,7 +1154,7 @@ export const itilQuestions = [
     ShortExplanation: "Outputs are the deliverables produced by a service.",
   },
   {
-    id: "new-12",
+    id: "new-12-dup-12",
     question:
       "What term best describes a person or a group of people that has its own functions with responsibilities, authorities, and relationships to achieve its objectives?",
     options: ["Consumer", "Service provider", "Customer", "Organization"],
@@ -1163,7 +1163,7 @@ export const itilQuestions = [
       "An organization is defined by its structure and defined roles.",
   },
   {
-    id: "new-13",
+    id: "new-13-dup-13",
     question: "Which describes the nature of the guiding principles?",
     options: [
       "A guiding principle is mandatory and must be used when adopting a new service within the organization",
@@ -1177,7 +1177,7 @@ export const itilQuestions = [
       "Guiding principles provide flexible recommendations rather than strict rules.",
   },
   {
-    id: "new-14",
+    id: "new-14-dup-14",
     question:
       "Which guiding principle is most affected by the customer experience (CX)?",
     options: [
@@ -1191,7 +1191,7 @@ export const itilQuestions = [
       "A focus on value means prioritizing customer outcomes and experiences.",
   },
   {
-    id: "new-15",
+    id: "new-15sdfghjhgfd",
     question:
       "Dion Training Solutions wants to build a new service to automatically fulfill exam voucher orders for students. Currently, exam vouchers are fulfilled manually by a staff member once the order is received from the student by copying and pasting the voucher number from a spreadsheet into an email template and sending out the email to the students. Before attempting to automate this fulfillment process, the team lead takes an inventory of the current services, processes, and procedures that are being used by the voucher fulfillment team to see if they might be able to be reused. What guiding principle best describes this scenario?",
     options: [
@@ -1205,7 +1205,7 @@ export const itilQuestions = [
       "Using existing processes and resources is an example of starting where you are.",
   },
   {
-    id: "new-16",
+    id: "new-16-dup-15",
     question:
       "Dion Training Solutions has decided to create an online course for the ITIL 4 Foundation exam. The company developed their curriculum and then invited 50 students to participate in live training to determine if the training was effective. During the training, some students didn't understand the concept of the service value chain, so the instructor rewrote that portion of the curriculum. Which guiding principle is being demonstrated by this approach to curriculum development?",
     options: [
@@ -1219,7 +1219,7 @@ export const itilQuestions = [
       "This approach demonstrates iterating and improving based on feedback.",
   },
   {
-    id: "new-17",
+    id: "new-17-dup-16",
     question:
       "You are working to design a new service for internal use across your organization. As part of your design efforts, you form a small team with relevant stakeholders from human resources, information technology, sales, and other departments to ensure the service adequately meets each department's needs. Which guiding principle best describes this scenario?",
     options: [
@@ -1233,7 +1233,7 @@ export const itilQuestions = [
       "Involving various stakeholders ensures broad visibility and collaboration.",
   },
   {
-    id: "new-18",
+    id: "new-18-dup-17",
     question:
       "John is currently working to create a new service that would allow a customer to purchase a digital product online and have it delivered to the user's inbox. John is responsible for the payment portion of this service, but Sally is responsible for the digital product fulfillment portion. Which of the following should John do in order to follow the principle of 'think and work holistically'?",
     options: [
@@ -1248,7 +1248,7 @@ export const itilQuestions = [
       "Collaborating early ensures that both parts of the service integrate effectively.",
   },
   {
-    id: "new-19",
+    id: "new-19-dup-18",
     question:
       "Which of these are a key focus of the 'organization and people' dimension?",
     options: [
@@ -1262,7 +1262,7 @@ export const itilQuestions = [
       "This dimension emphasizes clearly defined roles within the organization.",
   },
   {
-    id: "new-20",
+    id: "new-20-dup-19",
     question:
       "Which of these are NOT a key focus of the 'partners and suppliers' dimension?",
     options: [
@@ -1276,7 +1276,7 @@ export const itilQuestions = [
       "Roles and responsibilities are generally internal, not a focus of external partner relationships.",
   },
   {
-    id: "new-21",
+    id: "new-21-dup-20",
     question: "Which ITIL concept describes the service value chain?",
     options: [
       "Seven guiding principles",
@@ -1289,7 +1289,7 @@ export const itilQuestions = [
       "The service value system is the overarching framework that includes the service value chain.",
   },
   {
-    id: "new-22",
+    id: "new-22-dup-21",
     question:
       "What operating model outlines the key activities required to respond to demand and facilitate value realization through the creation and management of products and services?",
     options: [
@@ -1303,7 +1303,7 @@ export const itilQuestions = [
       "The service value chain details the key activities needed for value creation and delivery.",
   },
   {
-    id: "new-23",
+    id: "new-23-dup-22",
     question:
       "Which value chain activity includes portfolio decisions for design and transition?",
     options: ["Engage", "Improve", "Plan", "Deliver and support"],
@@ -1312,7 +1312,7 @@ export const itilQuestions = [
       "The planning activity includes making decisions about service portfolio and transition.",
   },
   {
-    id: "new-24",
+    id: "new-24-dup-23",
     question:
       'Which step of the continual improvement model states that "each improvement initiative should support the organization\'s goals and objectives"?',
     options: [
@@ -1326,7 +1326,7 @@ export const itilQuestions = [
       "This step involves assessing the current state in alignment with organizational goals.",
   },
   {
-    id: "new-25",
+    id: "new-25-dup-24",
     question:
       "When working within the 'what is the vision' step of the continual improvement model, what must you ensure to occur?",
     options: [
@@ -1340,7 +1340,7 @@ export const itilQuestions = [
       "Setting the vision involves agreeing on a high-level direction for improvement.",
   },
   {
-    id: "new-26",
+    id: "new-26-dup-25",
     question:
       "Bridgett is leading an improvement initiative within your company. She has been told that the company wants to have the highest customer satisfaction in the industry. Currently, the company has a customer satisfaction rating of 92% but the industry leader has an average of 94%. Bridgett decides that the company should set their goal of obtaining a 96% customer satisfaction score within the next 12 months. What step of the continual improvement model is Bridgett currently in?",
     options: [
@@ -1354,7 +1354,7 @@ export const itilQuestions = [
       "This step involves setting a target state or goal for improvement.",
   },
   {
-    id: "new-27",
+    id: "new-2dfeerkgmoofrgnenoom7",
     question: "What is a normal change?",
     options: [
       "A change that doesn't need risk assessment because the procedure has been pre-authorized",
@@ -1368,7 +1368,7 @@ export const itilQuestions = [
       "Normal changes are pre-defined, routine changes with well-understood risks.",
   },
   {
-    id: "new-28",
+    id: "new-28-dup-26",
     question:
       "Your company's external router has just malfunctioned and needs to be replaced. The entire organization's connection to the Wide Area Network will remain offline until this router is replaced. Which type of change should be initiated?",
     options: ["Standard", "Normal", "Emergency", "Routine"],
@@ -1377,7 +1377,7 @@ export const itilQuestions = [
       "An emergency change is used when immediate action is required to restore service.",
   },
   {
-    id: "new-29",
+    id: "new-29-dup-27",
     question: "What is a change schedule NOT used for?",
     options: [
       "Developing features",
@@ -1390,7 +1390,7 @@ export const itilQuestions = [
       "A change schedule is used to plan, avoid conflicts, and allocate resources—not to develop new features.",
   },
   {
-    id: "new-30",
+    id: "new-30-dup-28",
     question:
       "How can you ensure the incidents with the highest business impact are resolved first?",
     options: [
@@ -1404,7 +1404,7 @@ export const itilQuestions = [
       "Classifying incidents by business impact helps prioritize resolution.",
   },
   {
-    id: "new-31",
+    id: "new-31-dup-29",
     question: "What is NOT a phase in problem management?",
     options: [
       "Problem identification",
@@ -1417,7 +1417,7 @@ export const itilQuestions = [
       "While identification, classification, and error control are part of problem management, 'problem control' is not recognized as a separate phase.",
   },
   {
-    id: "new-32",
+    id: "new-32-dup-30",
     question:
       "If a problem cannot be resolved quickly, you might wish to document and implement a temporary solution to reduce the impact of the problem. What is this known as?",
     options: ["Incident", "Solution", "Workaround", "Known error"],
@@ -1426,7 +1426,7 @@ export const itilQuestions = [
       "A workaround is a temporary solution to reduce the impact of an unresolved problem.",
   },
   {
-    id: "new-33",
+    id: "new-33-dup-31",
     question:
       "How does 'service request management' contribute to the 'improve' value chain activity?",
     options: [
@@ -1441,7 +1441,7 @@ export const itilQuestions = [
       "This practice helps improve services by effectively managing user requests and feedback.",
   },
   {
-    id: "new-34",
+    id: "new-34-dup-32",
     question:
       "Fill in the blank. Service requests and their fulfillment should be [?] and automated to the greatest degree possible.",
     options: [
@@ -1455,7 +1455,7 @@ export const itilQuestions = [
       "Standardization helps ensure consistency and efficiency in handling service requests.",
   },
   {
-    id: "new-35",
+    id: "new-35-dup-33",
     question:
       "Your smartphone isn't working properly. You call the toll-free number for your service provider's support center. Which practice would you reach that serves as the entry point for all contact between the service provider and its users?",
     options: [
@@ -1469,7 +1469,7 @@ export const itilQuestions = [
       "The service desk is the central point of contact for users seeking support.",
   },
   {
-    id: "new-36",
+    id: "new-36-dup-34",
     question: "Which is a recommendation of the 'service desk' practice?",
     options: [
       "Service desks should never use technologies such as SMS and chat functions",
@@ -1483,7 +1483,7 @@ export const itilQuestions = [
       "Understanding business context helps the service desk address user issues effectively.",
   },
   {
-    id: "new-37",
+    id: "new-37-dup-35",
     question: "What is a service level agreement used for?",
     options: [
       "To measure the performance of services from a customer's point of view",
@@ -1497,7 +1497,7 @@ export const itilQuestions = [
       "SLAs define and measure service performance from the customer's perspective.",
   },
   {
-    id: "new-38",
+    id: "new-38-dup-36",
     question:
       "How does 'service level management' contribute to the 'plan' value chain activity?",
     options: [
@@ -1512,7 +1512,7 @@ export const itilQuestions = [
       "Service level management uses feedback to guide improvements and planning.",
   },
   {
-    id: "new-39",
+    id: "new-39-dup-37",
     question: "What should be included in every service level agreement?",
     options: [
       "Detailed metrics to capture availability of the system",
@@ -1525,7 +1525,7 @@ export const itilQuestions = [
       "SLAs must clearly state the expected outcomes of a service.",
   },
   {
-    id: "new-40",
+    id: "new-40-dup-38",
     question:
       "How does 'service request management' contribute to the 'deliver and support' value chain activity?",
     options: [
@@ -2731,7 +2731,7 @@ export const itilQuestions = [
       "Problem management seeks to eliminate the underlying causes of incidents to prevent recurrence.",
   },
   {
-    id: "new-27",
+    id: "new-2sdfghjhgfd7",
     question: "What does the 'service level agreement' (SLA) provide?",
     options: [
       "Detailed procedures for incident resolution",
@@ -2921,7 +2921,7 @@ export const itilQuestions = [
       "Effective communication is essential for teamwork, aligning stakeholders, and ensuring that services are delivered efficiently.",
   },
   {
-    id: "jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub22",
+    id: "jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub22-dup-39",
     question:
       "Which practice has a purpose that includes restoring normal service operations as quickly as possible?",
     options: [
@@ -2935,7 +2935,7 @@ export const itilQuestions = [
       "This practice focuses on restoring service operations as swiftly as possible.",
   },
   {
-    id: "jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub23",
+    id: "jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub23-dup-40",
     question:
       "Identify the missing word in the following sentence. A customer is the role that defines the requirements for a service and takes responsibility for the [?] of service consumption.",
     options: ["outputs", "outcomes", "costs", "risks"],
@@ -2944,7 +2944,7 @@ export const itilQuestions = [
       "Customers define the desired outcomes of the services they consume.",
   },
   {
-    id: "jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub24",
+    id: "jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub24-dup-41",
     question:
       "Which guiding principle describes the importance of doing something, instead of spending a long time analyzing different options?",
     options: [
@@ -2958,7 +2958,7 @@ export const itilQuestions = [
       "This principle emphasizes the value of making progress efficiently while learning along the way.",
   },
   {
-    id: "jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub25",
+    id: "jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub25-dup-42",
     question: "What should be done for every problem?",
     options: [
       "It should be diagnosed to identify possible solutions",
@@ -2972,7 +2972,7 @@ export const itilQuestions = [
       "Prioritization ensures that the most critical issues are resolved first.",
   },
   {
-    id: "jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub26",
+    id: "jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub26-dup-43",
     question:
       "How should an organization include third-party suppliers in the continual improvement of services?",
     options: [
@@ -2987,7 +2987,7 @@ export const itilQuestions = [
       "Details in contracts can facilitate effective service improvement.",
   },
   {
-    id: "jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub27",
+    id: "jhvghcftyugjnkhugtfyvghjgytcyfhgjhyubasdfg",
     question:
       "What considerations influence the supplier strategy of an organization?",
     options: [
@@ -3001,7 +3001,7 @@ export const itilQuestions = [
       "Contracts establish formal agreements that govern supplier relationships.",
   },
   {
-    id: "jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub28",
+    id: "jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub28-dup-44",
     question: "What is a problem?",
     options: [
       "An addition or modification that could have an effect on services",
@@ -3079,7 +3079,7 @@ export const itilQuestions = [
       "Including improvement expectations in contracts aligns suppliers with the organization’s continual improvement goals.",
   },
   {
-    id: "jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub27",
+    id: "jhvghcftyugjnkhugtfyvghjgytcyfhgjhyub7sdfgfddfgfdsdf",
     question:
       "What considerations influence the supplier strategy of an organization?",
     options: [

@@ -49,8 +49,8 @@ const Page = () => {
                 accent: "from-[#247BA0] to-[#3C1642]",
               },
               {
-                path: "/page/itil-v4",
-                label: "ITIL V4",
+                path: "/page/itil-v5",
+                label: "ITIL V5",
                 description:
                   "Process thinking, service value, and exam practice built around the ITIL path.",
                 IconName: MdOutlineWorkOutline,
