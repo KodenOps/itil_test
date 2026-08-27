@@ -2,6 +2,7 @@
 
 import Footer from "@/app/components/Footer";
 import NavBar from "@/app/components/NavBar";
+import { excel_data } from "@/data/excel-task";
 import Link from "next/link";
 import React, { useRef, useState } from "react";
 import {
@@ -200,53 +201,10 @@ export default function PracticalAssessmentPage() {
           </ol>
         </section>
         <div className='relative grid grid-cols-1 gap-6 md:grid-cols-2 mb-12 justify-items-center align-items-center'>
-          {[
-            {
-              id: 1,
-              title: "Task 1",
-              description: "Getting Started with the Workbooks and Excels",
-              link: WORKBOOK_DOWNLOAD_URL,
-              download: WORKBOOK_FILENAME,
-              status: "open",
-              bg: "#f2f4f3",
-              basic_concept: [
-                "Basic addition and subtractions",
-                "Basic multiplication and division",
-                "Using Sum Formula",
-              ],
-            },
-            {
-              id: 2,
-              title: "Task 2",
-              description: "Working with Data in Excel",
-              link: WORKBOOK_DOWNLOAD_URL,
-              bg: "#f2f4f3",
-              status: "locked",
-              download: WORKBOOK_FILENAME,
-              basic_concept: [
-                "Sorting data",
-                "Table formatting",
-                "Conditional formatting",
-              ],
-            },
-            {
-              id: 3,
-              title: "Task 3",
-              description: "Charts and Graphs in Excel",
-              link: WORKBOOK_DOWNLOAD_URL,
-              bg: "#f2f4f3",
-              status: "locked",
-              download: WORKBOOK_FILENAME,
-              basic_concept: [
-                "Creating charts",
-                "Formatting charts",
-                "Adding data labels",
-              ],
-            },
-          ].map((n) =>
+          {excel_data.map((n) =>
             n.status === "open" ? (
               <a
-                key={n.id}
+                key={n.title}
                 href={n.link}
                 download={n.download}
                 // style={{ borderColor: ACCENT }}
@@ -274,7 +232,7 @@ export default function PracticalAssessmentPage() {
               </a>
             ) : (
               <div
-                key={n.id}
+                key={n.title}
                 style={{ backgroundColor: n.bg }}
                 className='mb-6 rounded-lg relative p-4 shadow-md w-full max-w-sm opacity-50 cursor-not-allowed'
               >

@@ -7,6 +7,7 @@ import { FaBook } from "react-icons/fa";
 interface Material {
   id: string;
   title: string;
+  author: string;
   type: "pdf" | "pptx";
   linkToFile?: string;
   colour: string;
@@ -15,30 +16,171 @@ interface Material {
 const Page = () => {
   const materials: Material[] = [
     {
+      id: "module-one-key-concept",
+      title: "Module One: Key Concepts",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-two-key-concept",
+      title: "Module Two: Service Relationships",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-three-itil-vs",
+      title: "Module Three: ITIL vs Other Frameworks",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-four-governance",
+      title: "Module Four: Governance",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-five-guiding-principles",
+      title: "Module Five: Guiding Principles",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-six-value-chain",
+      title: "Module Six: Value Chain",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-six-one-operating-models",
+      title: "Module Six-1: Operating Models",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-six-two-managment-practice",
+      title: "Module Six-2: Management Practice",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-six-three-discover-activity",
+      title: "Module Six-3: Discover Activity",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-six-four-design-activity",
+      title: "Module Six-4: Design Activity",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-six-five-acquire-activity",
+      title: "Module Six-5: Acquire Activity",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-six-six-build-activity",
+      title: "Module Six-6: Build Activity",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-six-seven-transition-activity",
+      title: "Module Six-7: Transition Activity",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-six-eight-operate-activity",
+      title: "Module Six-8: Operate Activity",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-six-nine-deliver-activity",
+      title: "Module Six-9: Deliver Activity",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-six-ten-support-activity",
+      title: "Module Six-10: Support Activity",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-seven-value-stream",
+      title: "Module Seven: Value Streams",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-eight-continual-improvement",
+      title: "Module Eight: Continual Improvement",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-nine-four-dimension",
+      title: "Module Nine: Four Dimensions",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
+      id: "module-ten-itil-and-other-frameworks-integration",
+      title: "Module Ten: ITIL and Other Frameworks Integration",
+      author: "PeopleCert",
+      type: "pdf",
+      colour: "#333",
+    },
+    {
       id: "exam-guidelines",
       title: "Exam Guidelines",
+      author: "ITIL Study Team",
       type: "pdf",
       colour: "#2660A4",
     },
     {
       id: "itil-textbook",
       title: "ITIL Foundation Textbook",
+      author: "ITIL Study Team",
       type: "pdf",
-
       colour: "#26a465",
     },
     {
       id: "itil-exam-study",
       title: "ITIL Foundation Exam Study",
+      author: "ITIL Study Team",
       type: "pdf",
-
       colour: "#171738",
     },
     {
       id: "itil-slides",
       title: "ITIL Foundation Slide",
+      author: "ITIL Study Team",
       type: "pdf",
-
       colour: "#333",
     },
   ];
@@ -65,7 +207,14 @@ const Page = () => {
               {materials.map((material) => (
                 <Link
                   key={material.id}
-                  href={`/page/material/${material.id}`}
+                  href={{
+                    pathname: `/page/material/${material.id}`,
+                    query: {
+                      type: material.type,
+                      title: material.title,
+                      author: material.author,
+                    },
+                  }}
                   className='group rounded-[28px] border border-slate-200  bg-white p-4 text-left shadow-lg shadow-slate-200/80 transition duration-300 hover:-translate-y-1 hover:shadow-2xl'
                 >
                   <div className='rounded-[22px] bg-gradient-to-br from-[#2660A4] to-[#4F8FCA] p-6 text-white'>
