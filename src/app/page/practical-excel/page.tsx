@@ -171,18 +171,10 @@ export default function PracticalAssessmentPage() {
               Excel Practical Assessment
             </h1>
             <p className='mt-3 max-w-2xl text-base leading-7 text-slate-600'>
-              Download the workbook, complete all 8 Tasks at your own pace, then
-              upload your finished file below for grading.
+              Download the workbook for each section, complete all Tasks in the
+              workbook at your own pace, then upload your finished file below
+              for grading.
             </p>
-            <div className='mt-6 flex flex-wrap items-center gap-4'>
-              <span className='inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700'>
-                <MdOutlineTimer size={18} />
-                Estimated time: {ESTIMATED_TIME}
-              </span>
-              <span className='inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700'>
-                <MdOutlineDescription size={18} />8 Tasks
-              </span>
-            </div>
           </div>
         </div>
 
@@ -207,7 +199,7 @@ export default function PracticalAssessmentPage() {
             ))}
           </ol>
         </section>
-        <div className='grid grid-cols-1 gap-6 md:grid-cols-2 mb-12 justify-items-center align-items-center'>
+        <div className='relative grid grid-cols-1 gap-6 md:grid-cols-2 mb-12 justify-items-center align-items-center'>
           {[
             {
               id: 1,
@@ -257,11 +249,11 @@ export default function PracticalAssessmentPage() {
                 key={n.id}
                 href={n.link}
                 download={n.download}
-                style={{ backgroundColor: n.bg }}
-                className='mb-6 rounded-lg relative p-4 shadow-md hover:shadow-lg transition-shadow w-full max-w-sm'
+                // style={{ borderColor: ACCENT }}
+                className=' mb-6 border-2 border-green-200 rounded-lg relative p-4 shadow-md hover:shadow-lg transition-shadow w-full max-w-sm'
               >
-                <span className='absolute top-4 right-4 bg-slate-200 text-slate-800 text-xs font-bold px-2 py-1 rounded-full'>
-                  {n.status}
+                <span className='absolute top-4 right-4 bg-green-200 text-slate-800 text-xs font-bold px-4 py-2 rounded-full'>
+                  {n.status} | click to Download
                 </span>
                 <h3 className='text-lg font-bold text-slate-900 mb-2'>
                   {n.title}
