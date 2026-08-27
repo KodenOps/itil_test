@@ -253,9 +253,9 @@ export default function PracticalAssessmentPage() {
                 className=' mb-6 border-2 border-green-200 rounded-lg relative p-4 shadow-md hover:shadow-lg transition-shadow w-full max-w-sm'
               >
                 <span className='absolute top-4 right-4 bg-green-200 text-slate-800 text-xs font-bold px-4 py-2 rounded-full'>
-                  {n.status} | click to Download
+                  Click to Download
                 </span>
-                <h3 className='text-lg font-bold text-slate-900 mb-2'>
+                <h3 className='text-lg font-bold text-slate-900 mb-4'>
                   {n.title}
                 </h3>
                 <p className='text-sm text-slate-500'>{n.description}</p>
