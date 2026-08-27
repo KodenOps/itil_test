@@ -4,10 +4,17 @@ import Footer from "@/app/components/Footer";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { BiBook } from "react-icons/bi";
-import { MdBookOnline, MdCheckBox, MdOutlineQuiz } from "react-icons/md";
+import {
+  MdBookOnline,
+  MdCheckBox,
+  MdOutlineQuiz,
+  MdPlayArrow,
+} from "react-icons/md";
 import { useRouter } from "next/navigation";
 import NavBar from "@/app/components/NavBar";
 import { IoBook } from "react-icons/io5";
+import Image from "next/image";
+import thumbnailUrl from "../../../../public/images/thumbnail.avif";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -23,8 +30,12 @@ type TopicLesson = {
     | "checklist"
     | "table";
   visualData?: Record<string, string[]> | string[] | string | string[][];
+  learningPlaylistUrl?: urlObject[];
 };
-
+type urlObject = {
+  url: string;
+  title: string;
+};
 type Category = {
   id: string;
   title: string;
@@ -32,6 +43,7 @@ type Category = {
   accent: string;
   accentHex: string;
   lessons: TopicLesson[];
+  learningPlaylistUrl?: urlObject[];
 };
 
 // ─── Data ────────────────────────────────────────────────────────────────────
@@ -65,6 +77,26 @@ const categories: Category[] = [
           ["Absolute", "$A$1", "Stays fixed on both row and column"],
           ["Mixed (column locked)", "$A1", "Column fixed, row shifts"],
           ["Mixed (row locked)", "A$1", "Row fixed, column shifts"],
+        ],
+        learningPlaylistUrl: [
+          {
+            url: "https://www.youtube.com/playlist?list=PLlKpQrBME6xLDnoK7OovAVVsGNV55MS3K",
+            title: "Excel For Beginners Playlist (Video)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=fhVXfSjLb6I",
+            title:
+              "Build an Interactive Excel Dashboard Using PivotTables (Video)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=jwghaZG9qes",
+            title:
+              "Create Professional Excel Dashboard in Just 10 Minutes (Video)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=opJgMj1IUrc",
+            title: "Full Beginner Project in Excel (Video)",
+          },
         ],
       },
       {
@@ -981,6 +1013,45 @@ export default function LearnPage() {
             </div>
           </aside>
         </div>
+        {/* ── Playlists ── */}
+        {(() => {
+          const playlistUrls = activeCategory.lessons.flatMap(
+            (l) => l.learningPlaylistUrl ?? [],
+          );
+          if (playlistUrls.length === 0) return null;
+          return (
+            <div className='border-t border-slate-200 pt-10 pb-16 w-full'>
+              <p className='text-xs font-bold uppercase tracking-widest text-slate-400 mb-4'>
+                Learn More: Playlists
+              </p>
+              <div className='flex flex-wrap gap-3 w-full'>
+                {playlistUrls.map((url, i) => (
+                  <Link
+                    className=' relative'
+                    href={url.url}
+                    target='_blank'
+                    key={i}
+                  >
+                    {" "}
+                    <Image
+                      src={thumbnailUrl}
+                      alt={url.title}
+                      width={320}
+                      height={180}
+                      className='rounded-xl border border-slate-200'
+                    />
+                    <p className='absolute top-0 text-white font-bold  mt-2 w-full px-2 text-lg text-center flex flex-col items-center justify-center h-full'>
+                      <span className='inline-flex items-center justify-center rounded-full bg-white/80 p-1 text-slate-900 shadow-sm mb-6'>
+                        <MdPlayArrow size={24} />
+                      </span>{" "}
+                      {url.title}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
       </main>
       {/* <Link
         href='/page/study-materials'
@@ -988,66 +1059,71 @@ export default function LearnPage() {
       >
         Read Full Slide →
       </Link> */}
+      <div className='border-t border-slate-200 pt-10 pb-16 w-full mx-auto max-w-7xl px-4 md:px-8 mb-12'>
+        <p className='text-xs font-bold uppercase tracking-widest text-slate-400 mb-12'>
+          Practise What You've Learnt
+        </p>
 
-      <div className='grid gap-5 md:grid-cols-2 mx-auto max-w-7xl px-4 md:px-8 mb-12'>
-        {[
-          {
-            path: "/page/excel-test",
-            label: "Exam Mode",
-            description:
-              "Test your knowledge with timed Excel exercises and quizzes, designed to simulate real-world scenarios and reinforce learning.",
-            IconName: MdCheckBox,
-            accent: "from-[#2660A4] to-[#4F8FCA]",
-          },
-          {
-            path: "/page/practical-excel",
-            label: "Assessment Mode",
-            description:
-              "Evaluate your Excel skills with practical tasks and challenges, providing instructor feedback to help you improve and master the application.",
-            IconName: IoBook,
-            accent: "from-[#40531B] to-[#3A2D32]",
-          },
-        ].map(({ path, label, description, IconName, accent }) => (
-          <button
-            type='button'
-            key={label}
-            onClick={() => handleNavigation(path)}
-            className='group rounded-[28px] border border-slate-200 bg-white text-left shadow-lg shadow-slate-200/80 transition duration-300 hover:-translate-y-1 hover:shadow-2xl'
-          >
-            <div
-              className={`rounded-[22px] bg-gradient-to-br ${accent} p-6 text-white`}
+        <div className='grid gap-5 md:grid-cols-2 mx-auto max-w-7xl px-4 md:px-8 mb-12'>
+          {[
+            {
+              path: "/page/excel-test",
+              label: "Exam Mode",
+              description:
+                "Test your knowledge with timed Excel exercises and quizzes, designed to simulate real-world scenarios and reinforce learning.",
+              IconName: MdCheckBox,
+              accent: "from-[#2660A4] to-[#4F8FCA]",
+            },
+            {
+              path: "/page/practical-excel",
+              label: "Assessment Mode",
+              description:
+                "Evaluate your Excel skills with practical tasks and challenges, providing instructor feedback to help you improve and master the application.",
+              IconName: IoBook,
+              accent: "from-[#40531B] to-[#3A2D32]",
+            },
+          ].map(({ path, label, description, IconName, accent }) => (
+            <button
+              type='button'
+              key={label}
+              onClick={() => handleNavigation(path)}
+              className='group rounded-[28px] border border-slate-200 bg-white text-left shadow-lg shadow-slate-200/80 transition duration-300 hover:-translate-y-1 hover:shadow-2xl'
             >
-              <div className='flex h-full min-h-[260px] flex-col justify-between gap-8 rounded-[18px] bg-slate-950/10 p-5 backdrop-blur-sm'>
-                <div className='flex items-start justify-between gap-4'>
-                  <div>
-                    <p className='text-xs font-semibold uppercase tracking-[0.3em] text-white/80'>
-                      Learning track
+              <div
+                className={`rounded-[22px] bg-gradient-to-br ${accent} p-6 text-white`}
+              >
+                <div className='flex h-full min-h-[260px] flex-col justify-between gap-8 rounded-[18px] bg-slate-950/10 p-5 backdrop-blur-sm'>
+                  <div className='flex items-start justify-between gap-4'>
+                    <div>
+                      <p className='text-xs font-semibold uppercase tracking-[0.3em] text-white/80'>
+                        Learning track
+                      </p>
+                      <h2 className='mt-3 text-3xl font-black leading-tight'>
+                        {label}
+                      </h2>
+                    </div>
+                    <span className='rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-white'>
+                      Open
+                    </span>
+                  </div>
+
+                  <div className='space-y-4'>
+                    <div className='flex h-16 w-16 items-center justify-center rounded-2xl border border-white/15 bg-white/15'>
+                      <IconName size={36} />
+                    </div>
+                    <p className='max-w-sm text-sm leading-6 text-white/90'>
+                      {description}
                     </p>
-                    <h2 className='mt-3 text-3xl font-black leading-tight'>
-                      {label}
-                    </h2>
                   </div>
-                  <span className='rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-white'>
-                    Open
-                  </span>
-                </div>
 
-                <div className='space-y-4'>
-                  <div className='flex h-16 w-16 items-center justify-center rounded-2xl border border-white/15 bg-white/15'>
-                    <IconName size={36} />
+                  <div className='flex items-center justify-between gap-3 text-sm font-semibold text-white/85'>
+                    <span>Jump in now</span>
                   </div>
-                  <p className='max-w-sm text-sm leading-6 text-white/90'>
-                    {description}
-                  </p>
-                </div>
-
-                <div className='flex items-center justify-between gap-3 text-sm font-semibold text-white/85'>
-                  <span>Jump in now</span>
                 </div>
               </div>
-            </div>
-          </button>
-        ))}
+            </button>
+          ))}
+        </div>
       </div>
       <Footer />
     </div>
