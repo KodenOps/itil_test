@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
   FaBars,
   FaHome,
@@ -31,7 +31,16 @@ const NavBar = () => {
   const [isSigningOut, setIsSigningOut] = useState(false);
 
   const router = useRouter();
-  const [supabase] = useState(() => createClient());
+  const pathname = usePathname();
+  const [supabase, setSupabase] = useState(() => {
+    try {
+      return createClient();
+    } catch (err) {
+      // If env vars are missing or client cannot be created, avoid crashing the UI.
+      console.error("Could not create Supabase client:", err);
+      return null as unknown as ReturnType<typeof createClient>;
+    }
+  });
 
   // Reference to desktop profile dropdown
   const profileRef = useRef<HTMLDivElement>(null);
@@ -64,14 +73,34 @@ const NavBar = () => {
    * Get the currently authenticated Supabase user.
    */
   const fetchUser = async () => {
+    if (!supabase) {
+      setUser(null);
+      setIsCheckingUser(false);
+      return;
+    }
     try {
+      let userResponse;
+      try {
+        userResponse = await supabase.auth.getUser();
+      } catch (err: any) {
+        // Supabase may throw AuthSessionMissingError when there is no session.
+        // Treat that as unauthenticated and avoid surfacing an unhandled
+        // rejection to the console in development.
+        const msg = (err && (err.message || err.name)) || String(err);
+        if (msg && msg.toString().toLowerCase().includes("auth session")) {
+          setUser(null);
+          return;
+        }
+        throw err;
+      }
+
       const {
         data: { user },
         error,
-      } = await supabase.auth.getUser();
+      } = userResponse;
 
       if (error) {
-        console.error("Error getting authenticated user:", error);
+        console.warn("Error getting authenticated user:", error);
         setUser(null);
         return;
       }
@@ -106,7 +135,22 @@ const NavBar = () => {
    * and listen for authentication changes.
    */
   useEffect(() => {
-    fetchUser();
+    // If supabase client isn't available, skip auth checks.
+    if (!supabase) {
+      setIsCheckingUser(false);
+      return;
+    }
+
+    // Call fetchUser and ensure any rejections are handled to avoid
+    // unhandled promise rejections from thrown errors inside getUser().
+    (async () => {
+      try {
+        await fetchUser();
+      } catch (err) {
+        console.warn("fetchUser failed:", err);
+        setIsCheckingUser(false);
+      }
+    })();
 
     const {
       data: { subscription },
@@ -196,6 +240,16 @@ const NavBar = () => {
     setIsSigningOut(true);
 
     try {
+      if (!supabase) {
+        // If client not available, just clear local state and redirect.
+        setUser(null);
+        setIsProfileOpen(false);
+        closeMenu();
+        router.push("/login");
+        router.refresh();
+        return;
+      }
+
       const { error } = await supabase.auth.signOut();
 
       if (error) {
@@ -214,6 +268,11 @@ const NavBar = () => {
     } finally {
       setIsSigningOut(false);
     }
+  };
+
+  const handleSignIn = () => {
+    const cb = pathname ?? "/";
+    router.push(`/login?callbackUrl=${encodeURIComponent(cb)}`);
   };
 
   return (
@@ -260,17 +319,24 @@ const NavBar = () => {
           </Link>
 
           {/* Exam Hub */}
-          <Link
-            href='/page/exams'
-            className='ml-2 rounded-full bg-slate-900 px-4 py-2 font-semibold text-white transition hover:bg-slate-800'
-          >
-            Exam Hub
-          </Link>
+          {(() => {
+            const examHref = user
+              ? "/page/exams"
+              : `/login?callbackUrl=${encodeURIComponent("/page/exams")}`;
+            return (
+              <Link
+                href={examHref}
+                className='ml-2 rounded-full bg-slate-900 px-4 py-2 font-semibold text-white transition hover:bg-slate-800'
+              >
+                Exam Hub
+              </Link>
+            );
+          })()}
 
           {/* ============================================================
               DESKTOP PROFILE
           ============================================================ */}
-          {!isCheckingUser && user && (
+          {!isCheckingUser && user ? (
             <div ref={profileRef} className='relative ml-2'>
               {/* Profile Trigger */}
               <button
@@ -364,7 +430,17 @@ const NavBar = () => {
                 </div>
               )}
             </div>
-          )}
+          ) : !isCheckingUser && !user ? (
+            <div className='ml-2'>
+              <button
+                type='button'
+                onClick={handleSignIn}
+                className='rounded-full px-4 py-2 font-semibold text-slate-900 transition hover:bg-slate-100'
+              >
+                Sign in
+              </button>
+            </div>
+          ) : null}
         </div>
 
         {/* ============================================================
@@ -484,7 +560,11 @@ const NavBar = () => {
               EXAM HUB
           ============================================================ */}
           <Link
-            href='/page/exams'
+            href={
+              user
+                ? "/page/exams"
+                : `/login?callbackUrl=${encodeURIComponent("/page/exams")}`
+            }
             className='mt-3 flex items-center gap-4 rounded-2xl bg-slate-900 px-4 py-4 font-semibold text-white transition hover:bg-slate-800'
             onClick={closeMenu}
           >
@@ -497,6 +577,17 @@ const NavBar = () => {
           {/* ============================================================
               MOBILE LOGOUT
           ============================================================ */}
+          {!isCheckingUser && !user && (
+            <button
+              type='button'
+              onClick={handleSignIn}
+              className='mt-3 flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 text-left transition hover:border-slate-200 hover:bg-slate-100'
+            >
+              <FaUser size={24} color='#64748b' />
+              Sign in
+            </button>
+          )}
+
           {user && (
             <button
               type='button'

@@ -21,7 +21,7 @@ function ensureEnv(key: string): string {
   return v;
 }
 
-const PUBLIC_PATHS = ["/login", "/auth/callback"] as const;
+const PUBLIC_PATHS = ["/", "/login", "/auth/callback"] as const;
 
 export async function updateSession(
   request: NextRequest,
