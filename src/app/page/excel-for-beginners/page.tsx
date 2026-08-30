@@ -1053,12 +1053,7 @@ export default function LearnPage() {
           );
         })()}
       </main>
-      {/* <Link
-        href='/page/study-materials'
-        className='block text-center border-2 border-slate-600 mb-12 text-sm text-slate-600 hover:text-slate-900 transition'
-      >
-        Read Full Slide →
-      </Link> */}
+
       <div className='border-t border-slate-200 pt-10 pb-16 w-full mx-auto max-w-7xl px-4 md:px-8 mb-12'>
         <p className='text-xs font-bold uppercase tracking-widest text-slate-400 mb-12'>
           Practise What You've Learnt
