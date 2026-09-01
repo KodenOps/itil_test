@@ -334,9 +334,7 @@ export default function PracticalAssessmentPage() {
                 >
                   <option value=''>Select Task</option>
                   <option value='task-1'>Task 1</option>
-                  <option value='task-2' disabled>
-                    Task 2
-                  </option>
+                  <option value='task-2'>Task 2</option>
                 </select>
               </div>
               <div>
