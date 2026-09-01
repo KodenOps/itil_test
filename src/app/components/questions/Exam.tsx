@@ -152,7 +152,7 @@ const Exam = ({ questionBank, qnumber }: any) => {
         <div className='absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(38,96,164,0.10),_transparent_30%),radial-gradient(circle_at_top_right,_rgba(31,138,112,0.08),_transparent_26%),linear-gradient(180deg,_#ffffff_0%,_#f8fafc_55%,_#eef2f7_100%)]' />
 
         <section className='mx-auto w-full max-w-6xl px-4 py-6 md:px-6 lg:px-8'>
-          <div className='mb-6   rounded-[28px] border border-slate-200 bg-white p-5 shadow-lg shadow-slate-200/70 md:p-6'>
+          <div className='mb-6 mt-20  rounded-[28px] border border-slate-200 bg-white p-5 shadow-lg shadow-slate-200/70 md:p-6'>
             <div className='flex flex-wrap items-center justify-between gap-4'>
               <div>
                 <p className='text-xs font-semibold uppercase tracking-[0.3em] text-slate-500'>
