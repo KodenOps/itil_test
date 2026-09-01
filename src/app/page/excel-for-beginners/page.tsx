@@ -1063,7 +1063,7 @@ export default function LearnPage() {
           Practise What You've Learnt
         </p>
 
-        <div className='grid gap-5 md:grid-cols-2 mx-auto max-w-7xl px-4 md:px-8 mb-12'>
+        <div className='grid gap-5 md:grid-cols-2 grid-cols-1 mx-auto max-w-7xl px-4 md:px-8 mb-12'>
           {[
             {
               path: "/page/excel-test",
