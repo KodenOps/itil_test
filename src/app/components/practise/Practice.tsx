@@ -190,7 +190,7 @@ const Practise = ({
       <NavBar />
       <main className='mx-auto max-w-3xl px-4 md:px-8'>
         {/* Sticky timer + progress bar */}
-        <div className='sticky top-[57px] z-30 -mx-4 md:-mx-8 mb-8 border-b border-slate-200 bg-white/95 px-4 py-4 backdrop-blur md:px-8'>
+        <div className='sticky mt-20 top-[57px] z-30 -mx-4 md:-mx-8 mb-8 border-b border-slate-200 bg-white/95 px-4 py-4 backdrop-blur md:px-8'>
           <div className='flex items-center justify-between gap-4'>
             <div>
               <p className='text-xs font-semibold uppercase tracking-widest text-slate-400'>

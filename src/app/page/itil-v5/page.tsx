@@ -913,7 +913,7 @@ export default function LearnPage() {
       <div className='grid gap-5 md:grid-cols-2 mx-auto max-w-7xl px-4 md:px-8 mb-12'>
         {[
           {
-            path: "/page/exams",
+            path: "/page/itil-exams",
             label: "Exam Mode",
             description: "Jump into the full or partial exam flow.",
             IconName: MdOutlineQuiz,
