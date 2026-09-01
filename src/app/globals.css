@@ -12,6 +12,33 @@ body {
   --foreground: #171717;
   overflow-x: hidden;
 }
+.mainpage {
+  @apply md:flex items-start md:pl-4 py-2 h-screen;
+}
+.mainpage_home {
+  @apply md:flex items-start   h-screen;
+}
+.gradientbg {
+  background-color: #0d2c5d;
+  /* background: linear-gradient(117deg,rgba(45, 45, 189, 1) 0%, rgba(84, 92, 196, 1) 57%, rgba(41, 41, 133, 1) 100%); */
+}
+
+form input {
+  @apply bg-gray-100 border-[1px] w-full border-gray-300 rounded-md px-4 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300 mb-4;
+}
+
+form button {
+  @apply bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition-colors duration-300 cursor-pointer;
+}
+
+.buttonSocial a {
+  @apply bg-gray-200 text-gray-700 font-bold  px-2 rounded hover:bg-gray-300 transition-colors duration-300 cursor-pointer w-full items-center justify-center gap-2;
+}
+
+form label {
+  @apply text-sm font-medium text-[#0E2F5E] md:block hidden;
+}
+
 input,
 textarea {
   padding: 15px;
