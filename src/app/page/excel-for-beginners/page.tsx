@@ -97,6 +97,10 @@ const categories: Category[] = [
             url: "https://www.youtube.com/watch?v=opJgMj1IUrc",
             title: "Full Beginner Project in Excel (Video)",
           },
+          {
+            url: "https://www.youtube.com/watch?v=v2oNWja7M2E&list=PLmejDGrsgFyBCxF37lewZtX6c1kJXyLt3",
+            title: "Beginner to Pro FREE Excel Data Analysis Course (Video)",
+          },
         ],
       },
       {
@@ -858,10 +862,10 @@ export default function LearnPage() {
   };
 
   return (
-    <div className='min-h-screen bg-white text-slate-900'>
+    <div className='min-h-screen bg-white text-slate-900 '>
       <NavBar />
       {/* ── Category selector bar ── */}
-      <div className='sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur'>
+      <div className='fixed w-full top-20 z-40 border-b border-slate-200 bg-white/95 backdrop-blur'>
         <div className='mx-auto max-w-7xl px-4 md:px-8'>
           <div className='flex items-center gap-1 overflow-x-auto py-3 scrollbar-none'>
             {categories.map((cat) => {
@@ -888,7 +892,7 @@ export default function LearnPage() {
         </div>
       </div>
 
-      <main className='mx-auto max-w-7xl px-4 md:px-8'>
+      <main className='mx-auto max-w-7xl px-4 md:px-8 md:mt-50 mt-40'>
         {/* ── Hero ── */}
         <div className='relative overflow-hidden rounded-3xl my-8 p-8 md:p-12'>
           <div

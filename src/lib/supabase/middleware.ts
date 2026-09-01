@@ -21,7 +21,7 @@ function ensureEnv(key: string): string {
   return v;
 }
 
-const PUBLIC_PATHS = ["/", "/login", "/auth/callback"] as const;
+const PUBLIC_PATHS = ["*", "/", "/login", "/auth/callback"] as const;
 
 export async function updateSession(
   request: NextRequest,
@@ -68,8 +68,8 @@ export async function updateSession(
   const isPublic = PUBLIC_PATHS.some(
     (p) => pathname === p || pathname.startsWith(`${p}/`),
   );
-
-  if (!user && !isPublic) {
+  //  CHANGE THIS TO REDIRECT TO LOGIN IF USER IS NOT LOGGED IN AND IS PUBLIC PATH. Just add ! to both user and public
+  if (user && isPublic) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
