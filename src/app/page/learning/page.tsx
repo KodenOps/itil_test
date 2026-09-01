@@ -1173,9 +1173,9 @@ export default function LearnPage() {
       <NavBar />
 
       {/* ── Category selector bar ── */}
-      <div className='sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur'>
+      <div className='fixed top-20 w-full z-40 border-b border-slate-200 bg-white/95 backdrop-blur'>
         <div className='mx-auto max-w-7xl px-4 md:px-8'>
-          <div className='flex items-center gap-1 overflow-x-auto py-3 scrollbar-none'>
+          <div className='flex items-center gap-1 overflow-x-auto py-3 custom-scrollbar-x'>
             {categories.map((cat) => {
               const isActive = cat.id === activeCategoryId;
               return (
@@ -1202,7 +1202,7 @@ export default function LearnPage() {
 
       <main className='mx-auto max-w-7xl px-4 md:px-8'>
         {/* ── Hero area for active category ── */}
-        <div className='relative overflow-hidden rounded-3xl my-8 p-8 md:p-12'>
+        <div className='relative md:mt-46 mt-40 overflow-hidden rounded-3xl my-8 p-8 md:p-12'>
           <div
             className={`absolute inset-0 bg-gradient-to-br ${activeCategory.accent} opacity-10`}
           />

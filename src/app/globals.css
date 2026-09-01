@@ -65,3 +65,26 @@ textarea:focus {
 main {
   position: relative;
 }
+
+/* Custom horizontal scrollbar for the category tab bar */
+.custom-scrollbar-x {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(38, 96, 164, 0.35) transparent; /* Firefox: thumb, track */
+}
+
+.custom-scrollbar-x::-webkit-scrollbar {
+  height: 6px; /* Chrome/Safari/Edge */
+}
+
+.custom-scrollbar-x::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar-x::-webkit-scrollbar-thumb {
+  background-color: #2660a4; /* slate-300 */
+  border-radius: 9999px;
+}
+
+.custom-scrollbar-x::-webkit-scrollbar-thumb:hover {
+  background-color: #2660a4; /* slate-400 */
+}

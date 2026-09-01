@@ -16,8 +16,6 @@ import {
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 // Point this at your actual workbook, e.g. a file placed in /public/assessments/
-const WORKBOOK_DOWNLOAD_URL = "/Excel_task_beginner.xlsx";
-const WORKBOOK_FILENAME = "Excel_task_beginner.xlsx";
 
 const ACCENT = "#217346";
 const ACCENT_GRADIENT = "from-[#217346] to-[#33C481]";
@@ -153,7 +151,7 @@ export default function PracticalAssessmentPage() {
       <NavBar />
       <main className='mx-auto max-w-4xl px-4 md:px-8'>
         {/* Hero */}
-        <div className='relative overflow-hidden rounded-3xl my-8 p-8 md:p-12 border border-slate-200'>
+        <div className='relative overflow-hidden rounded-3xl md:mt-40 mt-30 mb-8 p-8 md:p-12 border border-slate-200'>
           <div
             className={`absolute inset-0 bg-gradient-to-br ${ACCENT_GRADIENT} opacity-10`}
           />

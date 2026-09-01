@@ -18,7 +18,7 @@ const Page = () => {
   return (
     <div className='min-h-screen bg-white text-slate-900'>
       <NavBar />
-      <main className='relative overflow-hidden'>
+      <main className='relative overflow-hidden mt-20'>
         <div className='absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(38,96,164,0.10),_transparent_30%),radial-gradient(circle_at_top_right,_rgba(31,138,112,0.08),_transparent_26%),linear-gradient(180deg,_#ffffff_0%,_#f8fafc_55%,_#eef2f7_100%)]' />
         <div className='absolute left-[-8rem] top-24 -z-10 h-72 w-72 rounded-full bg-[#2660A4]/10 blur-3xl' />
         <div className='absolute right-[-6rem] top-56 -z-10 h-80 w-80 rounded-full bg-[#F97316]/10 blur-3xl' />

@@ -867,7 +867,7 @@ export default function LearnPage() {
       {/* ── Category selector bar ── */}
       <div className='fixed w-full top-20 z-40 border-b border-slate-200 bg-white/95 backdrop-blur'>
         <div className='mx-auto max-w-7xl px-4 md:px-8'>
-          <div className='flex items-center gap-1 overflow-x-auto py-3 scrollbar-none'>
+          <div className='flex items-center gap-1 overflow-x-auto py-3 custom-scrollbar-x'>
             {categories.map((cat) => {
               const isActive = cat.id === activeCategoryId;
               return (

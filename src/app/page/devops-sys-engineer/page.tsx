@@ -165,7 +165,7 @@ export default function Page() {
         <div className='absolute right-[-6rem] top-56 -z-10 h-80 w-80 rounded-full bg-[#F97316]/10 blur-3xl' />
 
         <section className='mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 py-16 md:px-10 lg:px-12'>
-          <div className='max-w-4xl'>
+          <div className='max-w-4xl mt-20'>
             <div className='inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 shadow-sm shadow-slate-200/70 backdrop-blur'>
               DevOps + System Engineer learning path
             </div>

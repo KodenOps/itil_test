@@ -39,7 +39,7 @@ export default function Page() {
     <div className='min-h-screen w-full bg-slate-50'>
       <NavBar />
 
-      <div className='main mx-auto max-w-8xl px-4 pb-20 pt-8 md:px-6'>
+      <div className='main mx-auto max-w-8xl px-4 mt-20 pb-20 pt-8 md:px-6'>
         <h2 className='text-center text-2xl font-bold text-[#2660A4] md:text-3xl'>
           Welcome to My Blog
         </h2>

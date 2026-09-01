@@ -434,7 +434,7 @@ const NavBar = () => {
             <div className='ml-2'>
               <button
                 type='button'
-                onClick={handleSignIn}
+                // onClick={handleSignIn}
                 className='rounded-full px-4 py-2 font-semibold text-slate-900 transition hover:bg-slate-100'
               >
                 Sign in
@@ -580,7 +580,7 @@ const NavBar = () => {
           {!isCheckingUser && !user && (
             <button
               type='button'
-              onClick={handleSignIn}
+              // onClick={handleSignIn}
               className='mt-3 flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 text-left transition hover:border-slate-200 hover:bg-slate-100'
             >
               <FaUser size={24} color='#64748b' />

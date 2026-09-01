@@ -1,6 +1,7 @@
 const WORKBOOK_DOWNLOAD_URL = "/Excel_task_beginner.xlsx";
+const WORKBOOK_DOWNLOAD_URL_2 = "/Task2_Excel_task_intermediate.xlsx";
 const WORKBOOK_FILENAME = "Excel_task_beginner.xlsx";
-
+const WORKBOOK_FILENAME_2 = "Task2_Excel_task_intermediate.xlsx";
 interface excel_type {
   title: string;
   description: string;
@@ -27,14 +28,15 @@ const excel_data: excel_type[] = [
   {
     title: "Task 2",
     description: "Working with Data in Excel",
-    link: WORKBOOK_DOWNLOAD_URL,
+    link: WORKBOOK_DOWNLOAD_URL_2,
     bg: "#f2f4f3",
-    status: "locked",
-    download: WORKBOOK_FILENAME,
+    status: "open",
+    download: WORKBOOK_FILENAME_2,
     basic_concept: [
       "Sorting data",
       "Table formatting",
       "Conditional formatting",
+      "Pivot tables and charts",
     ],
   },
   {
@@ -45,9 +47,9 @@ const excel_data: excel_type[] = [
     status: "locked",
     download: WORKBOOK_FILENAME,
     basic_concept: [
-      "Creating charts",
-      "Formatting charts",
-      "Adding data labels",
+      "Advance Data Analysis",
+      "Reporting and Dashboards",
+      "Data Visualization",
     ],
   },
 ];
