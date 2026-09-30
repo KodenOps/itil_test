@@ -52,7 +52,7 @@ const Page = () => {
                 path: "/page/itil-v5-Strategist",
                 label: "ITIL V4/V5 Strategist",
                 description: "Direct, Plan and Improve module.",
-                IconName: SiKubernetes,
+                IconName: MdOutlineWorkOutline,
                 accent: "from-[#26a465] to-[#39c682]",
               },
             ].map(({ path, label, description, IconName, accent }) => (
