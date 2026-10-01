@@ -12,6 +12,7 @@ import {
   FaSignOutAlt,
   FaChevronDown,
   FaUser,
+  FaGraduationCap,
 } from "react-icons/fa";
 import { createClient } from "@/lib/supabase/client";
 
@@ -309,6 +310,14 @@ const NavBar = () => {
           >
             My Blog
           </Link>
+          {/* Bootcamp */}
+          <Link
+            href='https://rubytech.com.ng/bootcamp'
+            target='_blank'
+            className='rounded-full px-4 py-2 transition hover:bg-slate-100 hover:text-[#2660A4]'
+          >
+            Bootcamp
+          </Link>
 
           {/* Feedback */}
           <Link
@@ -542,6 +551,16 @@ const NavBar = () => {
           >
             <FaLightbulb size={24} color='#64748b' />
             My Blog
+          </Link>
+          <Link
+            href='https://rubytech.com.ng/bootcamp'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='mt-3 flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 transition hover:border-slate-200 hover:bg-slate-100 hover:text-[#2660A4]'
+            onClick={closeMenu}
+          >
+            <FaGraduationCap size={24} color='#64748b' />
+            Bootcamp
           </Link>
 
           {/* ============================================================
