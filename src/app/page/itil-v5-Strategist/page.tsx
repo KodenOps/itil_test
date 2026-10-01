@@ -975,19 +975,19 @@ export default function LearnPage() {
       <div className='grid gap-5 md:grid-cols-2 mx-auto max-w-7xl px-4 md:px-8 mb-12'>
         {[
           {
-            path: "/page/itil-exams",
+            path: "/page/exams",
             label: "Exam Mode",
             description: "Jump into the full or partial exam flow.",
             IconName: MdOutlineQuiz,
             accent: "from-[#2660A4] to-[#4F8FCA]",
           },
-          {
-            path: "/page/study-materials",
-            label: "Study Material",
-            description: "Browse supporting files and study references.",
-            IconName: BiBook,
-            accent: "from-[#26a465] to-[#39c682]",
-          },
+          // {
+          //   path: "/page/study-materials",
+          //   label: "Study Material",
+          //   description: "Browse supporting files and study references.",
+          //   IconName: BiBook,
+          //   accent: "from-[#26a465] to-[#39c682]",
+          // },
         ].map(({ path, label, description, IconName, accent }) => (
           <button
             type='button'
