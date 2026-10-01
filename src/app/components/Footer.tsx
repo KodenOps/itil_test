@@ -35,6 +35,12 @@ const Footer = () => {
             Contact
           </Link>
           <Link
+            href='https://rubytech.com.ng/bootcamp'
+            className='rounded-full border border-slate-200 bg-white px-4 py-2 transition hover:border-slate-300 hover:text-[#2660A4]'
+          >
+            Bootcamp
+          </Link>
+          <Link
             href='https://ng.linkedin.com/in/femi-fadiya-segun-pelumi'
             target='_blank'
             rel='noopener noreferrer'
