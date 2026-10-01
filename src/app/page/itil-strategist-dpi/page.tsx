@@ -23,10 +23,13 @@ const Page = () => {
               Exam section
             </div>
             <h1 className='mt-6 max-w-4xl text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-7xl'>
-              Welcome To Your ITIL Exams Section
+              Welcome To Your <br /> ITIL Strategist: Design, Plan and Improve
+              Exams Section
             </h1>
             <p className='mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg'>
-              Get ready for your ITIL exam your way. Take a full timed
+              Get ready for your ITIL Strategist: Design, Plan and Improve exam.
+              This test covers the key concepts and practices of the ITIL
+              Strategist: Design, Plan and Improve module. Take a full timed
               simulation, try a quick practice with instant feedback, or drill
               through the entire question bank for maximum prep.
             </p>
@@ -35,7 +38,7 @@ const Page = () => {
           <div className='grid gap-5 md:grid-cols-2 xl:grid-cols-3'>
             {[
               {
-                path: "/page/itil-exam",
+                path: "/page/itil-dpi-exam",
                 mode: "Full Exam Mode",
                 description:
                   "Take a timed simulation that mirrors the exam room.",
@@ -43,7 +46,7 @@ const Page = () => {
                 accent: "from-[#2660A4] to-[#4F8FCA]",
               },
               {
-                path: "/page/itil-practise",
+                path: "/page/itil-dpi-practise",
                 mode: "Partial Exam Mode",
                 description:
                   "Work through questions with a lighter practice flow.",
@@ -51,7 +54,7 @@ const Page = () => {
                 accent: "from-[#26a465] to-[#39c682]",
               },
               {
-                path: "/page/itil-practise-extended",
+                path: "/page/itil-dpi-practice-extended",
                 mode: "Extended Question Bank",
                 description:
                   "Cover the full bank when you want more depth and repetition.",
@@ -72,7 +75,7 @@ const Page = () => {
                     <div className='flex items-start justify-between gap-4'>
                       <div>
                         <p className='text-xs font-semibold uppercase tracking-[0.3em] text-white/80'>
-                          Learning track
+                          ITIL Strategist
                         </p>
                         <h2 className='mt-3 text-3xl font-black leading-tight'>
                           {mode}

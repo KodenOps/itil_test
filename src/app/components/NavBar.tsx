@@ -325,7 +325,7 @@ const NavBar = () => {
               : `/login?callbackUrl=${encodeURIComponent("/page/exams")}`;
             return (
               <Link
-                href={examHref}
+                href='/page/exams'
                 className='ml-2 rounded-full bg-slate-900 px-4 py-2 font-semibold text-white transition hover:bg-slate-800'
               >
                 Exam Hub
@@ -560,11 +560,12 @@ const NavBar = () => {
               EXAM HUB
           ============================================================ */}
           <Link
-            href={
-              user
-                ? "/page/exams"
-                : `/login?callbackUrl=${encodeURIComponent("/page/exams")}`
-            }
+            href='/page/exams'
+            // href={
+            //   user
+            //     ? "/page/exams"
+            //     : `/login?callbackUrl=${encodeURIComponent("/page/exams")}`
+            // }
             className='mt-3 flex items-center gap-4 rounded-2xl bg-slate-900 px-4 py-4 font-semibold text-white transition hover:bg-slate-800'
             onClick={closeMenu}
           >
