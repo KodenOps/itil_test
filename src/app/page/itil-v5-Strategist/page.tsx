@@ -46,15 +46,18 @@ let playlist = [
   {
     url: "https://www.youtube.com/playlist?list=PLp5yhJ4S9EutvHrkFlV1MQt72DvpT2oh2",
     title: "ITIL Strategist: Direct Plan and Improve  (Video Playlist)",
+    thumbnailVideoId: "Jqb1MS97iQc",
   },
   {
     url: "https://www.youtube.com/playlist?list=PLgqNsTMvrR6Z-EQGL1KCTZNv4wsqtP3V3",
     title: "ITIL Strategist: Crash Course  (Video Playlist)",
+    thumbnailVideoId: "leoHjnDQ7f0",
   },
   {
     url: "https://www.youtube.com/watch?v=K4YLDzY216U",
     title:
       "ITIL® 4 DPI Exam Prep: Sample Questions and Rationale Explained  (Video)",
+    thumbnailVideoId: "K4YLDzY216U",
   },
 ];
 
@@ -1104,13 +1107,14 @@ export default function LearnPage() {
       </main>
 
       {/* playlist */}
-      <div className='border-t border-slate-200 pt-10 pb-16 w-full mx-auto max-w-7xl px-4 md:px-8'>
+      <div className='border-t border-slate-200 pt-10 pb-16 w-full mx-auto max-w-7xl  md:px-8'>
         <p className='text-xs font-bold uppercase tracking-widest text-slate-400 mb-4'>
           Learn More: Playlists
         </p>
         <div className='flex flex-wrap justify-start gap-3 mx-10'>
           {playlist.map((item, i) => {
             const videoId =
+              item.thumbnailVideoId ??
               item.url.match(/[?&]v=([^&]+)/)?.[1] ??
               item.url.match(/\/([A-Za-z0-9_-]{11})(?:[?&]|$)/)?.[1] ??
               "K4YLDzY216U";
@@ -1136,11 +1140,11 @@ export default function LearnPage() {
               </Link>
             );
           })}
-          <div className='pt-4 mt-3 border-y-2 w-full border-slate-200 '>
+          <div className='border-t border-slate-200 pt-10 pb-16 w-full '>
             <p className='text-xs font-bold uppercase tracking-widest text-slate-400 mb-4'>
               Practice With Exam Dumps
             </p>
-            <div className='grid gap-5 md:grid-cols-2 mx-auto max-w-4xl px-4 md:px-8 mb-12'>
+            <div className=''>
               {[
                 {
                   path: "/page/exams",
@@ -1161,7 +1165,7 @@ export default function LearnPage() {
                   type='button'
                   key={label}
                   onClick={() => handleNavigation(path)}
-                  className='group rounded-[28px] border border-slate-200 bg-white p-4 text-left shadow-lg shadow-slate-200/80 transition duration-300 hover:-translate-y-1 hover:shadow-2xl'
+                  className='group rounded-[28px] border border-slate-200 bg-white md:p-4 text-left shadow-lg shadow-slate-200/80 transition duration-300 hover:-translate-y-1 hover:shadow-2xl'
                 >
                   <div
                     className={`rounded-[22px] bg-gradient-to-br ${accent} p-6 text-white`}
