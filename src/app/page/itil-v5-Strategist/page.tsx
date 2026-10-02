@@ -1147,7 +1147,7 @@ export default function LearnPage() {
             <div className=''>
               {[
                 {
-                  path: "/page/exams",
+                  path: "/page/itil-strategist-dpi",
                   label: "Exam Mode",
                   description: "Jump into the full or partial exam flow.",
                   IconName: MdOutlineQuiz,
@@ -1174,7 +1174,7 @@ export default function LearnPage() {
                       <div className='flex items-start justify-between gap-4'>
                         <div>
                           <p className='text-xs font-semibold uppercase tracking-[0.3em] text-white/80'>
-                            Learning track
+                            ITIL DPI
                           </p>
                           <h2 className='mt-3 text-3xl font-black leading-tight'>
                             {label}
