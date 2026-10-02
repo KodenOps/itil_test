@@ -3,9 +3,12 @@
 import Footer from "@/app/components/Footer";
 import React, { useEffect, useRef, useState } from "react";
 import { BiBook } from "react-icons/bi";
-import { MdOutlineQuiz } from "react-icons/md";
+import { MdOutlineQuiz, MdPlayArrow } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import NavBar from "@/app/components/NavBar";
+import Image from "next/image";
+import Link from "next/link";
+import thumbnailUrl from "../../../../public/images/thumbnail.avif";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -14,6 +17,8 @@ type TopicLesson = {
   title: string;
   body: string;
   takeaway: string;
+  learningPlaylistUrl?: urlObject[];
+
   visual?:
     | "diagram-layered"
     | "diagram-cycle"
@@ -30,7 +35,28 @@ type Category = {
   accent: string;
   accentHex: string;
   lessons: TopicLesson[];
+  learningPlaylistUrl?: urlObject[];
 };
+type urlObject = {
+  url: string;
+  title: string;
+};
+
+let playlist = [
+  {
+    url: "https://www.youtube.com/playlist?list=PLp5yhJ4S9EutvHrkFlV1MQt72DvpT2oh2",
+    title: "ITIL Strategist: Direct Plan and Improve  (Video Playlist)",
+  },
+  {
+    url: "https://www.youtube.com/playlist?list=PLgqNsTMvrR6Z-EQGL1KCTZNv4wsqtP3V3",
+    title: "ITIL Strategist: Crash Course  (Video Playlist)",
+  },
+  {
+    url: "https://www.youtube.com/watch?v=K4YLDzY216U",
+    title:
+      "ITIL® 4 DPI Exam Prep: Sample Questions and Rationale Explained  (Video)",
+  },
+];
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -46,6 +72,21 @@ const categories: Category[] = [
     lessons: [
       {
         id: "dpi-purpose",
+        learningPlaylistUrl: [
+          {
+            url: "https://www.youtube.com/playlist?list=PLp5yhJ4S9EutvHrkFlV1MQt72DvpT2oh2",
+            title: "ITIL Strategist: Direct Plan and Improve  (Video Playlist)",
+          },
+          {
+            url: "https://www.youtube.com/playlist?list=PLgqNsTMvrR6Z-EQGL1KCTZNv4wsqtP3V3",
+            title: "ITIL Strategist: Crash Course  (Video Playlist)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=K4YLDzY216U",
+            title:
+              "ITIL® 4 DPI Exam Prep: Sample Questions and Rationale Explained  (Video)",
+          },
+        ],
         title: "Purpose and Scope of Direct, Plan and Improve",
         body: "Direct, Plan and Improve (DPI) explains how to create a 'learning, improving, and telling' organization that is agile, resilient, and aligned with its strategy. It moves beyond running services to steering the whole organization: setting direction, turning that direction into plans, and improving continually at every level.\n\nDPI is aimed at leaders and managers who need to integrate ITIL with wider business strategy, governance, and ways of working. It shows how IT and digital services are directed and improved as part of the organization as a whole, not as an isolated function.",
         takeaway:
@@ -96,6 +137,21 @@ const categories: Category[] = [
     lessons: [
       {
         id: "direction-defined",
+        learningPlaylistUrl: [
+          {
+            url: "https://www.youtube.com/playlist?list=PLp5yhJ4S9EutvHrkFlV1MQt72DvpT2oh2",
+            title: "ITIL Strategist: Direct Plan and Improve  (Video Playlist)",
+          },
+          {
+            url: "https://www.youtube.com/playlist?list=PLgqNsTMvrR6Z-EQGL1KCTZNv4wsqtP3V3",
+            title: "ITIL Strategist: Crash Course  (Video Playlist)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=K4YLDzY216U",
+            title:
+              "ITIL® 4 DPI Exam Prep: Sample Questions and Rationale Explained  (Video)",
+          },
+        ],
         title: "Direction: Vision, Mission and Objectives",
         body: "Direction gives an organization a sense of purpose and a clear line of sight from everyday work to overall goals. It is expressed through the vision (an aspirational description of what the organization wants to become), the mission (its purpose and what it does, and for whom), and objectives (specific, measurable results that show progress toward the vision).\n\nDirection needs to be understood by everyone. If people cannot connect their work to the vision and objectives, they will optimize locally and may work against one another without realizing it.",
         takeaway:
@@ -191,6 +247,21 @@ const categories: Category[] = [
     lessons: [
       {
         id: "principles-overview",
+        learningPlaylistUrl: [
+          {
+            url: "https://www.youtube.com/playlist?list=PLp5yhJ4S9EutvHrkFlV1MQt72DvpT2oh2",
+            title: "ITIL Strategist: Direct Plan and Improve  (Video Playlist)",
+          },
+          {
+            url: "https://www.youtube.com/playlist?list=PLgqNsTMvrR6Z-EQGL1KCTZNv4wsqtP3V3",
+            title: "ITIL Strategist: Crash Course  (Video Playlist)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=K4YLDzY216U",
+            title:
+              "ITIL® 4 DPI Exam Prep: Sample Questions and Rationale Explained  (Video)",
+          },
+        ],
         title: "Applying the Guiding Principles",
         body: "The guiding principles are universal recommendations that guide decisions in all circumstances, whatever the organization's goals, strategy, or structure. In DPI they are the lens through which direction is set, plans are built, and improvements are chosen.\n\nThey work together rather than in isolation. Applying just one of them rigidly usually causes problems. For example, 'keep it simple' applied without 'think and work holistically' may remove something essential, while 'progress iteratively' without 'focus on value' can produce lots of small changes that deliver nothing meaningful.",
         takeaway:
@@ -263,6 +334,21 @@ const categories: Category[] = [
     lessons: [
       {
         id: "setting-direction",
+        learningPlaylistUrl: [
+          {
+            url: "https://www.youtube.com/playlist?list=PLp5yhJ4S9EutvHrkFlV1MQt72DvpT2oh2",
+            title: "ITIL Strategist: Direct Plan and Improve  (Video Playlist)",
+          },
+          {
+            url: "https://www.youtube.com/playlist?list=PLgqNsTMvrR6Z-EQGL1KCTZNv4wsqtP3V3",
+            title: "ITIL Strategist: Crash Course  (Video Playlist)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=K4YLDzY216U",
+            title:
+              "ITIL® 4 DPI Exam Prep: Sample Questions and Rationale Explained  (Video)",
+          },
+        ],
         title: "Setting Direction and Strategy",
         body: "Setting direction starts with understanding the organization's context and stakeholders, then defining a vision, mission, objectives, and the strategy for achieving them. Good direction is clear enough to guide decisions and flexible enough to adjust as circumstances change.\n\nA useful strategy states priorities and trade-offs. It is broken down into manageable initiatives, with owners, resources, and measures of success. Direction should be tested against reality: do people understand it, can they act on it, and does it match what is actually possible with the organization's capabilities?",
         takeaway:
@@ -330,6 +416,21 @@ const categories: Category[] = [
     lessons: [
       {
         id: "planning-fundamentals",
+        learningPlaylistUrl: [
+          {
+            url: "https://www.youtube.com/playlist?list=PLp5yhJ4S9EutvHrkFlV1MQt72DvpT2oh2",
+            title: "ITIL Strategist: Direct Plan and Improve  (Video Playlist)",
+          },
+          {
+            url: "https://www.youtube.com/playlist?list=PLgqNsTMvrR6Z-EQGL1KCTZNv4wsqtP3V3",
+            title: "ITIL Strategist: Crash Course  (Video Playlist)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=K4YLDzY216U",
+            title:
+              "ITIL® 4 DPI Exam Prep: Sample Questions and Rationale Explained  (Video)",
+          },
+        ],
         title: "Planning Fundamentals",
         body: "Planning converts direction into a set of actions that can be resourced, scheduled, and measured. Good planning considers objectives, scope, dependencies, constraints, resources, risks, and how progress will be measured. It should involve the people responsible for delivering the plan, since they know what is feasible.\n\nPlans are hypotheses about the future. They should be revisited as new information arrives. The value of planning is as much in the conversation and shared understanding it creates as in the plan document itself.",
         takeaway:
@@ -423,6 +524,21 @@ const categories: Category[] = [
     lessons: [
       {
         id: "ci-model",
+        learningPlaylistUrl: [
+          {
+            url: "https://www.youtube.com/playlist?list=PLp5yhJ4S9EutvHrkFlV1MQt72DvpT2oh2",
+            title: "ITIL Strategist: Direct Plan and Improve  (Video Playlist)",
+          },
+          {
+            url: "https://www.youtube.com/playlist?list=PLgqNsTMvrR6Z-EQGL1KCTZNv4wsqtP3V3",
+            title: "ITIL Strategist: Crash Course  (Video Playlist)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=K4YLDzY216U",
+            title:
+              "ITIL® 4 DPI Exam Prep: Sample Questions and Rationale Explained  (Video)",
+          },
+        ],
         title: "The Continual Improvement Model",
         body: "The continual improvement model provides a structured approach to improvement initiatives. It begins with the vision, which keeps improvement aligned with organizational direction. Assessing the current state gives a baseline. Defining the target state sets measurable goals. Planning how to get there identifies the steps and resources. Taking action carries out the work. Evaluating results checks whether the target was reached. Finally, sustaining momentum embeds the change and feeds the next round.\n\nThe model is not strictly linear. Steps can be repeated or iterated, and it can be applied using Agile or waterfall approaches. Each step should be adapted to the size and nature of the improvement.",
         takeaway:
@@ -491,6 +607,21 @@ const categories: Category[] = [
     lessons: [
       {
         id: "measurement-reporting",
+        learningPlaylistUrl: [
+          {
+            url: "https://www.youtube.com/playlist?list=PLp5yhJ4S9EutvHrkFlV1MQt72DvpT2oh2",
+            title: "ITIL Strategist: Direct Plan and Improve  (Video Playlist)",
+          },
+          {
+            url: "https://www.youtube.com/playlist?list=PLgqNsTMvrR6Z-EQGL1KCTZNv4wsqtP3V3",
+            title: "ITIL Strategist: Crash Course  (Video Playlist)",
+          },
+          {
+            url: "https://www.youtube.com/watch?v=K4YLDzY216U",
+            title:
+              "ITIL® 4 DPI Exam Prep: Sample Questions and Rationale Explained  (Video)",
+          },
+        ],
         title: "Measurement and Reporting",
         body: "The purpose of measurement and reporting is to support good decision-making and continual improvement by decreasing levels of uncertainty. This is achieved through the collection of relevant data on various managed objects and the valid assessment of this data in an appropriate context.\n\nMeasurements should start from objectives, not from what is easy to measure. Critical success factors (CSFs) describe what must happen for objectives to be achieved; key performance indicators (KPIs) are the metrics used to evaluate progress against CSFs. Metrics and reports should be aligned to strategic, tactical, and operational levels, with the right level of detail for each audience.",
         takeaway:
@@ -972,67 +1103,108 @@ export default function LearnPage() {
         </div>
       </main>
 
-      <div className='grid gap-5 md:grid-cols-2 mx-auto max-w-7xl px-4 md:px-8 mb-12'>
-        {[
-          {
-            path: "/page/exams",
-            label: "Exam Mode",
-            description: "Jump into the full or partial exam flow.",
-            IconName: MdOutlineQuiz,
-            accent: "from-[#2660A4] to-[#4F8FCA]",
-          },
-          // {
-          //   path: "/page/study-materials",
-          //   label: "Study Material",
-          //   description: "Browse supporting files and study references.",
-          //   IconName: BiBook,
-          //   accent: "from-[#26a465] to-[#39c682]",
-          // },
-        ].map(({ path, label, description, IconName, accent }) => (
-          <button
-            type='button'
-            key={label}
-            onClick={() => handleNavigation(path)}
-            className='group rounded-[28px] border border-slate-200 bg-white p-4 text-left shadow-lg shadow-slate-200/80 transition duration-300 hover:-translate-y-1 hover:shadow-2xl'
-          >
-            <div
-              className={`rounded-[22px] bg-gradient-to-br ${accent} p-6 text-white`}
-            >
-              <div className='flex h-full min-h-[260px] flex-col justify-between gap-8 rounded-[18px] bg-slate-950/10 p-5 backdrop-blur-sm'>
-                <div className='flex items-start justify-between gap-4'>
-                  <div>
-                    <p className='text-xs font-semibold uppercase tracking-[0.3em] text-white/80'>
-                      Learning track
-                    </p>
-                    <h2 className='mt-3 text-3xl font-black leading-tight'>
-                      {label}
-                    </h2>
-                  </div>
-                  <span className='rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-white'>
-                    Open
-                  </span>
-                </div>
+      {/* playlist */}
+      <div className='border-t border-slate-200 pt-10 pb-16 w-full mx-auto max-w-7xl px-4 md:px-8'>
+        <p className='text-xs font-bold uppercase tracking-widest text-slate-400 mb-4'>
+          Learn More: Playlists
+        </p>
+        <div className='flex flex-wrap justify-start gap-3 mx-10'>
+          {playlist.map((item, i) => {
+            const videoId =
+              item.url.match(/[?&]v=([^&]+)/)?.[1] ??
+              item.url.match(/\/([A-Za-z0-9_-]{11})(?:[?&]|$)/)?.[1] ??
+              "K4YLDzY216U";
 
-                <div className='space-y-4'>
-                  <div className='flex h-16 w-16 items-center justify-center rounded-2xl border border-white/15 bg-white/15'>
-                    <IconName size={36} />
-                  </div>
-                  <p className='max-w-sm text-sm leading-6 text-white/90'>
-                    {description}
-                  </p>
+            return (
+              <Link
+                className='relative mb-4 block overflow-hidden rounded-2xl border border-slate-200 w-80 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg'
+                href={item.url}
+                target='_blank'
+                rel='noreferrer'
+                key={`${item.title}-${i}`}
+              >
+                <Image
+                  src={`https://img.youtube.com/vi/${videoId}/0.jpg`}
+                  alt={item.title}
+                  width={320}
+                  height={180}
+                  className='h-52 w-full object-cover '
+                />
+                <div className=' flex flex-col items-center justify-center  p-4 text-center text-black'>
+                  <p className='text-lg font-bold leading-snug'>{item.title}</p>
                 </div>
+              </Link>
+            );
+          })}
+          <div className='pt-4 mt-3 border-y-2 w-full border-slate-200 '>
+            <p className='text-xs font-bold uppercase tracking-widest text-slate-400 mb-4'>
+              Practice With Exam Dumps
+            </p>
+            <div className='grid gap-5 md:grid-cols-2 mx-auto max-w-4xl px-4 md:px-8 mb-12'>
+              {[
+                {
+                  path: "/page/exams",
+                  label: "Exam Mode",
+                  description: "Jump into the full or partial exam flow.",
+                  IconName: MdOutlineQuiz,
+                  accent: "from-[#2660A4] to-[#4F8FCA]",
+                },
+                // {
+                //   path: "/page/study-materials",
+                //   label: "Study Material",
+                //   description: "Browse supporting files and study references.",
+                //   IconName: BiBook,
+                //   accent: "from-[#26a465] to-[#39c682]",
+                // },
+              ].map(({ path, label, description, IconName, accent }) => (
+                <button
+                  type='button'
+                  key={label}
+                  onClick={() => handleNavigation(path)}
+                  className='group rounded-[28px] border border-slate-200 bg-white p-4 text-left shadow-lg shadow-slate-200/80 transition duration-300 hover:-translate-y-1 hover:shadow-2xl'
+                >
+                  <div
+                    className={`rounded-[22px] bg-gradient-to-br ${accent} p-6 text-white`}
+                  >
+                    <div className='flex h-full min-h-[260px] flex-col justify-between gap-8 rounded-[18px] bg-slate-950/10 p-5 backdrop-blur-sm'>
+                      <div className='flex items-start justify-between gap-4'>
+                        <div>
+                          <p className='text-xs font-semibold uppercase tracking-[0.3em] text-white/80'>
+                            Learning track
+                          </p>
+                          <h2 className='mt-3 text-3xl font-black leading-tight'>
+                            {label}
+                          </h2>
+                        </div>
+                        <span className='rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-white'>
+                          Open
+                        </span>
+                      </div>
 
-                <div className='flex items-center justify-between gap-3 text-sm font-semibold text-white/85'>
-                  <span>Jump in now</span>
-                  <span className='rounded-full border border-white/20 bg-white/10 px-4 py-2 transition group-hover:bg-white/20'>
-                    Open
-                  </span>
-                </div>
-              </div>
+                      <div className='space-y-4'>
+                        <div className='flex h-16 w-16 items-center justify-center rounded-2xl border border-white/15 bg-white/15'>
+                          <IconName size={36} />
+                        </div>
+                        <p className='max-w-sm text-sm leading-6 text-white/90'>
+                          {description}
+                        </p>
+                      </div>
+
+                      <div className='flex items-center justify-between gap-3 text-sm font-semibold text-white/85'>
+                        <span>Jump in now</span>
+                        <span className='rounded-full border border-white/20 bg-white/10 px-4 py-2 transition group-hover:bg-white/20'>
+                          Open
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              ))}
             </div>
-          </button>
-        ))}
+          </div>
+        </div>
       </div>
+
       <Footer />
     </div>
   );
