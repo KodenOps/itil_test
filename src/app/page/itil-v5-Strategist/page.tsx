@@ -67,7 +67,7 @@ const categories: Category[] = [
   // ───────────────────────── 1. INTRODUCTION ─────────────────────────
   {
     id: "introduction",
-    title: "Introduction to DPI",
+    title: "Introduction",
     description:
       "Understand why direction, planning, and improvement matter, and where DPI fits in the ITIL Strategist stream and the Service Value System.",
     accent: "from-[#2660A4] to-[#3C8DAD]",
