@@ -49,6 +49,14 @@ const Page = () => {
                 accent: "from-[#247BA0] to-[#3C1642]",
               },
               {
+                path: "/page/bi-for-beginners",
+                label: "PowerBi 101",
+                description:
+                  "Learn the basics of Business Intelligence with Microsoft PowerBI.",
+                IconName: MdOutlineWorkOutline,
+                accent: "from-[#DD44Af] to-[#0C1642]",
+              },
+              {
                 path: "/Itil-lobby",
                 label: "ITIL V5",
                 description:
