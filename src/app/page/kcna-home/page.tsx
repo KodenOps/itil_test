@@ -51,7 +51,7 @@ const Page = () => {
                 accent: "from-[#212932] to-[#475569]",
               },
               {
-                path: "/page/not-available",
+                path: "/kcna-materials-page",
                 label: "Study Material",
                 description: "Browse the supporting references for KCNA prep.",
                 IconName: BiBook,
