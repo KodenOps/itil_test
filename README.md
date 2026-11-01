@@ -69,6 +69,13 @@ COURSE_REQUEST_FROM=       # defaults to ASSESSMENT_FROM
 COURSE_REQUEST_TO=         # defaults to femifadiya.segun@outlook.com
 ```
 
+Optional, PWA install prompt:
+
+```
+NEXT_PUBLIC_INSTALL_PROMPT_SNOOZE_DAYS=14   # days to stay quiet after
+                                            # "Not now"; 0 = ask every visit
+```
+
 ### 2. Database
 
 Run the whole of [`supabase/schema.sql`](supabase/schema.sql) in the Supabase SQL
@@ -119,3 +126,8 @@ npm run dev
 - The site is installable (PWA): `/manifest.webmanifest`, `/sw.js` and
   `/offline.html`. The service worker never caches signed-in HTML or API
   responses, so a shared device cannot replay another account's data.
+- An install prompt appears a couple of seconds after load (native prompt on
+  Chromium, Share → Add to Home Screen instructions on iOS). It is hidden once
+  installed, snoozes after dismissal, and can be re-opened from the navbar
+  **Install app** entry — see `src/lib/pwa.ts` and
+  `src/app/components/InstallPrompt.tsx`.

@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import { AppStoreProvider } from "@/store/app-store";
 import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
+import InstallPrompt from "./components/InstallPrompt";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,6 +55,7 @@ export default function RootLayout({
       >
         <AppStoreProvider>{children}</AppStoreProvider>
         <ServiceWorkerRegister />
+        <InstallPrompt />
         <SpeedInsights />
         <Analytics />
       </body>

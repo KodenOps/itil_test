@@ -14,15 +14,19 @@ import {
   FaGraduationCap,
   FaChartPie,
 } from "react-icons/fa";
-import { MdDashboardCustomize } from "react-icons/md";
+import { MdDashboardCustomize, MdOutlineInstallMobile } from "react-icons/md";
 import { createClient } from "@/lib/supabase/client";
 import { useAppStore } from "@/store/app-store";
+import { isAppInstalled, requestInstallPrompt } from "@/lib/pwa";
 import { ROLE_LABELS } from "@/types/app";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+  // Starts false so the server and client markup match; revealed after mount
+  // only when the app is not already installed.
+  const [canInstall, setCanInstall] = useState(false);
 
   const { ready, user, profile, role, isAdmin, enrollments, signOutRefresh } =
     useNavState();
@@ -38,6 +42,17 @@ const NavBar = () => {
   const activeCourses = enrollments.filter((item) => item.status === "active");
 
   const closeMenu = () => setIsOpen(false);
+
+  useEffect(() => {
+    if (isAppInstalled()) return;
+
+    setCanInstall(true);
+
+    const onInstalled = () => setCanInstall(false);
+    window.addEventListener("appinstalled", onInstalled);
+
+    return () => window.removeEventListener("appinstalled", onInstalled);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -150,6 +165,17 @@ const NavBar = () => {
               <MdDashboardCustomize size={15} />
               Admin
             </Link>
+          )}
+
+          {canInstall && (
+            <button
+              type='button'
+              onClick={requestInstallPrompt}
+              className='hidden items-center gap-1.5 rounded-full border border-slate-200 px-3 py-2 text-slate-700 transition hover:bg-slate-100 hover:text-[#2660A4] xl:inline-flex'
+            >
+              <MdOutlineInstallMobile size={16} />
+              Install app
+            </button>
           )}
 
           <Link
@@ -361,6 +387,20 @@ const NavBar = () => {
             <FaGraduationCap size={24} color='#64748b' />
             My Courses & Profile
           </Link>
+
+          {canInstall && (
+            <button
+              type='button'
+              onClick={() => {
+                closeMenu();
+                requestInstallPrompt();
+              }}
+              className='mt-3 flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 text-left transition hover:border-slate-200 hover:bg-slate-100 hover:text-[#2660A4]'
+            >
+              <MdOutlineInstallMobile size={24} color='#64748b' />
+              Install app
+            </button>
+          )}
 
           {isAdmin && (
             <Link
