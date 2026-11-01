@@ -1,9 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Analytics } from "@vercel/analytics/react";
 import { AppStoreProvider } from "@/store/app-store";
+import AppStartupScreen from "./components/app-startup-screen";
 import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
 import InstallPrompt from "./components/InstallPrompt";
 
@@ -53,12 +52,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AppStoreProvider>{children}</AppStoreProvider>
+        <AppStartupScreen />
+        <AppStoreProvider>
+          {children}
+        </AppStoreProvider>
         <ServiceWorkerRegister />
         <InstallPrompt />
-        <SpeedInsights />
-        <Analytics />
       </body>
     </html>
   );
 }
+
