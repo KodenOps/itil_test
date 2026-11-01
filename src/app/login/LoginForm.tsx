@@ -3,46 +3,166 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { FcGoogle } from "react-icons/fc";
-import { SiFacebook } from "react-icons/si";
+import { useAppStore } from "@/store/app-store";
+
+type Mode = "signin" | "signup";
+
 export default function LoginForm() {
+  const [mode, setMode] = useState<Mode>("signin");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   const searchParams = useSearchParams();
+  const { refresh } = useAppStore();
 
   const callbackUrl = searchParams.get("callbackUrl") || "/";
   const urlError = searchParams.get("error");
 
-  const handleGoogleSignIn = async () => {
+  const switchMode = (next: Mode) => {
+    setMode(next);
+    setErrorMessage(null);
+    setNotice(null);
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setIsLoading(true);
     setErrorMessage(null);
+    setNotice(null);
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    const email = String(formData.get("email") ?? "")
+      .trim()
+      .toLowerCase();
+    const password = String(formData.get("password") ?? "");
+    const fullName = String(formData.get("fullName") ?? "").trim();
+
+    if (!email || !password) {
+      setErrorMessage("Email and password are required.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (mode === "signup" && password.length < 8) {
+      setErrorMessage("Use at least 8 characters for your password.");
+      setIsLoading(false);
+      return;
+    }
 
     const supabase = createClient();
 
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(
-          callbackUrl,
-        )}`,
-      },
+    if (mode === "signup") {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: fullName || email.split("@")[0] },
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(
+            callbackUrl,
+          )}`,
+        },
+      });
+
+      if (error) {
+        setErrorMessage(error.message);
+        setIsLoading(false);
+        return;
+      }
+
+      // With "Confirm email" enabled Supabase returns a user but no session.
+      if (!data.session) {
+        setNotice(
+          "Account created. Check your inbox to confirm your email, then sign in. You start as a Learner.",
+        );
+        form.reset();
+        setMode("signin");
+        setIsLoading(false);
+        return;
+      }
+
+      await refresh();
+      window.location.assign(callbackUrl);
+      return;
+    }
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
     });
 
     if (error) {
-      setErrorMessage(error.message);
+      setErrorMessage(
+        error.message.toLowerCase().includes("invalid login")
+          ? "That email and password combination does not match an account."
+          : error.message,
+      );
       setIsLoading(false);
+      return;
     }
+
+    await refresh();
+    window.location.assign(callbackUrl);
   };
+
   return (
     <div className='right md:flex-3 flex-1 md:pt-14 pt-0 md:px-20 px-6 overflow-y-auto h-full'>
-      <h3 className='text-3xl capitalize text-[#0E2F5E] text-center md:text-left  font-bold'>
-        sign In
+      <div className='mb-6 inline-flex rounded-full border border-slate-200 bg-white p-1 shadow-sm shadow-slate-200/70'>
+        <button
+          type='button'
+          onClick={() => switchMode("signin")}
+          className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
+            mode === "signin"
+              ? "bg-[#0E2F5E] text-white"
+              : "text-slate-600 hover:text-slate-900"
+          }`}
+        >
+          Sign In
+        </button>
+        <button
+          type='button'
+          onClick={() => switchMode("signup")}
+          className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
+            mode === "signup"
+              ? "bg-[#0E2F5E] text-white"
+              : "text-slate-600 hover:text-slate-900"
+          }`}
+        >
+          Create Account
+        </button>
+      </div>
+
+      <h3 className='text-3xl capitalize text-[#0E2F5E] text-center md:text-left font-bold'>
+        {mode === "signin" ? "sign In" : "create your account"}
       </h3>
       <p className='pt-2 pb-4 text-xl text-center md:text-left text-[#5A5C78]'>
-        Input your credentials to login into your account.
+        {mode === "signin"
+          ? "Use the email and password you registered with."
+          : "Register with your email and password. Every new account starts as a Learner."}
       </p>
-      <form className='w-full' onSubmit={(e) => e.preventDefault()}>
+
+      <form className='w-full' onSubmit={handleSubmit}>
+        {mode === "signup" && (
+          <>
+            <label
+              htmlFor='fullName'
+              className='text-sm font-medium text-[#0E2F5E] md:block hidden'
+            >
+              Full Name
+            </label>
+            <input
+              type='text'
+              id='fullName'
+              name='fullName'
+              autoComplete='name'
+              placeholder='Full name'
+              className='w-full mt-2'
+            />
+          </>
+        )}
+
         <label
           htmlFor='email'
           className='text-sm font-medium text-[#0E2F5E] md:block hidden'
@@ -50,11 +170,15 @@ export default function LoginForm() {
           Email Address
         </label>
         <input
-          type='text'
-          placeholder='Email Address'
+          type='email'
+          id='email'
           name='email'
+          autoComplete='email'
+          placeholder='Email Address'
           className='w-full mt-2'
+          required
         />
+
         <label
           htmlFor='password'
           className='text-sm font-medium text-[#0E2F5E] md:block hidden'
@@ -63,49 +187,63 @@ export default function LoginForm() {
         </label>
         <input
           type='password'
-          placeholder='Password'
+          id='password'
           name='password'
+          autoComplete={mode === "signin" ? "current-password" : "new-password"}
+          placeholder='Password'
           className='w-full mt-2'
+          minLength={mode === "signup" ? 8 : undefined}
+          required
         />
-        <button
-          type='submit'
-          className='w-full mt-4 py-4 bg-[#0E2F5E] text-white rounded-md'
-        >
-          Sign In
-        </button>
-      </form>
-      <div className='flex items-center gap-4 mt-8 justify-center'>
-        <div className='flex-1 border-t border-gray-400'></div>
-        <span className='text-gray-700'>Alternative Login</span>
-        <div className='flex-1 border-t border-gray-400'></div>
-      </div>
-      <div className='buttonSocial flex flex-wrap items-center gap-4 mt-8 justify-center'>
-        {(errorMessage || urlError) && (
-          <p className='mt-4 rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700'>
+
+        {urlError && (
+          <p className='mb-4 rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700'>
             {urlError === "access_denied"
-              ? "That Google account isn't authorized for this site."
-              : errorMessage ||
-                "Something went wrong signing in. Please try again."}
+              ? "That sign-in link is no longer valid. Please sign in again."
+              : "Something went wrong signing in. Please try again."}
           </p>
         )}
+
+        {errorMessage && (
+          <p className='mb-4 rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700'>
+            {errorMessage}
+          </p>
+        )}
+
+        {notice && (
+          <p className='mb-4 rounded-xl bg-emerald-50 px-4 py-2.5 text-sm text-emerald-800'>
+            {notice}
+          </p>
+        )}
+
         <button
-          className='w-full py-4 border-[1px] border-gray-400 rounded-md flex items-center justify-center gap-2'
-          onClick={handleGoogleSignIn}
+          type='submit'
           disabled={isLoading}
+          className='w-full mt-2 py-4 bg-[#0E2F5E] text-white rounded-md disabled:cursor-not-allowed disabled:opacity-60'
         >
-          <FcGoogle size={24} />
-          {isLoading ? "Redirecting to Google…" : "Sign In with Google"}
+          {isLoading
+            ? "Working…"
+            : mode === "signin"
+              ? "Sign In"
+              : "Create Account"}
         </button>
-        <button className='w-full py-4 border-[1px] border-gray-400 rounded-md flex items-center justify-center gap-2'>
-          <SiFacebook size={24} />
-          Sign in With Facebook{" "}
+      </form>
+
+      <p className='mt-6 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-600'>
+        Accounts are created on this page only — social sign-in is disabled.
+        Instructors and admins are promoted by invitation from the admin
+        dashboard.
+      </p>
+
+      <h3 className='text-center mt-8 pb-10 text-slate-700'>
+        {mode === "signin" ? "New to CertifyHub?" : "Already registered?"}{" "}
+        <button
+          type='button'
+          onClick={() => switchMode(mode === "signin" ? "signup" : "signin")}
+          className='font-bold text-[#0D2C5D] underline-offset-4 hover:underline'
+        >
+          {mode === "signin" ? "Create an account" : "Sign in instead"}
         </button>
-      </div>
-      <h3 className='text-center mt-8 pb-10'>
-        New to MyCertifyHub?{" "}
-        <a href='#' className='font-bold text-[#0D2C5D]'>
-          Sign Up Now
-        </a>
       </h3>
     </div>
   );

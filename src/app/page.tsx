@@ -1,19 +1,23 @@
-"use client";
-
 import React from "react";
-import { useRouter } from "next/navigation";
 import NavBar from "./components/NavBar";
-import { MdEngineering, MdOutlineWorkOutline } from "react-icons/md";
-import { SiKubernetes } from "react-icons/si";
 import Footer from "./components/Footer";
+import { listCourses } from "@/lib/content/courses";
+import { getViewer } from "@/lib/supabase/profile";
+import { listEnrollments } from "@/lib/content/courses";
+import CourseCatalog from "./CourseCatalog";
+import { ENROLLMENT_LIMIT } from "@/types/app";
 
-const Page = () => {
-  const router = useRouter();
+export const dynamic = "force-dynamic";
 
-  const handleNavigation = (path: string) => {
-    localStorage.clear();
-    router.push(path);
-  };
+const Page = async () => {
+  const [courses, viewer, enrollments] = await Promise.all([
+    listCourses(),
+    getViewer(),
+    listEnrollments(),
+  ]);
+
+  const enrolledIds = new Set(enrollments.map((item) => item.courseId));
+  const activeCount = enrollments.filter((item) => item.status === "active").length;
 
   return (
     <div className='min-h-screen bg-white text-slate-900'>
@@ -24,113 +28,68 @@ const Page = () => {
         <div className='absolute right-[-6rem] top-56 -z-10 h-80 w-80 rounded-full bg-[#F97316]/10 blur-3xl' />
 
         <section className='mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 py-14 md:px-10 lg:px-12'>
-          <div className='max-w-4xl'>
-            <div className='inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm shadow-slate-200/70 backdrop-blur'>
-              CertifyHub exam prep portal
+          <div className='grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end'>
+            <div className='max-w-4xl'>
+              <div className='inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm shadow-slate-200/70 backdrop-blur'>
+                CertifyHub exam prep portal
+              </div>
+              <h1 className='mt-6 max-w-4xl text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-7xl'>
+                Enroll in a track. Then study like it is yours.
+              </h1>
+              <p className='mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg'>
+                Courses are locked until you enroll — your seat, your pace,
+                your activity trail. You can hold{" "}
+                <span className='font-semibold text-slate-900'>
+                  {ENROLLMENT_LIMIT} active courses
+                </span>{" "}
+                at a time, so pick the ones that move you forward now.
+              </p>
             </div>
-            <h1 className='mt-6 max-w-4xl text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-7xl'>
-              Pick a track, then study with a cleaner, sharper learning path.
-            </h1>
-            <p className='mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg'>
-              Choose the exam or learning lane you want to focus on. Each path
-              is designed to feel clear, visual, and immediately useful, so you
-              can move from overview to practice without friction.
-            </p>
-          </div>
 
-          <div className='grid gap-5 md:grid-cols-2 xl:grid-cols-3'>
-            {[
-              {
-                path: "/page/excel-for-beginners",
-                label: "Excel 101",
-                description:
-                  "Learn the basics of Excel, including formulas, functions, and data visualization.",
-                IconName: MdOutlineWorkOutline,
-                accent: "from-[#247BA0] to-[#3C1642]",
-              },
-              {
-                path: "/page/bi-for-beginners",
-                label: "PowerBi 101",
-                description:
-                  "Learn the basics of Business Intelligence with Microsoft PowerBI.",
-                IconName: MdOutlineWorkOutline,
-                accent: "from-[#DD44Af] to-[#0C1642]",
-              },
-              {
-                path: "/Itil-lobby",
-                label: "ITIL V5",
-                description:
-                  "Process thinking, service value, and exam practice built around the ITIL path.",
-                IconName: MdOutlineWorkOutline,
-                accent: "from-[#2660A4] to-[#4F8FCA]",
-              },
-              {
-                path: "/page/kcna-home",
-                label: "KCNA",
-                description:
-                  "Kubernetes fundamentals, practice flow, and study structure for cloud-native learners.",
-                IconName: SiKubernetes,
-                accent: "from-[#26a465] to-[#39c682]",
-              },
-              {
-                path: "/page/devops-sys-engineer",
-                label: "DevOps & Sys Eng",
-                description:
-                  "Architecture, reliability, production sense, and the skills that make systems durable.",
-                IconName: MdEngineering,
-                accent: "from-[#6D2E46] to-[#A24E67]",
-              },
-            ].map(({ path, label, description, IconName, accent }) => (
-              <button
-                key={label}
-                type='button'
-                onClick={() => handleNavigation(path)}
-                className='group rounded-[28px] border border-slate-200 bg-white p-4 text-left shadow-lg shadow-slate-200/80 transition duration-300 hover:-translate-y-1 hover:shadow-2xl'
-              >
+            <div className='rounded-[28px] border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/70'>
+              <p className='text-xs font-semibold uppercase tracking-[0.3em] text-slate-500'>
+                Your learning seat
+              </p>
+              <p className='mt-3 text-5xl font-black text-slate-900'>
+                {activeCount}
+                <span className='text-2xl font-bold text-slate-400'>
+                  /{ENROLLMENT_LIMIT}
+                </span>
+              </p>
+              <p className='mt-2 text-sm text-slate-600'>
+                {viewer
+                  ? activeCount >= ENROLLMENT_LIMIT
+                    ? "Both seats taken. Leave a course to switch tracks."
+                    : `${ENROLLMENT_LIMIT - activeCount} seat${
+                        ENROLLMENT_LIMIT - activeCount === 1 ? "" : "s"
+                      } left.`
+                  : "Sign in to claim your seats and track progress."}
+              </p>
+              <div className='mt-4 h-2 w-full overflow-hidden rounded-full bg-slate-100'>
                 <div
-                  className={`rounded-[22px] bg-gradient-to-br ${accent} p-6 text-white`}
-                >
-                  <div className='flex h-full min-h-[260px] flex-col justify-between gap-8 rounded-[18px] bg-slate-950/10 p-5 backdrop-blur-sm'>
-                    <div className='flex items-start justify-between gap-4'>
-                      <div>
-                        <p className='text-xs font-semibold uppercase tracking-[0.3em] text-white/80'>
-                          Learning track
-                        </p>
-                        <h2 className='mt-3 text-3xl font-black leading-tight'>
-                          {label}
-                        </h2>
-                      </div>
-                      <span className='rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-white'>
-                        Open
-                      </span>
-                    </div>
-
-                    <div className='space-y-4'>
-                      <div className='flex h-16 w-16 items-center justify-center rounded-2xl border border-white/15 bg-white/15'>
-                        <IconName size={36} />
-                      </div>
-                      <p className='max-w-sm text-sm leading-6 text-white/90'>
-                        {description}
-                      </p>
-                    </div>
-
-                    <div className='flex items-center justify-between gap-3 text-sm font-semibold text-white/85'>
-                      <span>Jump into the pathway</span>
-                      <span className='rounded-full border border-white/20 bg-white/10 px-4 py-2 transition group-hover:bg-white/20'>
-                        Continue
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </button>
-            ))}
+                  className='h-full rounded-full bg-gradient-to-r from-[#2660A4] to-[#26a465]'
+                  style={{
+                    width: `${(activeCount / ENROLLMENT_LIMIT) * 100}%`,
+                  }}
+                />
+              </div>
+            </div>
           </div>
+
+          <CourseCatalog
+            courses={courses}
+            enrolledIds={[...enrolledIds]}
+            isSignedIn={Boolean(viewer)}
+            activeCount={activeCount}
+            limit={ENROLLMENT_LIMIT}
+            isAdmin={viewer?.profile.role === "admin"}
+          />
 
           <div className='grid gap-4 rounded-[28px] border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/70 md:grid-cols-3'>
             {[
-              "Clear exam entry points",
-              "Visually rich study paths",
-              "Fast navigation into practice or materials",
+              "Enrollment required before any assessment opens",
+              "Live enrollment counts for every course",
+              "Activity, scores and progress saved to your profile",
             ].map((item) => (
               <div key={item} className='rounded-2xl bg-slate-50 p-5'>
                 <p className='text-sm font-semibold text-slate-900'>{item}</p>

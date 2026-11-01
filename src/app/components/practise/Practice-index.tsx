@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import NavBar from "../NavBar";
+import { recordAttempt } from "@/lib/activity/record";
 
 interface Question {
   question: string;
@@ -14,6 +15,8 @@ interface PractiseProps {
   questionBank: Question[];
   qnumber: number;
   duration?: number;
+  courseSlug?: string;
+  mode?: string;
 }
 
 const LOCAL_STORAGE_KEY = "quizState";
@@ -22,6 +25,8 @@ const Practise = ({
   questionBank,
   qnumber,
   duration = 3600,
+  courseSlug,
+  mode = "practice-index",
 }: PractiseProps) => {
   const router = useRouter();
   const [timeLeft, setTimeLeft] = useState<number>(duration);
@@ -137,6 +142,14 @@ const Practise = ({
   };
 
   const handleFinish = () => {
+    recordAttempt({
+      courseSlug: courseSlug ?? "",
+      mode,
+      total: shuffledQuestions.length,
+      correct: score,
+      durationSeconds: duration - timeLeft,
+    });
+
     localStorage.setItem("finalScore", JSON.stringify(score));
     localStorage.setItem(
       "totalQuestions",

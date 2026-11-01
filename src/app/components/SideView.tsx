@@ -3,7 +3,11 @@ import ReviewBar from "@/app/components/ReviewBar";
 import Image from "next/image";
 import line from "../../../public/line.svg";
 import mylogo from "../../../public/logo_white.png";
-const SideView = () => {
+import { listReviews } from "@/lib/content/reviews";
+
+const SideView = async () => {
+  const reviews = await listReviews();
+
   return (
     <div className='left flex-3 md:flex hidden gradientbg rounded-sm px-4 flex  flex-col py-4 justify-between items-center h-full'>
       <div className='titleText px-4 pt-4'>
@@ -33,7 +37,7 @@ const SideView = () => {
           becoming certified professionals through mycertifyhub.
         </p>
       </div>
-      <ReviewBar />
+      <ReviewBar reviews={reviews} />
     </div>
   );
 };

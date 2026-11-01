@@ -21,58 +21,81 @@ function ensureEnv(key: string): string {
   return v;
 }
 
-const PUBLIC_PATHS = ["*", "/", "/login", "/auth/callback"] as const;
+/** Routes that need a verified session. Everything else is public. */
+const PROTECTED_PREFIXES = ["/admin", "/profile", "/page", "/score"];
+
+/** Public even though they live under a protected prefix. */
+const PUBLIC_EXCEPTIONS = ["/page/suggestion"];
+
+function isProtected(pathname: string) {
+  if (
+    PUBLIC_EXCEPTIONS.some(
+      (path) => pathname === path || pathname.startsWith(`${path}/`),
+    )
+  ) {
+    return false;
+  }
+
+  return PROTECTED_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+}
 
 export async function updateSession(
   request: NextRequest,
 ): Promise<NextResponse> {
-  // Start with a default response; we'll recreate it if cookies change.
   let response = NextResponse.next();
 
-  const supabase = createServerClient(
-    ensureEnv("NEXT_PUBLIC_SUPABASE_URL"),
-    ensureEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"),
-    {
-      cookies: {
-        getAll(): SupabaseCookie[] {
-          // Normalize Next.js cookie objects to the shape Supabase expects.
-          return request.cookies
-            .getAll()
-            .map((c) => ({ name: c.name, value: c.value }));
-        },
-        setAll(cookiesToSet: SupabaseCookie[]): void {
-          // Write refreshed cookies to the incoming request (so Server
-          // Components downstream see the new token) and the outgoing
-          // response (so the browser gets it too).
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value),
-          );
-          // Recreate the response with the possibly-updated request
-          // so that downstream code sees the new cookies.
-          response = NextResponse.next({ request } as unknown as ResponseInit);
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options as any),
-          );
+  let supabase: ReturnType<typeof createServerClient>;
+
+  try {
+    supabase = createServerClient(
+      ensureEnv("NEXT_PUBLIC_SUPABASE_URL"),
+      ensureEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"),
+      {
+        cookies: {
+          getAll() {
+            return request.cookies
+              .getAll()
+              .map((c) => ({ name: c.name, value: c.value }));
+          },
+          setAll(cookiesToSet: SupabaseCookie[]) {
+            cookiesToSet.forEach(({ name, value }) =>
+              request.cookies.set(name, value),
+            );
+            response = NextResponse.next({ request });
+            cookiesToSet.forEach(({ name, value, options }) =>
+              response.cookies.set(name, value, options as never),
+            );
+          },
         },
       },
-    },
-  );
+    );
+  } catch (error) {
+    // Without Supabase env vars the app can still render the login screen.
+    console.error("Supabase middleware is not configured:", error);
+    return response;
+  }
 
-  // getClaims() cryptographically verifies the JWT on every request.
-  // Never substitute getSession() here — it reads from cookies without
-  // re-validating them, which a spoofed cookie could satisfy.
+  // getClaims() verifies the JWT signature on every request. Never swap this
+  // for getSession(), which trusts the cookie without re-validating it.
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
 
-  const { pathname } = request.nextUrl;
-  const isPublic = PUBLIC_PATHS.some(
-    (p) => pathname === p || pathname.startsWith(`${p}/`),
-  );
-  //  CHANGE THIS TO REDIRECT TO LOGIN IF USER IS NOT LOGGED IN AND IS PUBLIC PATH. Just add ! to both user and public
-  if (user && isPublic) {
+  const { pathname, searchParams } = request.nextUrl;
+
+  if (!user && isProtected(pathname)) {
     const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("callbackUrl", pathname);
+    loginUrl.searchParams.set("callbackUrl", `${pathname}${request.nextUrl.search}`);
     return NextResponse.redirect(loginUrl);
+  }
+
+  if (user && pathname === "/login") {
+    const callbackUrl = searchParams.get("callbackUrl");
+    const target =
+      callbackUrl && callbackUrl.startsWith("/") ? callbackUrl : "/";
+
+    return NextResponse.redirect(new URL(target, request.url));
   }
 
   return response;

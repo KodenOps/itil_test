@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
+import { AppStoreProvider } from "@/store/app-store";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Practise Prof Exam",
-  description: "Professional Exam Simulated Exam",
+  title: "CertifyHub — Professional Exam Practice",
+  description:
+    "Structured certification tracks, practice banks, and learning activity in one place.",
 };
 
 export default function RootLayout({
@@ -29,9 +31,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <AppStoreProvider>{children}</AppStoreProvider>
         <SpeedInsights />
         <Analytics />
-        {children}
       </body>
     </html>
   );

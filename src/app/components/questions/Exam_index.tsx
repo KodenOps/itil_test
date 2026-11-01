@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import kcna_questions from "@/data/kcna_questions";
+import { recordAttempt } from "@/lib/activity/record";
 import NavBar from "../NavBar";
 
 interface Question {
@@ -14,7 +14,13 @@ interface Question {
 
 const LOCAL_STORAGE_KEY = "quizState";
 
-const Exam = ({ questionBank, qnumber, timeTotal = 3600 }: any) => {
+const Exam = ({
+  questionBank,
+  qnumber,
+  timeTotal = 3600,
+  courseSlug,
+  mode = "exam-index",
+}: any) => {
   const router = useRouter();
 
   const [timeLeft, setTimeLeft] = useState<number>(timeTotal);
@@ -139,18 +145,26 @@ const Exam = ({ questionBank, qnumber, timeTotal = 3600 }: any) => {
       "totalQuestions",
       JSON.stringify(shuffledQuestions.length),
     );
+    recordAttempt({
+      courseSlug,
+      mode,
+      total: shuffledQuestions.length,
+      correct: totalScore,
+      durationSeconds: timeTotal - timeLeft,
+    });
+
     localStorage.removeItem(LOCAL_STORAGE_KEY);
     router.push("/score");
 
     setTimeout(() => {
-      const shuffled = shuffle(kcna_questions).slice(0, 40);
+      const shuffled = shuffle(questionBank).slice(0, qnumber ?? 40);
       setShuffledQuestions(shuffled);
       setCurrentIndex(0);
       setSelectedAnswers({});
       setSubmittedQuestions({});
       setIsSubmitted(false);
       setScore(0);
-      setTimeLeft(3600);
+      setTimeLeft(timeTotal);
     }, 500);
   };
 

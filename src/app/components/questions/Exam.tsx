@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { itilQuestions } from "@/data/questionBank";
+import { recordAttempt } from "@/lib/activity/record";
 import NavBar from "../NavBar";
 
 interface Question {
@@ -14,7 +14,12 @@ interface Question {
 
 const LOCAL_STORAGE_KEY = "quizState";
 
-const Exam = ({ questionBank, qnumber }: any) => {
+const Exam = ({
+  questionBank,
+  qnumber,
+  courseSlug,
+  mode = "exam",
+}: any) => {
   const router = useRouter();
 
   const [timeLeft, setTimeLeft] = useState<number>(3600);
@@ -130,11 +135,19 @@ const Exam = ({ questionBank, qnumber }: any) => {
       "totalQuestions",
       JSON.stringify(shuffledQuestions.length),
     );
+    recordAttempt({
+      courseSlug,
+      mode,
+      total: shuffledQuestions.length,
+      correct: totalScore,
+      durationSeconds: 3600 - timeLeft,
+    });
+
     localStorage.removeItem(LOCAL_STORAGE_KEY);
     router.push("/score");
 
     setTimeout(() => {
-      const shuffled = shuffle(itilQuestions).slice(0, 40);
+      const shuffled = shuffle(questionBank).slice(0, qnumber ?? 40);
       setShuffledQuestions(shuffled);
       setCurrentIndex(0);
       setSelectedAnswers({});

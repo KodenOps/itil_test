@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MdOutlineTimer, MdCheckCircle, MdCancel } from "react-icons/md";
 import NavBar from "../NavBar";
+import { recordAttempt } from "@/lib/activity/record";
 
 // ─── Types (unchanged) ───────────────────────────────────────────────────────
 
@@ -22,6 +23,8 @@ interface PractiseProps {
    * categories without a code change — defaults match the Excel quiz look. */
   accentHex?: string;
   title?: string;
+  courseSlug?: string;
+  mode?: string;
 }
 
 const LOCAL_STORAGE_KEY = "quizState";
@@ -50,6 +53,8 @@ const Practise = ({
   duration = 3600,
   accentHex = "#217346",
   title = "Assessment",
+  courseSlug,
+  mode = "practice",
 }: PractiseProps) => {
   const router = useRouter();
   const [timeLeft, setTimeLeft] = useState<number>(duration);
@@ -158,6 +163,14 @@ const Practise = ({
   };
 
   const handleFinish = () => {
+    recordAttempt({
+      courseSlug: courseSlug ?? "",
+      mode,
+      total: shuffledQuestions.length,
+      correct: score,
+      durationSeconds: duration - timeLeft,
+    });
+
     localStorage.setItem("finalScore", JSON.stringify(score));
     localStorage.setItem(
       "totalQuestions",

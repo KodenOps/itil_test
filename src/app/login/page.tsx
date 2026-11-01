@@ -4,6 +4,9 @@ import SideView from "../components/SideView";
 import { Suspense } from "react";
 import LoginForm from "./LoginForm";
 
+// The testimonial panel reads the reviews table, so this page is request-time.
+export const dynamic = "force-dynamic";
+
 const page = () => {
   return (
     <section className='mainpage'>
