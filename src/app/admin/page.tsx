@@ -3,8 +3,15 @@ import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
 import { requireAdmin } from "@/lib/supabase/profile";
 import { listCourses } from "@/lib/content/courses";
-import { ROLE_LABELS, type AppRole, type DailyActivity, type PlatformStats } from "@/types/app";
+import {
+  ROLE_LABELS,
+  type AppRole,
+  type CourseRequestStatus,
+  type DailyActivity,
+  type PlatformStats,
+} from "@/types/app";
 import AdminRoleSelect from "./AdminRoleSelect";
+import AdminCourseRequestStatus from "./AdminCourseRequestStatus";
 import { AdminInviteForm, AdminRevokeButton } from "./AdminInvite";
 import ContentSyncButton from "./ContentSyncButton";
 import {
@@ -16,17 +23,26 @@ import {
   MdOutlineAutoGraph,
   MdOutlineLibraryBooks,
   MdOutlineHistory,
+  MdOutlinePlaylistAdd,
+  MdOutlineReply,
   MdArrowForward,
 } from "react-icons/md";
 
 export const dynamic = "force-dynamic";
 
-type View = "overview" | "users" | "invitations" | "courses" | "activity";
+type View =
+  | "overview"
+  | "users"
+  | "invitations"
+  | "requests"
+  | "courses"
+  | "activity";
 
 const VIEWS: { id: View; label: string }[] = [
   { id: "overview", label: "Overview" },
   { id: "users", label: "Users & roles" },
   { id: "invitations", label: "Invitations" },
+  { id: "requests", label: "Course requests" },
   { id: "courses", label: "Courses & content" },
   { id: "activity", label: "Learning activity" },
 ];
@@ -68,6 +84,19 @@ type AttemptRow = {
 };
 
 type PersonRow = { id: string; email: string; full_name: string | null };
+
+type CourseRequestRow = {
+  id: string;
+  user_id: string | null;
+  full_name: string;
+  email: string;
+  course_title: string;
+  level: string;
+  message: string | null;
+  source: string;
+  status: CourseRequestStatus;
+  created_at: string;
+};
 
 function formatDate(value: string) {
   return new Date(value).toLocaleDateString("en-GB", {
@@ -112,6 +141,7 @@ export default async function AdminPage({
     attemptsResult,
     dailyResult,
     courses,
+    courseRequestsResult,
   ] = await Promise.all([
     supabase.rpc("platform_stats"),
     supabase
@@ -144,6 +174,14 @@ export default async function AdminPage({
       .returns<AttemptRow[]>(),
     supabase.rpc("activity_daily", { days: 14 }).returns<DailyActivity[]>(),
     listCourses(),
+    supabase
+      .from("course_requests")
+      .select(
+        "id, user_id, full_name, email, course_title, level, message, source, status, created_at",
+      )
+      .order("created_at", { ascending: false })
+      .limit(150)
+      .returns<CourseRequestRow[]>(),
   ]);
 
   const stats = (statsResult.data ?? {}) as Partial<PlatformStats>;
@@ -151,6 +189,10 @@ export default async function AdminPage({
   const invites = (invitesResult.data ?? []) as InviteRow[];
   const events = (eventsResult.data ?? []) as EventRow[];
   const attempts = (attemptsResult.data ?? []) as AttemptRow[];
+  const courseRequests = (courseRequestsResult.data ?? []) as CourseRequestRow[];
+  const openCourseRequests = courseRequests.filter(
+    (request) => request.status === "new",
+  ).length;
   const daily = ((dailyResult.data ?? []) as DailyActivity[]).map((row) => ({
     day: row.day,
     signups: Number(row.signups ?? 0),
@@ -336,6 +378,11 @@ export default async function AdminPage({
                     label='Pending invites'
                     value={stats.pending_invites ?? 0}
                     tone='#B45309'
+                  />
+                  <MiniStat
+                    label='New course requests'
+                    value={stats.pending_course_requests ?? openCourseRequests}
+                    tone='#2660A4'
                   />
                 </div>
               </div>
@@ -537,6 +584,108 @@ export default async function AdminPage({
                   )}
                 </div>
               </div>
+            </div>
+          )}
+
+          {view === "requests" && (
+            <div className='space-y-4'>
+              <div className='flex flex-wrap items-end justify-between gap-3'>
+                <div>
+                  <p className='text-xs font-semibold uppercase tracking-[0.3em] text-slate-500'>
+                    Requested courses
+                  </p>
+                  <h2 className='mt-2 text-2xl font-black text-slate-900'>
+                    {courseRequests.length} requests · {openCourseRequests} new
+                  </h2>
+                  <p className='mt-1 text-sm text-slate-600'>
+                    Everything submitted through the homepage form. Signed-in
+                    learners are linked to their account; guests show as
+                    “guest”.
+                  </p>
+                </div>
+                <span className='inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600'>
+                  <MdOutlinePlaylistAdd size={16} />
+                  {openCourseRequests} awaiting triage
+                </span>
+              </div>
+
+              {courseRequests.length === 0 ? (
+                <p className='rounded-3xl border border-dashed border-slate-300 bg-white px-4 py-12 text-center text-sm text-slate-500'>
+                  No course requests yet. They will appear here as soon as
+                  someone uses the form on the homepage.
+                </p>
+              ) : (
+                <div className='space-y-3'>
+                  {courseRequests.map((request) => (
+                    <article
+                      key={request.id}
+                      className='rounded-3xl border border-slate-200 bg-white p-5 shadow-sm'
+                    >
+                      <div className='flex flex-wrap items-start justify-between gap-4'>
+                        <div className='min-w-0'>
+                          <div className='flex flex-wrap items-center gap-2'>
+                            <p className='text-base font-black text-slate-900'>
+                              {request.course_title}
+                            </p>
+                            <span className='rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-slate-600'>
+                              {request.level}
+                            </span>
+                            <span
+                              className={`rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide ${
+                                request.status === "new"
+                                  ? "bg-[#2660A4]/10 text-[#2660A4]"
+                                  : request.status === "reviewing"
+                                    ? "bg-amber-100 text-amber-800"
+                                    : request.status === "planned"
+                                      ? "bg-emerald-100 text-emerald-700"
+                                      : "bg-slate-200 text-slate-600"
+                              }`}
+                            >
+                              {request.status}
+                            </span>
+                          </div>
+
+                          <p className='mt-2 text-sm font-semibold text-slate-800'>
+                            {request.full_name}{" "}
+                            <span className='font-normal text-slate-500'>
+                              · {request.email}
+                            </span>
+                          </p>
+
+                          <p className='mt-1 text-xs text-slate-500'>
+                            {request.user_id
+                              ? "Linked to a member account"
+                              : "Guest submission"}{" "}
+                            · {request.source} ·{" "}
+                            {formatDateTime(request.created_at)}
+                          </p>
+
+                          {request.message && (
+                            <p className='mt-3 rounded-2xl bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700'>
+                              {request.message}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className='flex flex-col items-end gap-2'>
+                          <AdminCourseRequestStatus
+                            requestId={request.id}
+                            status={request.status}
+                          />
+                          <a
+                            href={`mailto:${encodeURIComponent(request.email)}?subject=${encodeURIComponent(
+                              `Re: your course request for ${request.course_title}`,
+                            )}`}
+                            className='inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50'
+                          >
+                            <MdOutlineReply size={13} /> Reply by email
+                          </a>
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getViewer } from "@/lib/supabase/profile";
 import { createClient } from "@/lib/supabase/server";
 import { buildContentSeed } from "@/lib/content/seed";
+import { isSameOriginRequest } from "@/lib/security/request";
 
 type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
 
@@ -39,7 +40,14 @@ async function upsertInChunks(
  * Moves every question bank, practical task and review from src/data into
  * Postgres. Admin-only: RLS re-checks the role on each write.
  */
-export async function POST() {
+export async function POST(request: Request) {
+  if (!isSameOriginRequest(request)) {
+    return NextResponse.json(
+      { error: "Cross-site request blocked." },
+      { status: 403 },
+    );
+  }
+
   const viewer = await getViewer();
 
   if (!viewer) {

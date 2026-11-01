@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getViewer } from "@/lib/supabase/profile";
+import { isSameOriginRequest, rateLimit } from "@/lib/security/request";
 
 export const dynamic = "force-dynamic";
 
@@ -16,10 +17,29 @@ type AttemptBody = {
  * on the profile page and the engagement metrics in the admin dashboard.
  */
 export async function POST(request: Request) {
+  if (!isSameOriginRequest(request)) {
+    return NextResponse.json(
+      { error: "Cross-site request blocked." },
+      { status: 403 },
+    );
+  }
+
   const viewer = await getViewer();
 
   if (!viewer) {
     return NextResponse.json({ error: "Not signed in." }, { status: 401 });
+  }
+
+  const limit = rateLimit(`attempts:${viewer.userId}`, 60, 10 * 60 * 1000);
+
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Too many attempts recorded. Please slow down." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(limit.retryAfterSeconds) },
+      },
+    );
   }
 
   let body: AttemptBody;

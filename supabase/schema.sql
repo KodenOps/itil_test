@@ -15,7 +15,8 @@
 --    9. Quiz attempts      learning activity used by profile + admin
 --   10. Activity feed      per-user timeline
 --   11. Assessment submissions (practical Excel uploads)
---   12. RLS policies + helper functions + admin metrics RPCs
+--   12. Course requests (homepage "request a course" form)
+--   13. RLS policies + helper functions + admin metrics RPCs
 --
 --  First admin: register normally (you get "learner"), then run
 --      update public.profiles set role = 'admin' where email = 'you@example.com';
@@ -432,6 +433,33 @@ begin
 end;
 $$;
 
+-- ── 12b. Course requests ─────────────────────────────────────────────────
+--  Submitted from the homepage by signed-in learners and guests alike, so
+--  anonymous inserts are allowed (and *only* inserts: nobody can read the
+--  list without staff access). The limits mirror the server-side checks in
+--  src/app/actions/course-request.ts.
+
+create table if not exists public.course_requests (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete set null,
+  full_name text not null check (char_length(full_name) between 2 and 80),
+  email text not null check (char_length(email) between 5 and 254),
+  course_title text not null check (char_length(course_title) between 3 and 120),
+  level text not null default 'Not sure yet'
+    check (level in ('Not sure yet', 'Beginner', 'Intermediate', 'Advanced')),
+  message text check (message is null or char_length(message) <= 1000),
+  source text not null default 'homepage',
+  status text not null default 'new'
+    check (status in ('new', 'reviewing', 'planned', 'declined')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists course_requests_created_idx
+  on public.course_requests (created_at desc);
+create index if not exists course_requests_status_idx
+  on public.course_requests (status);
+
 -- ── 13. Metrics RPCs (aggregates only, safe for every signed-in user) ────
 
 create or replace function public.course_stats()
@@ -486,7 +514,8 @@ begin
     'attempts_7d', (select count(*) from public.quiz_attempts where created_at > now() - interval '7 days'),
     'avg_score', coalesce((select round(avg(score), 1) from public.quiz_attempts), 0),
     'pending_invites', (select count(*) from public.role_invites where status = 'pending'),
-    'pending_submissions', (select count(*) from public.assessment_submissions where status = 'pending')
+    'pending_submissions', (select count(*) from public.assessment_submissions where status = 'pending'),
+    'pending_course_requests', (select count(*) from public.course_requests where status = 'new')
   ) into result;
 
   return result;
@@ -539,6 +568,7 @@ alter table public.quiz_attempts enable row level security;
 alter table public.activity_events enable row level security;
 alter table public.assessment_submissions enable row level security;
 alter table public.allowed_emails enable row level security;
+alter table public.course_requests enable row level security;
 
 -- profiles
 drop policy if exists "Profiles are readable by staff or self" on public.profiles;
@@ -546,10 +576,13 @@ create policy "Profiles are readable by staff or self"
   on public.profiles for select
   using (auth.uid() = id or public.is_staff());
 
+-- A self-created profile (the sign-up trigger failed, so the app self-heals)
+-- must start as a learner. Without the role check a signed-in user could
+-- insert themselves as an admin before the update guard ever runs.
 drop policy if exists "Users create their own profile" on public.profiles;
 create policy "Users create their own profile"
   on public.profiles for insert
-  with check (auth.uid() = id);
+  with check (auth.uid() = id and role = 'learner');
 
 drop policy if exists "Users update their own profile" on public.profiles;
 create policy "Users update their own profile"
@@ -669,6 +702,37 @@ drop policy if exists "Users can insert own submissions" on public.assessment_su
 create policy "Users can insert own submissions"
   on public.assessment_submissions for insert
   with check (auth.uid() = user_id);
+
+-- course requests: anyone may submit, only staff may read or triage.
+-- Guests can only write a row with a null user_id, so they cannot plant
+-- requests on somebody else's account.
+drop policy if exists "Anyone can request a course" on public.course_requests;
+create policy "Anyone can request a course"
+  on public.course_requests for insert
+  to anon, authenticated
+  with check (
+    status = 'new'
+    and (user_id is null or auth.uid() = user_id)
+  );
+
+drop policy if exists "Staff read course requests" on public.course_requests;
+create policy "Staff read course requests"
+  on public.course_requests for select
+  to authenticated
+  using (public.is_staff());
+
+drop policy if exists "Admins triage course requests" on public.course_requests;
+create policy "Admins triage course requests"
+  on public.course_requests for update
+  to authenticated
+  using (public.is_admin())
+  with check (public.is_admin());
+
+drop policy if exists "Admins delete course requests" on public.course_requests;
+create policy "Admins delete course requests"
+  on public.course_requests for delete
+  to authenticated
+  using (public.is_admin());
 
 -- ═══════════════════════════════════════════════════════════════════════
 --  After running this file:

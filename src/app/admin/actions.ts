@@ -2,7 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/supabase/profile";
-import type { AppRole } from "@/types/app";
+import {
+  COURSE_REQUEST_STATUSES,
+  COURSE_REQUEST_STATUS_LABELS,
+  type AppRole,
+  type CourseRequestStatus,
+} from "@/types/app";
 
 const ROLES: AppRole[] = ["learner", "instructor", "admin"];
 
@@ -84,6 +89,40 @@ export async function inviteUser(input: {
     event_type: "invitation",
     summary: `Invited ${email} as ${role}`,
     metadata: { email, role },
+  });
+
+  revalidatePath("/admin");
+
+  return { ok: true };
+}
+
+export async function setCourseRequestStatus(
+  id: string,
+  status: string,
+): Promise<AdminActionResult> {
+  const viewer = await requireAdmin();
+
+  if (!COURSE_REQUEST_STATUSES.includes(status as CourseRequestStatus)) {
+    return { ok: false, message: "Unknown status." };
+  }
+
+  const { data, error } = await viewer.supabase
+    .from("course_requests")
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq("id", id)
+    .select("id")
+    .maybeSingle<{ id: string }>();
+
+  if (error || !data) {
+    console.error("Course request update failed:", error?.message);
+    return { ok: false, message: "Could not update that request." };
+  }
+
+  await viewer.supabase.from("activity_events").insert({
+    user_id: viewer.userId,
+    event_type: "course_request",
+    summary: `Marked a course request as ${COURSE_REQUEST_STATUS_LABELS[status as CourseRequestStatus]}`,
+    metadata: { requestId: id, status },
   });
 
   revalidatePath("/admin");

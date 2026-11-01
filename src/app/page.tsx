@@ -5,6 +5,7 @@ import { listCourses } from "@/lib/content/courses";
 import { getViewer } from "@/lib/supabase/profile";
 import { listEnrollments } from "@/lib/content/courses";
 import CourseCatalog from "./CourseCatalog";
+import CourseRequestForm from "./CourseRequestForm";
 import { ENROLLMENT_LIMIT } from "@/types/app";
 
 export const dynamic = "force-dynamic";
@@ -83,6 +84,17 @@ const Page = async () => {
             activeCount={activeCount}
             limit={ENROLLMENT_LIMIT}
             isAdmin={viewer?.profile.role === "admin"}
+          />
+
+          <CourseRequestForm
+            isSignedIn={Boolean(viewer)}
+            defaultName={viewer?.profile.fullName ?? ""}
+            defaultEmail={viewer?.email ?? ""}
+            suggestions={[
+              "ITIL 4 Specialist: Create, Deliver and Support",
+              "Power BI advanced DAX",
+              "Terraform for cloud engineers",
+            ]}
           />
 
           <div className='grid gap-4 rounded-[28px] border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/70 md:grid-cols-3'>

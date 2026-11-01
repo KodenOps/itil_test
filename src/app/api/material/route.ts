@@ -1,11 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createReadStream, existsSync } from "fs";
 import { join } from "path";
+import { getViewer } from "@/lib/supabase/profile";
 
 // This points to your folder outside /public
 const MATERIALS_DIR = join(process.cwd(), "secured_files");
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
+  /**
+   * Study material is not public. The viewer page sits behind middleware,
+   * but this route is reachable directly — so it verifies the session itself
+   * instead of trusting that the request came through the page.
+   */
+  const viewer = await getViewer();
+
+  if (!viewer) {
+    return NextResponse.json(
+      { error: "Sign in to view this material." },
+      { status: 401 },
+    );
+  }
+
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
 
@@ -13,7 +31,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Missing file ID" }, { status: 400 });
   }
 
-  // Map IDs to actual file names
+  // Map IDs to actual file names. Only these keys resolve, so `id` can never
+  // be used to walk the filesystem.
   const files: Record<string, string> = {
     "exam-guidelines": "exam_guideline.pdf",
     "itil-textbook": "itil-textbook.pdf",
@@ -63,6 +82,8 @@ export async function GET(req: NextRequest) {
         ? "application/pdf"
         : "application/vnd.openxmlformats-officedocument.presentationml.presentation",
       "Content-Disposition": `inline; filename="${fileName}"`,
+      "Cache-Control": "private, no-store",
+      "X-Content-Type-Options": "nosniff",
     },
   });
 }

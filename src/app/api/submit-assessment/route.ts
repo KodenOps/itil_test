@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { getViewer } from "@/lib/supabase/profile";
+import {
+  clientKey,
+  isSameOriginRequest,
+  rateLimit,
+} from "@/lib/security/request";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 // Required env vars (set these in .env.local / your hosting provider):
@@ -20,6 +26,33 @@ function isValidEmail(value: string) {
 
 export async function POST(req: Request) {
   try {
+    // Route handlers don't get the automatic Origin check that Server
+    // Actions do, so a cross-site form post has to be rejected explicitly.
+    if (!isSameOriginRequest(req)) {
+      return NextResponse.json({ error: "Cross-site request blocked." }, { status: 403 });
+    }
+
+    // Submissions trigger a real email with an attachment, so require a
+    // verified session and cap the rate per client.
+    const viewer = await getViewer();
+
+    if (!viewer) {
+      return NextResponse.json({ error: "Not signed in." }, { status: 401 });
+    }
+
+    const limit = rateLimit(`assessment:${viewer.userId}:${clientKey(req)}`, 5, 10 * 60 * 1000);
+
+    if (!limit.ok) {
+      return NextResponse.json(
+        {
+          error: `Too many submissions. Try again in ${Math.ceil(
+            limit.retryAfterSeconds / 60,
+          )} minute(s).`,
+        },
+        { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } },
+      );
+    }
+
     const apiKey = process.env.RESEND_API_KEY;
     const fromAddress = process.env.ASSESSMENT_FROM;
     const toAddress = process.env.ASSESSMENT_TO;

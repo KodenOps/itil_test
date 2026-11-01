@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { safeRedirectPath } from "@/lib/security/redirect";
 
 type SupabaseCookie = {
   name: string;
@@ -91,9 +92,9 @@ export async function updateSession(
   }
 
   if (user && pathname === "/login") {
-    const callbackUrl = searchParams.get("callbackUrl");
-    const target =
-      callbackUrl && callbackUrl.startsWith("/") ? callbackUrl : "/";
+    // `startsWith("/")` alone lets `//evil.example` through, which browsers
+    // treat as an off-site URL.
+    const target = safeRedirectPath(searchParams.get("callbackUrl"), "/");
 
     return NextResponse.redirect(new URL(target, request.url));
   }

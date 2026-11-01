@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getViewer } from "@/lib/supabase/profile";
+import { safeRedirectPath } from "@/lib/security/redirect";
 import { ENROLLMENT_LIMIT } from "@/types/app";
 
 export type EnrollmentActionResult = {
@@ -136,7 +137,8 @@ export async function leaveCourse(
  */
 export async function enrollFromGate(formData: FormData): Promise<void> {
   const courseId = String(formData.get("courseId") ?? "");
-  const next = String(formData.get("next") ?? "/");
+  // The hidden field is user-controlled; never redirect off-site with it.
+  const next = safeRedirectPath(formData.get("next"), "/");
 
   await enrollInCourse(courseId);
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useAppStore } from "@/store/app-store";
+import { safeRedirectPath } from "@/lib/security/redirect";
 
 type Mode = "signin" | "signup";
 
@@ -16,7 +17,9 @@ export default function LoginForm() {
   const searchParams = useSearchParams();
   const { refresh } = useAppStore();
 
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  // Never hand a raw query value to window.location: `javascript:` and
+  // protocol-relative URLs would execute or redirect off-site.
+  const callbackUrl = safeRedirectPath(searchParams.get("callbackUrl"), "/");
   const urlError = searchParams.get("error");
 
   const switchMode = (next: Mode) => {

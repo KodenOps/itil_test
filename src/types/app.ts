@@ -80,6 +80,35 @@ export type ActivityEvent = {
   createdAt: string;
 };
 
+export const COURSE_REQUEST_STATUSES = [
+  "new",
+  "reviewing",
+  "planned",
+  "declined",
+] as const;
+
+export type CourseRequestStatus = (typeof COURSE_REQUEST_STATUSES)[number];
+
+export const COURSE_REQUEST_STATUS_LABELS: Record<CourseRequestStatus, string> = {
+  new: "New",
+  reviewing: "Reviewing",
+  planned: "Planned",
+  declined: "Declined",
+};
+
+export type CourseRequest = {
+  id: string;
+  userId: string | null;
+  fullName: string;
+  email: string;
+  courseTitle: string;
+  level: string;
+  message: string | null;
+  source: string;
+  status: CourseRequestStatus;
+  createdAt: string;
+};
+
 export type PlatformStats = {
   total_users: number;
   learners: number;
@@ -96,6 +125,7 @@ export type PlatformStats = {
   avg_score: number;
   pending_invites: number;
   pending_submissions: number;
+  pending_course_requests: number;
 };
 
 export type DailyActivity = {

@@ -15,7 +15,9 @@ the admin dashboard.
 | Question banks from Postgres | [`src/lib/content/questions.ts`](src/lib/content/questions.ts) |
 | Legacy `src/data` → database seed | [`src/lib/content/seed.ts`](src/lib/content/seed.ts) |
 | Admin dashboard | [`src/app/admin/page.tsx`](src/app/admin/page.tsx) |
+| Course requests (homepage form → email + admin) | [`src/app/actions/course-request.ts`](src/app/actions/course-request.ts) |
 | Profile & learning activity | [`src/app/profile/page.tsx`](src/app/profile/page.tsx) |
+| PWA manifest, service worker, offline page | [`src/app/manifest.ts`](src/app/manifest.ts), [`public/sw.js`](public/sw.js) |
 
 ## Roles
 
@@ -50,12 +52,21 @@ NEXT_PUBLIC_SUPABASE_URL=https://YOUR-PROJECT.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=YOUR-PUBLISHABLE-KEY
 ```
 
-Optional, only for the Excel practical submission email:
+Optional, for the Excel practical submission email:
 
 ```
 RESEND_API_KEY=
 ASSESSMENT_FROM=
 ASSESSMENT_TO=
+```
+
+Optional, for the homepage **Request a course** form (requests are always
+saved to the admin dashboard even when email is not configured):
+
+```
+RESEND_API_KEY=            # already required for the Excel submission email
+COURSE_REQUEST_FROM=       # defaults to ASSESSMENT_FROM
+COURSE_REQUEST_TO=         # defaults to femifadiya.segun@outlook.com
 ```
 
 ### 2. Database
@@ -102,3 +113,9 @@ npm run dev
 - Scores, enrollment progress and the activity trail are recorded through
   `/api/attempts` and `activity_events`, which is what the profile page and the
   admin dashboard read.
+- Course requests live in `public.course_requests`. Anyone may insert (guests
+  included, with `user_id = null`); only staff can read them and only admins
+  can change their status. Re-run the schema after pulling.
+- The site is installable (PWA): `/manifest.webmanifest`, `/sw.js` and
+  `/offline.html`. The service worker never caches signed-in HTML or API
+  responses, so a shared device cannot replay another account's data.
