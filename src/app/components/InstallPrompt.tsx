@@ -95,6 +95,15 @@ export default function InstallPrompt() {
       setVisible(false);
       installEventRef.current = null;
       setInstallEvent(null);
+      // Once the user has installed and launched the app, future opens from
+      // the navbar should not re-prompt them. Ordinarily we could only prove
+      // installation while the installed app is running; when they actually
+      // installed from this card, the `appinstalled` event is our proof.
+      try {
+        window.localStorage.setItem(DISMISS_KEY, String(Date.now()));
+      } catch {
+        // Storage may be unavailable; worst case we re-ask on next visit.
+      }
     };
 
     // Opening it from the navbar bypasses the auto-show rules (standalone or
@@ -102,11 +111,13 @@ export default function InstallPrompt() {
     const onManualOpen = () => {
       if (isAppInstalled()) return;
 
-      if (installEventRef.current) {
-        setMode("native");
-      } else {
-        setMode(isIos() ? "ios" : "unsupported");
-      }
+      setMode(
+        installEventRef.current
+          ? "native"
+          : isIos()
+            ? "ios"
+            : "unsupported",
+      );
 
       setVisible(true);
     };
@@ -171,8 +182,7 @@ export default function InstallPrompt() {
     <aside
       role='dialog'
       aria-labelledby='install-title'
-      aria-describedby='install-copy'
-      className='fixed inset-x-4 bottom-4 z-[60] mx-auto w-auto max-w-md rounded-3xl border border-slate-200 bg-white p-5 shadow-2xl shadow-slate-900/20 sm:left-6 sm:right-auto sm:mx-0'
+      aria-describedby='install-copy'        className='fixed inset-x-4 bottom-4 z-[60] mx-auto w-auto max-w-md rounded-3xl border border-slate-200 bg-white p-5 shadow-2xl shadow-slate-900/20 sm:left-6 sm:right-auto sm:mx-0'
     >
       <button
         type='button'
@@ -226,35 +236,23 @@ export default function InstallPrompt() {
         </div>
       </div>
 
-      <div className='mt-4 flex items-center gap-2'>
-        {mode === "native" && installEvent ? (
-          <>
-            <button
-              type='button'
-              onClick={install}
-              disabled={isInstalling}
-              className='inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#2660A4] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#1f4f8d] disabled:opacity-60'
-            >
-              <MdOutlineInstallMobile size={18} />
-              {isInstalling ? "Opening…" : "Install app"}
-            </button>
-            <button
-              type='button'
-              onClick={dismiss}
-              className='rounded-full border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50'
-            >
-              Not now
-            </button>
-          </>
-        ) : (
-          <button
-            type='button'
-            onClick={dismiss}
-            className='w-full rounded-full border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50'
-          >
-            Got it
-          </button>
-        )}
+      <div className='mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2'>
+        <button
+          type='button'
+          onClick={install}
+          disabled={isInstalling || !installEvent}
+          className='inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#2660A4] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#1f4f8d] disabled:opacity-60'
+        >
+          <MdOutlineInstallMobile size={18} />
+          {isInstalling ? "Opening…" : "Install app"}
+        </button>
+        <button
+          type='button'
+          onClick={dismiss}
+          className='rounded-full border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50'
+        >
+          Not now
+        </button>
       </div>
     </aside>
   );

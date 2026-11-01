@@ -356,7 +356,7 @@ export default function PracticalAssessmentPage({
                 </label>
                 <label
                   htmlFor='workbook-upload'
-                  className='flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-200 px-6 py-10 text-center transition hover:border-slate-300 hover:bg-slate-50'
+                  className='flex min-h-[120px] cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-slate-200 px-6 py-10 text-center transition hover:border-slate-300 hover:bg-slate-50'
                 >
                   <MdOutlineCloudUpload size={28} className='text-slate-400' />
                   {file ? (
