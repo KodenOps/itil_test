@@ -113,7 +113,7 @@ export default function CourseLessonPage({
       <div className='h-24' aria-hidden='true' />
 
       {/* ── Category switcher ── */}
-      <div className='sticky top-[84px] z-40 border-b border-slate-200 bg-white/95 backdrop-blur'>
+      <div className='sticky top-[76px] z-40 border-b border-slate-200 bg-white/95 backdrop-blur md:top-[84px]'>
         <div className='mx-auto max-w-7xl px-4 md:px-8'>
           <div className='flex items-center gap-1 overflow-x-auto py-3'>
             {categories.map((category) => {
