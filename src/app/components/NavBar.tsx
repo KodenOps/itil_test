@@ -178,13 +178,6 @@ const NavBar = () => {
             </button>
           )}
 
-          <Link
-            href='/page/exams'
-            className='ml-1 rounded-full bg-slate-900 px-4 py-2 font-semibold text-white transition hover:bg-slate-800'
-          >
-            Exam Hub
-          </Link>
-
           {ready && user ? (
             <div ref={profileRef} className='relative ml-2'>
               <button
@@ -402,17 +395,6 @@ const NavBar = () => {
             </button>
           )}
 
-          {isAdmin && (
-            <Link
-              href='/admin'
-              className='mt-3 flex items-center gap-4 rounded-2xl border border-slate-900 bg-slate-900 px-4 py-4 font-semibold text-white transition hover:bg-slate-800'
-              onClick={closeMenu}
-            >
-              <MdDashboardCustomize size={22} />
-              Admin dashboard
-            </Link>
-          )}
-
           <Link
             href='/blog'
             className='mt-3 flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 transition hover:border-slate-200 hover:bg-slate-100 hover:text-[#2660A4]'
@@ -442,16 +424,16 @@ const NavBar = () => {
             Feedback & Report Bug
           </Link>
 
-          <Link
-            href='/page/exams'
-            className='mt-3 flex items-center gap-4 rounded-2xl bg-slate-900 px-4 py-4 font-semibold text-white transition hover:bg-slate-800'
-            onClick={closeMenu}
-          >
-            <span className='flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-sm font-black'>
-              EH
-            </span>
-            Exam Hub
-          </Link>
+          {isAdmin && (
+            <Link
+              href='/admin'
+              className='mt-3 flex items-center gap-4 rounded-2xl border border-slate-900 bg-slate-900 px-4 py-4 font-semibold text-white transition hover:bg-slate-800'
+              onClick={closeMenu}
+            >
+              <MdDashboardCustomize size={24} />
+              Admin dashboard
+            </Link>
+          )}
 
           {ready && !user && (
             <button

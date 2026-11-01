@@ -191,7 +191,7 @@ values
   ('aws-cloud-practitioner', 'AWS Cloud Practitioner',
    'Core AWS services, the shared responsibility model, and a full practice bank.',
    'Learning track', 'Foundation', '#F97316', '#7C2D12',
-   '/page/aws-practise', 'cloud', 16, 6),
+   '/page/aws-home', 'cloud', 16, 6),
   ('devops-sys-engineer', 'DevOps & Sys Eng',
    'Architecture, reliability, production sense, and the skills that make systems durable.',
    'Learning track', 'Intermediate', '#6D2E46', '#A24E67',

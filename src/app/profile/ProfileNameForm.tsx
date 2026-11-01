@@ -44,20 +44,19 @@ export default function ProfileNameForm({ name }: { name: string }) {
       >
         Display name
       </label>
-      <div className='flex flex-wrap gap-2'>
+      <div className='flex flex-col gap-2 sm:flex-row'>
         <input
           id='fullName'
           name='fullName'
           value={value}
           onChange={(event) => setValue(event.target.value)}
           maxLength={80}
-          className='min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-[#2660A4]'
-          style={{ padding: "12px 16px" }}
+          className='w-full min-w-0 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-[#2660A4] sm:flex-1'
         />
         <button
           type='submit'
           disabled={isPending || value.trim().length === 0}
-          className='rounded-xl bg-slate-900 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800 disabled:opacity-50'
+          className='w-full rounded-xl bg-slate-900 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800 disabled:opacity-50 sm:w-auto'
         >
           {isPending ? "Saving…" : "Save"}
         </button>

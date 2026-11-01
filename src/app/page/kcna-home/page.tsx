@@ -1,128 +1,198 @@
 "use client";
-import React from "react";
-import { useRouter } from "next/navigation";
-import NavBar from "@/app/components/NavBar";
-import { BiBook } from "react-icons/bi";
-import { MdOutlineQuiz } from "react-icons/md";
 
-const Page = () => {
-  const router = useRouter();
+import CourseLessonPage, {
+  type CourseCard,
+  type LessonCategory,
+} from "@/app/components/CourseLessonPage";
+import { MdOutlineQuiz, MdOutlinePlaylistAdd } from "react-icons/md";
 
-  const handleNavigation = (path: string) => {
-    localStorage.clear();
-    router.push(path);
-  };
+const categories: LessonCategory[] = [
+  {
+    id: "fundamentals",
+    title: "Kubernetes Fundamentals",
+    description:
+      "What Kubernetes is for, how a cluster is put together, and why everything in it is declared rather than installed.",
+    accentFrom: "#26a465",
+    accentTo: "#39c682",
+    accentHex: "#26a465",
+    lessons: [
+      {
+        id: "why-kubernetes",
+        title: "Why Kubernetes Exists",
+        body: "Kubernetes is a container orchestrator: it schedules containers onto machines, restarts them when they fail, gives them stable network identities and scales them with demand. Before orchestration, running containers in production meant writing scripts to start processes, health-check them and rebalance them across hosts.\n\nThe problem it solves is not 'run a container' but 'run hundreds of containers across many machines, survive failures, and deploy new versions without downtime'. That framing is what the KCNA exam builds on throughout: Kubernetes is about declaring a desired state and letting controllers close the gap.",
+        takeaway:
+          "Kubernetes keeps a cluster at a declared desired state; controllers do the reconciling.",
+      },
+      {
+        id: "architecture",
+        title: "Cluster Architecture",
+        body: "A cluster has a control plane and worker nodes. The control plane runs the API server (the only component anything talks to), etcd (the key-value store holding all cluster state), the scheduler (assigns pods to nodes) and the controller manager (runs reconciliation loops).\n\nWorker nodes run the kubelet, which talks to the API server and manages pods on its node, the container runtime, and kube-proxy, which implements service networking rules. If etcd is lost, the cluster's state is lost — which is why backing it up is a classic operational concern.",
+        takeaway:
+          "API server is the front door, etcd holds state, scheduler places pods, kubelet runs them on nodes.",
+        table: {
+          header: ["Component", "Runs on", "Job"],
+          rows: [
+            ["kube-apiserver", "Control plane", "Single entry point for all requests"],
+            ["etcd", "Control plane", "Stores the entire cluster state"],
+            ["kube-scheduler", "Control plane", "Assigns new pods to nodes"],
+            ["controller-manager", "Control plane", "Reconciles actual state with desired"],
+            ["kubelet", "Worker node", "Starts and monitors pods on its node"],
+            ["kube-proxy", "Worker node", "Implements service network rules"],
+          ],
+        },
+      },
+      {
+        id: "declarative-model",
+        title: "Objects and the Declarative Model",
+        body: "Everything in Kubernetes is an API object described in YAML or JSON: pods, deployments, services, config maps, secrets, namespaces and more. You submit an object to the API server, it is stored in etcd, and controllers work continuously to make the real world match it.\n\nImperative commands such as kubectl run create or change one thing immediately; declarative manifests applied with kubectl apply describe the end state. GitOps workflows build on the declarative model: the repository is the source of truth, and a controller syncs the cluster to it.",
+        takeaway:
+          "You declare objects; controllers reconcile. kubectl apply is idempotent, which is what makes GitOps possible.",
+      },
+    ],
+  },
+  {
+    id: "workloads",
+    title: "Workloads and Scheduling",
+    description:
+      "Pods, controllers, services and configuration — the objects you spend most of your day with.",
+    accentFrom: "#2660A4",
+    accentTo: "#4F8FCA",
+    accentHex: "#2660A4",
+    lessons: [
+      {
+        id: "pods",
+        title: "Pods",
+        body: "A pod is the smallest deployable unit: one or more containers that share a network namespace, IP address and storage volumes. Containers in the same pod reach each other over localhost, which is why sidecar patterns such as a log shipper or proxy work.\n\nPods are ephemeral by design. They are not restarted in place when a node dies; a controller creates a replacement, which is why you rarely create bare pods in production. Each pod also gets a lifecycle: pending, running, succeeded or failed, with restart policies controlling what happens to exited containers.",
+        takeaway:
+          "Pods share a network namespace and are disposable. Use a controller, not bare pods, for real workloads.",
+      },
+      {
+        id: "controllers",
+        title: "Deployments, ReplicaSets and StatefulSets",
+        body: "A ReplicaSet makes sure a number of identical pods are running. A Deployment manages ReplicaSets and adds rolling updates and rollbacks, which is the normal way to run stateless applications. A DaemonSet runs one pod per node, for agents such as log collectors or network plugins.\n\nA StatefulSet gives each pod a stable identity and its own persistent volume, which is what stateful services like databases need. A Job runs pods to completion and a CronJob runs them on a schedule. Choosing the right controller is mostly about identity and lifecycle requirements.",
+        takeaway:
+          "Deployment for stateless services, StatefulSet for stable identity, DaemonSet per node, Job for run-to-completion.",
+      },
+      {
+        id: "services-networking",
+        title: "Services and Ingress",
+        body: "Pods come and go, so their IPs are not stable. A Service gives a stable virtual IP and DNS name that load-balances across the pods matching its selector. ClusterIP exposes it inside the cluster, NodePort opens a port on every node, and LoadBalancer asks the cloud provider for an external load balancer.\n\nIngress works at layer 7 and routes HTTP host and path rules to services through an ingress controller, so many services can share one external entry point. A NetworkPolicy, where the CNI supports it, restricts which pods may talk to which — default-deny plus explicit allows is the secure baseline.",
+        takeaway:
+          "Services give stable access to moving pods; Ingress adds HTTP routing; NetworkPolicies restrict pod traffic.",
+      },
+      {
+        id: "config",
+        title: "ConfigMaps, Secrets and Scheduling Controls",
+        body: "ConfigMaps hold non-sensitive configuration and Secrets hold sensitive values, both injected as environment variables or mounted files so the same image runs in every environment. Secrets are base64-encoded by default, not encrypted at rest unless you enable encryption, which is a common exam distinction.\n\nScheduling is steered with labels and selectors, node selectors, affinity and anti-affinity rules, taints on nodes and tolerations on pods, plus resource requests and limits. Requests determine placement and guarantees; limits cap usage. Missing requests are the usual cause of a pod that schedules onto a node without enough capacity.",
+        takeaway:
+          "ConfigMaps and Secrets externalise configuration. Requests drive scheduling, limits cap usage, taints repel pods.",
+      },
+    ],
+  },
+  {
+    id: "cloud-native",
+    title: "Cloud Native Architecture",
+    description:
+      "How cloud-native systems are shaped, scaled, observed and kept healthy in production.",
+    accentFrom: "#7A4DFF",
+    accentTo: "#4F7CFF",
+    accentHex: "#7A4DFF",
+    lessons: [
+      {
+        id: "microservices",
+        title: "Microservices and the Twelve-Factor App",
+        body: "Cloud-native architecture favours small, independently deployable services with clear boundaries, communicating over APIs or events rather than sharing a database. This buys independent scaling and release cadence at the cost of distributed complexity — retries, timeouts and observability stop being optional.\n\nThe twelve-factor app describes the operational discipline behind this: configuration in the environment, stateless processes, explicit dependencies, logs as event streams, and disposability. Kubernetes enforces much of it by design, since pods are replaced rather than patched.",
+        takeaway:
+          "Small services with independent deploys scale better but demand disciplined configuration, statelessness and observability.",
+      },
+      {
+        id: "autoscaling",
+        title: "Autoscaling and Resilience",
+        body: "The Horizontal Pod Autoscaler adds or removes pod replicas based on observed metrics such as CPU utilisation or custom metrics. The Vertical Pod Autoscaler adjusts requests and limits instead, and the Cluster Autoscaler (or a managed equivalent) adds nodes when pods cannot be scheduled.\n\nResilience comes from spreading replicas across nodes and zones, setting readiness probes so traffic only reaches pods that can serve it, liveness probes so stuck containers restart, and disruption budgets so voluntary operations cannot take a service down. Probe misconfiguration is one of the most common production failure modes.",
+        takeaway:
+          "HPA scales pods, Cluster Autoscaler scales nodes. Readiness gates traffic, liveness restarts, budgets protect availability.",
+      },
+      {
+        id: "observability",
+        title: "Observability: Metrics, Logs and Traces",
+        body: "Cloud-native observability has three signals: metrics for aggregates over time, logs for discrete events, and traces for the path of one request across services. Kubernetes exposes cluster and container metrics, while applications emit their own.\n\nIn the CNCF ecosystem, Prometheus is the de facto metrics system with alerting through Alert Manager, Grafana visualises, Fluent Bit and Loki handle logs, and OpenTelemetry is the emerging standard for instrumentation. The point of all three signals is to answer 'is it healthy?' and 'why is this one request slow?' without redeploying anything.",
+        takeaway:
+          "Metrics, logs and traces answer different questions — a healthy platform needs all three, ideally via OpenTelemetry.",
+      },
+    ],
+  },
+  {
+    id: "security",
+    title: "Security and the Ecosystem",
+    description:
+      "Access control, runtime protection, supply chain safety and the CNCF landscape that surrounds Kubernetes.",
+    accentFrom: "#6D2E46",
+    accentTo: "#9B4D57",
+    accentHex: "#6D2E46",
+    lessons: [
+      {
+        id: "authn-authz",
+        title: "Authentication and RBAC",
+        body: "Authentication proves who is calling the API server: client certificates, bearer tokens, OIDC identity providers or service account tokens. Service accounts give pods an identity so they can call the API with scoped permissions.\n\nAuthorization is usually role-based access control. A Role defines permissions inside a namespace and a ClusterRole defines them cluster-wide; a RoleBinding or ClusterRoleBinding grants them to a subject. Least privilege plus namespaces is the practical containment strategy, and the default service account should never hold broad permissions.",
+        takeaway:
+          "Authentication identifies the caller; RBAC grants permissions through roles and bindings. Keep service accounts minimal.",
+      },
+      {
+        id: "runtime-security",
+        title: "Runtime and Network Security",
+        body: "Containers are not a security boundary by themselves. Running as non-root, using read-only root filesystems, dropping Linux capabilities and applying seccomp or AppArmor profiles all reduce what a compromised container can do.\n\nNetwork policies limit lateral movement, secrets should be mounted rather than committed into images, and admission controllers such as Open Policy Agent Gatekeeper or Kyverno enforce rules before an object is ever created. Image scanning in the pipeline catches known vulnerabilities before they reach a node.",
+        takeaway:
+          "Harden the container, restrict the network, scan the image and enforce policy at admission control.",
+        bullets: [
+          "Run as non-root with a read-only root filesystem where possible",
+          "Apply NetworkPolicies so pods only reach what they need",
+          "Never bake secrets into images — mount them instead",
+          "Enforce policy at admission with OPA Gatekeeper or Kyverno",
+          "Scan images in CI and sign them for supply chain integrity",
+        ],
+      },
+      {
+        id: "ecosystem",
+        title: "The CNCF Ecosystem",
+        body: "The Cloud Native Computing Foundation hosts the projects that orbit Kubernetes. Graduated projects include Kubernetes, Prometheus, Envoy, containerd, Helm, Fluentd, Jaeger, Vitess, Argo and etcd — mature, widely adopted and production-proven.\n\nAround them sit the practical tools of daily work: Helm and Kustomize for packaging and templating manifests, Argo CD and Flux for GitOps delivery, Istio and Linkerd for service mesh concerns such as mTLS and traffic shifting, and Cilium or Calico for networking and policy. Knowing which layer a tool solves is the point, not memorising the full landscape.",
+        takeaway:
+          "Know each project's layer: packaging (Helm), delivery (Argo/Flux), mesh (Istio/Linkerd), networking (Cilium/Calico).",
+      },
+    ],
+  },
+];
 
+const cards: CourseCard[] = [
+  {
+    href: "/page/kcna-exam",
+    label: "Exam Mode",
+    description:
+      "Sit a timed, full-length KCNA-style assessment and get a scored result at the end.",
+    icon: <MdOutlineQuiz size={36} />,
+    accentFrom: "#2660A4",
+    accentTo: "#4F8FCA",
+  },
+  {
+    href: "/page/kcna-practice",
+    label: "Practice Mode",
+    description:
+      "Work section by section through the KCNA question bank without the clock.",
+    icon: <MdOutlinePlaylistAdd size={36} />,
+    accentFrom: "#26a465",
+    accentTo: "#39c682",
+  },
+];
+
+export default function Page() {
   return (
-    <div className='min-h-screen bg-white text-slate-900'>
-      <NavBar />
-      <main className='relative overflow-hidden'>
-        <div className='absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(38,96,164,0.10),_transparent_30%),radial-gradient(circle_at_top_right,_rgba(31,138,112,0.08),_transparent_26%),linear-gradient(180deg,_#ffffff_0%,_#f8fafc_55%,_#eef2f7_100%)]' />
-        <section className='mx-auto flex mt-20 w-full max-w-7xl flex-col gap-10 px-6 py-14 md:px-10 lg:px-12'>
-          <div className='max-w-4xl'>
-            <div className='inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm shadow-slate-200/70 backdrop-blur'>
-              KCNA learning path
-            </div>
-            <h1 className='mt-6 max-w-4xl text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-7xl'>
-              KCNA Exam Prep Corner
-            </h1>
-            <p className='mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg'>
-              This is a solution to properly prepare you for your KCNA exam. You
-              have access to full and partial exam modes, an extended question
-              bank, and study materials to help you prepare well for your
-              upcoming exams.
-            </p>
-          </div>
-
-          <div className='grid gap-5 md:grid-cols-2 xl:grid-cols-3'>
-            {[
-              {
-                path: "/page/kcna-exam",
-                label: "Full Exam Mode",
-                description: "Timed KCNA-style assessment flow.",
-                IconName: MdOutlineQuiz,
-                accent: "from-[#2660A4] to-[#4F8FCA]",
-              },
-              {
-                path: "/page/kcna-practice",
-                label: "Partial Exam Mode",
-                description: "Practice by topic with a lighter, faster flow.",
-                IconName: MdOutlineQuiz,
-                accent: "from-[#212932] to-[#475569]",
-              },
-              {
-                path: "/kcna-materials-page",
-                label: "Study Material",
-                description: "Browse the supporting references for KCNA prep.",
-                IconName: BiBook,
-                accent: "from-[#26a465] to-[#39c682]",
-              },
-            ].map(({ path, label, description, IconName, accent }) => (
-              <button
-                type='button'
-                key={label}
-                onClick={() => handleNavigation(path)}
-                className='group rounded-[28px] border border-slate-200 bg-white p-4 text-left shadow-lg shadow-slate-200/80 transition duration-300 hover:-translate-y-1 hover:shadow-2xl'
-              >
-                <div
-                  className={`rounded-[22px] bg-gradient-to-br ${accent} p-6 text-white`}
-                >
-                  <div className='flex h-full min-h-[240px] flex-col justify-between gap-8 rounded-[18px] bg-slate-950/10 p-5 backdrop-blur-sm'>
-                    <div className='flex items-start justify-between gap-4'>
-                      <div>
-                        <p className='text-xs font-semibold uppercase tracking-[0.3em] text-white/80'>
-                          Learning track
-                        </p>
-                        <h2 className='mt-3 text-3xl font-black leading-tight'>
-                          {label}
-                        </h2>
-                      </div>
-                      <span className='rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-white'>
-                        Open
-                      </span>
-                    </div>
-
-                    <div className='space-y-4'>
-                      <div className='flex h-16 w-16 items-center justify-center rounded-2xl border border-white/15 bg-white/15'>
-                        <IconName size={36} />
-                      </div>
-                      <p className='max-w-sm text-sm leading-6 text-white/90'>
-                        {description}
-                      </p>
-                    </div>
-
-                    <div className='flex items-center justify-between gap-3 text-sm font-semibold text-white/85'>
-                      <span>Jump in now</span>
-                      <span className='rounded-full border border-white/20 bg-white/10 px-4 py-2 transition group-hover:bg-white/20'>
-                        Open
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-
-          <div className='grid gap-4 rounded-[28px] border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/70 md:grid-cols-3'>
-            {[
-              "Timed exam entry",
-              "Partial practice path",
-              "Study materials within reach",
-            ].map((item) => (
-              <div key={item} className='rounded-2xl bg-slate-50 p-5'>
-                <p className='text-sm font-semibold text-slate-900'>{item}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      </main>
-      <div className='w-full border-t border-slate-200 bg-white px-6 py-4 text-center text-sm text-slate-600'>
-        <a href='/' className='font-semibold text-[#2660A4] underline'>
-          Go back Home
-        </a>
-      </div>
-    </div>
+    <CourseLessonPage
+      badge='KCNA learning path'
+      title='Kubernetes and cloud-native, explained for the exam room.'
+      intro='The KCNA syllabus in reading order: fundamentals, workloads and scheduling, cloud-native architecture, then security and ecosystem. Read a section here, then open exam mode at the bottom of the page to test the same material.'
+      meta={["KCNA syllabus", "4 sections", "13 lessons", "Exam + practice"]}
+      categories={categories}
+      practiceNote='Both modes draw from the same KCNA question bank, so a low section score tells you which lesson above to revisit.'
+      cards={cards}
+    />
   );
-};
-
-export default Page;
+}

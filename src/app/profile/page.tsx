@@ -59,6 +59,12 @@ export default async function ProfilePage() {
     ? Math.round(Math.max(...attempts.map((attempt) => Number(attempt.score))))
     : 0;
 
+  const courseTitles = new Map(
+    enrollments.map((enrollment) => [enrollment.courseSlug, enrollment.courseTitle]),
+  );
+  const courseTitle = (slug: string | null) =>
+    (slug ? courseTitles.get(slug) : undefined) ?? slug ?? "General assessment";
+
   const displayName =
     profile.fullName || profile.email.split("@")[0] || "Learner";
   const initials = displayName
@@ -85,23 +91,25 @@ export default async function ProfilePage() {
           <div className='grid gap-6 lg:grid-cols-[1.1fr_0.9fr]'>
             <div className='relative overflow-hidden rounded-[32px] border border-slate-200 bg-white p-7 shadow-xl shadow-slate-200/70'>
               <div className='absolute right-[-4rem] top-[-4rem] h-48 w-48 rounded-full bg-[#2660A4]/10 blur-3xl' />
-              <div className='flex flex-wrap items-start justify-between gap-4'>
-                <div className='flex items-center gap-4'>
-                  <div className='flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-[#2660A4] to-[#26a465] text-2xl font-black text-white shadow-lg shadow-slate-300/60'>
+              <div className='flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between sm:gap-4'>
+                <div className='flex min-w-0 items-center gap-4'>
+                  <div className='flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-gradient-to-br from-[#2660A4] to-[#26a465] text-xl font-black text-white shadow-lg shadow-slate-300/60 sm:h-20 sm:w-20 sm:text-2xl'>
                     {initials}
                   </div>
-                  <div>
-                    <p className='text-xs font-semibold uppercase tracking-[0.3em] text-slate-500'>
+                  <div className='min-w-0'>
+                    <p className='text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 sm:text-xs sm:tracking-[0.3em]'>
                       {ROLE_LABELS[profile.role]} profile
                     </p>
-                    <h1 className='mt-1 text-3xl font-black text-slate-900'>
+                    <h1 className='mt-1 break-words text-2xl font-black leading-tight text-slate-900 sm:text-3xl'>
                       {displayName}
                     </h1>
-                    <p className='text-sm text-slate-500'>{profile.email}</p>
+                    <p className='break-words text-sm text-slate-500'>
+                      {profile.email}
+                    </p>
                   </div>
                 </div>
 
-                <div className='flex flex-col items-end gap-2'>
+                <div className='flex flex-wrap items-center gap-2 sm:flex-col sm:items-end sm:gap-2'>
                   <span className='rounded-full bg-[#2660A4]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-[#2660A4]'>
                     {ROLE_LABELS[profile.role]}
                   </span>
@@ -177,32 +185,77 @@ export default async function ProfilePage() {
 
               {attempts.length > 0 && (
                 <div className='rounded-3xl border border-slate-200 bg-white p-5 shadow-sm'>
-                  <p className='text-xs font-semibold uppercase tracking-[0.3em] text-slate-500'>
-                    Score history
-                  </p>
-                  <div className='mt-4 flex items-end gap-1.5'>
-                    {attempts
-                      .slice(0, 12)
-                      .reverse()
-                      .map((attempt) => (
-                        <div
-                          key={attempt.id}
-                          className='group relative flex-1'
-                          title={`${attempt.score}% · ${attempt.course_slug ?? "general"}`}
-                        >
-                          <div
-                            className='w-full rounded-t-md bg-gradient-to-t from-[#2660A4] to-[#26a465]'
-                            style={{
-                              height: `${Math.max(6, Number(attempt.score)) * 0.8}px`,
-                            }}
-                          />
-                        </div>
-                      ))}
+                  <div className='flex flex-wrap items-end justify-between gap-2'>
+                    <div>
+                      <p className='text-xs font-semibold uppercase tracking-[0.3em] text-slate-500'>
+                        Score history
+                      </p>
+                      <p className='mt-1 text-sm text-slate-600'>
+                        Newest first — green is 75%+, amber 50–74%, red below
+                        50%.
+                      </p>
+                    </div>
+                    <p className='text-xs font-semibold text-slate-500'>
+                      Average {averageScore}% · Best {bestScore}%
+                    </p>
                   </div>
-                  <div className='mt-2 flex justify-between text-[11px] font-semibold uppercase tracking-wide text-slate-400'>
-                    <span>Oldest</span>
-                    <span>Latest</span>
-                  </div>
+
+                  <ul className='mt-4 divide-y divide-slate-100'>
+                    {attempts.slice(0, 6).map((attempt) => {
+                      const score = Math.round(Number(attempt.score));
+                      const colour =
+                        score >= 75
+                          ? "#16a34a"
+                          : score >= 50
+                            ? "#d97706"
+                            : "#dc2626";
+
+                      return (
+                        <li key={attempt.id} className='py-3'>
+                          <div className='flex items-start justify-between gap-3'>
+                            <div className='min-w-0'>
+                              <p className='truncate text-sm font-semibold text-slate-900'>
+                                {courseTitle(attempt.course_slug)}
+                              </p>
+                              <p className='mt-0.5 text-xs text-slate-500'>
+                                {MODE_LABELS[attempt.mode] ?? attempt.mode}
+                                {attempt.correct_count != null &&
+                                attempt.question_count
+                                  ? ` · ${attempt.correct_count}/${attempt.question_count} correct`
+                                  : ""}
+                                {" · "}
+                                {new Date(
+                                  attempt.created_at,
+                                ).toLocaleDateString("en-GB", {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                })}
+                              </p>
+                            </div>
+                            <span
+                              className='shrink-0 rounded-full px-2.5 py-1 text-xs font-bold'
+                              style={{
+                                backgroundColor: `${colour}18`,
+                                color: colour,
+                              }}
+                            >
+                              {score}%
+                            </span>
+                          </div>
+                          <div className='mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-100'>
+                            <div
+                              className='h-full rounded-full'
+                              style={{
+                                width: `${Math.min(100, Math.max(0, score))}%`,
+                                backgroundColor: colour,
+                              }}
+                            />
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </div>
               )}
             </div>
