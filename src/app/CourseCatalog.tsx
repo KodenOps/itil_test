@@ -11,7 +11,6 @@ import {
   MdOutlineBarChart,
   MdOutlineCloud,
   MdCheckCircle,
-  MdLockOutline,
 } from "react-icons/md";
 import { SiKubernetes } from "react-icons/si";
 
@@ -204,23 +203,13 @@ export default function CourseCatalog({
                         {course.title}
                       </h3>
                     </div>
-                    <span
-                      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${
-                        isEnrolled
-                          ? "border-emerald-200/60 bg-emerald-400/20 text-white"
-                          : "border-white/20 bg-white/10 text-white/85"
-                      }`}
-                    >
-                      {isEnrolled ? (
-                        <>
-                          <MdCheckCircle size={13} /> Seat reserved
-                        </>
-                      ) : (
-                        <>
-                          <MdLockOutline size={13} /> Enrol to open
-                        </>
-                      )}
-                    </span>
+                    {/* Not-enrolled tracks no longer show a lock badge here; the
+                        enrol button below already reads "Enrol to open". */}
+                    {isEnrolled ? (
+                      <span className='inline-flex items-center gap-1.5 rounded-full border border-emerald-200/60 bg-emerald-400/20 px-3 py-1 text-xs font-semibold text-white'>
+                        <MdCheckCircle size={13} /> Seat reserved
+                      </span>
+                    ) : null}
                   </div>
 
                   <div className='space-y-4'>
@@ -243,10 +232,13 @@ export default function CourseCatalog({
                   </div>
 
                   <div className='flex items-center justify-between gap-3 text-sm font-semibold text-white/85'>
+                    {/* Enrolled count hidden until there are enough users to show a
+                        real number; uncomment to bring back "N preparing".
                     <span>
                       {course.enrolled} preparing
                       {index === 0 && course.enrolled > 0 ? " · popular" : ""}
                     </span>
+                    */}
                     <span className='rounded-full border border-white/20 bg-white/10 px-4 py-2 transition group-hover:bg-white/20'>
                       {isEnrolled ? "Open recap →" : "Exam details"}
                     </span>
@@ -284,7 +276,7 @@ export default function CourseCatalog({
                         : disableEnroll
                           ? `${limit}-track limit reached`
                           : isSignedIn
-                            ? "Reserve a seat on this exam"
+                            ? "Enrol to open"
                             : "Sign in to reserve a seat"}
                   </button>
                 )}
