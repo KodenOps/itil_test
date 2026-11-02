@@ -69,8 +69,20 @@ export async function requestCourse(
     };
   }
 
-  const fullName = text(formData.get("fullName"), MAX.fullName);
-  const submittedEmail = text(formData.get("email"), MAX.email).toLowerCase();
+  const viewer = await getViewer();
+
+  // Signed-in requests are locked to the account in the form. Fall back to the
+  // profile anyway so a request can never arrive unattributed.
+  const fullName =
+    text(formData.get("fullName"), MAX.fullName) ||
+    (viewer?.profile.fullName ?? "").trim().slice(0, MAX.fullName) ||
+    viewer?.email?.split("@")[0]?.slice(0, MAX.fullName) ||
+    "";
+  const submittedEmail = (
+    text(formData.get("email"), MAX.email) ||
+    viewer?.email ||
+    ""
+  ).toLowerCase();
   const courseTitle = text(formData.get("courseTitle"), MAX.courseTitle);
   const levelInput = text(formData.get("level"), 40);
   const message = text(formData.get("message"), MAX.message);
@@ -90,8 +102,6 @@ export async function requestCourse(
   const level = (LEVELS as readonly string[]).includes(levelInput)
     ? levelInput
     : "Not sure yet";
-
-  const viewer = await getViewer();
 
   let supabase: Awaited<ReturnType<typeof createClient>> | null =
     viewer?.supabase ?? null;

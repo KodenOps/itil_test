@@ -25,6 +25,14 @@ export default function CourseRequestForm({
   );
   const [courseTitle, setCourseTitle] = useState("");
 
+  // Signed-in requests are locked to the account so every ask is traceable
+  // back to the person who made it.
+  const identityLocked = isSignedIn && Boolean(defaultEmail);
+  const lockedFieldClass =
+    "rounded-xl border border-slate-200 bg-slate-100 px-4 py-3 text-sm font-normal text-slate-500 outline-none";
+  const fieldClass =
+    "rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-normal text-slate-900 outline-none transition focus:border-[#2660A4]";
+
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -65,36 +73,54 @@ export default function CourseRequestForm({
           straight to the CertifyHub team — and shows up in the admin dashboard
           so nothing gets lost.
         </p>
-      </div>
+      </div>        <form onSubmit={onSubmit} className='space-y-4 px-6 py-6 sm:px-8 sm:py-8'>
+          {/* Disabled inputs are not submitted, so the locked values travel
+              as hidden fields and the action still receives them. */}
+          {identityLocked && (
+            <>
+              <input type='hidden' name='fullName' value={defaultName} />
+              <input type='hidden' name='email' value={defaultEmail} />
+            </>
+          )}
 
-      <form onSubmit={onSubmit} className='space-y-4 px-6 py-6 sm:px-8 sm:py-8'>
-        <div className='grid gap-4 sm:grid-cols-2'>
-          <label className='flex flex-col gap-1.5 text-sm font-semibold text-slate-700'>
-            Your name
-            <input
-              type='text'
-              name='fullName'
-              defaultValue={defaultName}
-              maxLength={80}
-              required
-              placeholder='Ada Lovelace'
-              className='rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-normal text-slate-900 outline-none transition focus:border-[#2660A4]'
-            />
-          </label>
+          <div className='grid gap-4 sm:grid-cols-2'>
+            <label className='flex flex-col gap-1.5 text-sm font-semibold text-slate-700'>
+              Your name
+              <input
+                type='text'
+                name={identityLocked ? undefined : "fullName"}
+                defaultValue={defaultName}
+                maxLength={80}
+                required
+                disabled={identityLocked}
+                aria-describedby={identityLocked ? "identity-locked" : undefined}
+                placeholder='Ada Lovelace'
+                className={identityLocked ? lockedFieldClass : fieldClass}
+              />
+            </label>
 
-          <label className='flex flex-col gap-1.5 text-sm font-semibold text-slate-700'>
-            Email
-            <input
-              type='email'
-              name='email'
-              defaultValue={defaultEmail}
-              maxLength={254}
-              required
-              placeholder='you@example.com'
-              className='rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-normal text-slate-900 outline-none transition focus:border-[#2660A4]'
-            />
-          </label>
-        </div>
+            <label className='flex flex-col gap-1.5 text-sm font-semibold text-slate-700'>
+              Email
+              <input
+                type='email'
+                name={identityLocked ? undefined : "email"}
+                defaultValue={defaultEmail}
+                maxLength={254}
+                required
+                disabled={identityLocked}
+                aria-describedby={identityLocked ? "identity-locked" : undefined}
+                placeholder='you@example.com'
+                className={identityLocked ? lockedFieldClass : fieldClass}
+              />
+            </label>
+          </div>
+
+          {identityLocked && (
+            <p id='identity-locked' className='text-xs leading-5 text-slate-500'>
+              Taken from your account and locked, so the request stays tied to
+              you.
+            </p>
+          )}
 
         <label className='flex flex-col gap-1.5 text-sm font-semibold text-slate-700'>            Exam or certification you need
           <input
