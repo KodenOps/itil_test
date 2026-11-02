@@ -15,6 +15,15 @@ import {
 
 export const dynamic = "force-dynamic";
 
+const RAG_THRESHOLDS = { green: 75, amber: 50 } as const;
+
+/** Green at 75%+, amber at 50–74%, red below that. */
+function scoreColour(score: number) {
+  if (score >= RAG_THRESHOLDS.green) return "#16a34a";
+  if (score >= RAG_THRESHOLDS.amber) return "#d97706";
+  return "#dc2626";
+}
+
 const MODE_LABELS: Record<string, string> = {
   exam: "Timed exam",
   practice: "Practice run",
@@ -58,6 +67,7 @@ export default async function ProfilePage() {
   const bestScore = attempts.length
     ? Math.round(Math.max(...attempts.map((attempt) => Number(attempt.score))))
     : 0;
+  const hasAttempts = attempts.length > 0;
 
   const courseTitles = new Map(
     enrollments.map((enrollment) => [enrollment.courseSlug, enrollment.courseTitle]),
@@ -152,12 +162,14 @@ export default async function ProfilePage() {
                 label='Average score'
                 value={`${averageScore}%`}
                 hint='Across recent attempts'
+                valueColour={hasAttempts ? scoreColour(averageScore) : undefined}
               />
               <StatCard
                 icon={<MdOutlineEmojiEvents size={18} />}
                 label='Personal best'
                 value={`${bestScore}%`}
                 hint='Highest single attempt'
+                valueColour={hasAttempts ? scoreColour(bestScore) : undefined}
               />
             </div>
           </div>
@@ -203,12 +215,7 @@ export default async function ProfilePage() {
                   <ul className='mt-4 divide-y divide-slate-100'>
                     {attempts.slice(0, 6).map((attempt) => {
                       const score = Math.round(Number(attempt.score));
-                      const colour =
-                        score >= 75
-                          ? "#16a34a"
-                          : score >= 50
-                            ? "#d97706"
-                            : "#dc2626";
+                      const colour = scoreColour(score);
 
                       return (
                         <li key={attempt.id} className='py-3'>
@@ -317,11 +324,13 @@ function StatCard({
   label,
   value,
   hint,
+  valueColour,
 }: {
   icon: React.ReactNode;
   label: string;
   value: string;
   hint: string;
+  valueColour?: string;
 }) {
   return (
     <div className='rounded-3xl border border-slate-200 bg-white p-5 shadow-sm'>
@@ -331,7 +340,12 @@ function StatCard({
       <p className='mt-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500'>
         {label}
       </p>
-      <p className='mt-1 text-3xl font-black text-slate-900'>{value}</p>
+      <p
+        className='mt-1 text-3xl font-black text-slate-900'
+        style={valueColour ? { color: valueColour } : undefined}
+      >
+        {value}
+      </p>
       <p className='mt-1 text-xs text-slate-500'>{hint}</p>
     </div>
   );
