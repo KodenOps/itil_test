@@ -3,6 +3,7 @@ import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
 import { requireAdmin } from "@/lib/supabase/profile";
 import { listCourses } from "@/lib/content/courses";
+import { storedFileName } from "@/lib/storage";
 import {
   ROLE_LABELS,
   type AppRole,
@@ -27,6 +28,7 @@ import {
   MdOutlinePlaylistAdd,
   MdOutlineReply,
   MdOutlineGrading,
+  MdOutlineFileDownload,
   MdArrowForward,
 } from "react-icons/md";
 
@@ -835,6 +837,7 @@ export default async function AdminPage({
               <div className='grid gap-4 lg:grid-cols-2'>
                 {submissions.map((submission) => {
                   const isGraded = submission.status === "graded";
+                  const hasStoredFile = submission.file_path.includes("/");
 
                   return (
                     <article
@@ -873,11 +876,11 @@ export default async function AdminPage({
                           </span>{" "}
                           {submission.task_name ?? "Not specified"}
                         </p>
-                        <p>
+                        <p className='min-w-0 truncate'>
                           <span className='font-semibold text-slate-800'>
                             File:
                           </span>{" "}
-                          {submission.file_path}
+                          {storedFileName(submission.file_path)}
                         </p>
                         <p>
                           <span className='font-semibold text-slate-800'>
@@ -896,14 +899,28 @@ export default async function AdminPage({
                       </div>
 
                       <div className='mt-4 flex flex-wrap items-center justify-between gap-3'>
-                        <a
-                          href={`mailto:${encodeURIComponent(submission.email)}?subject=${encodeURIComponent(
-                            "Your practical assessment",
-                          )}`}
-                          className='inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50'
-                        >
-                          <MdOutlineReply size={13} /> Contact learner
-                        </a>
+                        <div className='flex flex-wrap items-center gap-2'>
+                          {hasStoredFile ? (
+                            <a
+                              href={`/api/admin/submissions/${submission.id}/download`}
+                              className='inline-flex items-center gap-1.5 rounded-full border border-[#2660A4]/30 bg-[#2660A4]/5 px-3 py-1.5 text-xs font-semibold text-[#2660A4] transition hover:bg-[#2660A4]/10'
+                            >
+                              <MdOutlineFileDownload size={14} /> Download file
+                            </a>
+                          ) : (
+                            <span className='inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-400'>
+                              <MdOutlineFileDownload size={14} /> File unavailable
+                            </span>
+                          )}
+                          <a
+                            href={`mailto:${encodeURIComponent(submission.email)}?subject=${encodeURIComponent(
+                              "Your practical assessment",
+                            )}`}
+                            className='inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50'
+                          >
+                            <MdOutlineReply size={13} /> Contact learner
+                          </a>
+                        </div>
                         <AdminGradeSubmission
                           submissionId={submission.id}
                           score={

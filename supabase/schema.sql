@@ -818,3 +818,47 @@ create policy "Staff grade assessment submissions"
   on public.assessment_submissions for update
   using (public.is_staff())
   with check (public.is_staff());
+
+-- ── 16. Practical submission files ─────────────────────────────────────────
+-- Workbooks live in a private bucket. Learners can only write inside their
+-- own folder, while staff can read every file to download it before grading.
+
+insert into storage.buckets (id, name, public)
+values ('assessment-submissions', 'assessment-submissions', false)
+on conflict (id) do nothing;
+
+drop policy if exists "Learners upload their own assessment files"
+  on storage.objects;
+create policy "Learners upload their own assessment files"
+  on storage.objects for insert
+  to authenticated
+  with check (
+    bucket_id = 'assessment-submissions'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+drop policy if exists "Owners and staff read assessment files"
+  on storage.objects;
+create policy "Owners and staff read assessment files"
+  on storage.objects for select
+  to authenticated
+  using (
+    bucket_id = 'assessment-submissions'
+    and (
+      (storage.foldername(name))[1] = auth.uid()::text
+      or public.is_staff()
+    )
+  );
+
+drop policy if exists "Owners and staff delete assessment files"
+  on storage.objects;
+create policy "Owners and staff delete assessment files"
+  on storage.objects for delete
+  to authenticated
+  using (
+    bucket_id = 'assessment-submissions'
+    and (
+      (storage.foldername(name))[1] = auth.uid()::text
+      or public.is_staff()
+    )
+  );

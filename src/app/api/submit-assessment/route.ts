@@ -6,6 +6,7 @@ import {
   isSameOriginRequest,
   rateLimit,
 } from "@/lib/security/request";
+import { ASSESSMENT_BUCKET } from "@/lib/storage";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 // Required env vars (set these in .env.local / your hosting provider):
@@ -116,13 +117,39 @@ export async function POST(req: Request) {
       );
     }
 
+    // Keep the workbook in private storage so admins can download it before
+    // grading. The object path is scoped to the learner's own folder.
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const submissionId = crypto.randomUUID();
+    const safeFileName = file.name.replace(/[^\w.\-]+/g, "_") || "workbook.xlsx";
+    const storagePath = `${viewer.userId}/${submissionId}/${safeFileName}`;
+
+    const { error: uploadError } = await viewer.supabase.storage
+      .from(ASSESSMENT_BUCKET)
+      .upload(storagePath, buffer, {
+        contentType:
+          file.type ||
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        upsert: false,
+      });
+
+    if (uploadError) {
+      console.error("Could not upload assessment file:", uploadError.message);
+      return NextResponse.json(
+        { error: "Could not upload your workbook. Please try again." },
+        { status: 500 },
+      );
+    }
+
     const { data: submission, error: insertError } = await viewer.supabase
       .from("assessment_submissions")
       .insert({
+        id: submissionId,
         user_id: viewer.userId,
         full_name: name,
         email,
-        file_path: file.name,
+        file_path: storagePath,
         course_slug: courseSlug,
         task_name: taskLabel || null,
         status: "pending",
@@ -132,6 +159,7 @@ export async function POST(req: Request) {
 
     if (insertError || !submission) {
       console.error("Could not store assessment submission:", insertError?.message);
+      await viewer.supabase.storage.from(ASSESSMENT_BUCKET).remove([storagePath]);
       return NextResponse.json(
         { error: "Could not save your submission. Please try again." },
         { status: 500 },
@@ -143,8 +171,6 @@ export async function POST(req: Request) {
     const toAddress = process.env.ASSESSMENT_TO;
 
     if (apiKey && fromAddress && toAddress) {
-      const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
       const resend = new Resend(apiKey);
 
       const { error } = await resend.emails.send({
