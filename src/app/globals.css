@@ -35,8 +35,11 @@ form button {
   @apply bg-gray-200 text-gray-700 font-bold  px-2 rounded hover:bg-gray-300 transition-colors duration-300 cursor-pointer w-full items-center justify-center gap-2;
 }
 
+/* Labels stay visible on every breakpoint. Hiding them used to hide any
+   input nested inside the label, which made whole forms disappear on
+   mobile and left required fields unfocusable. */
 form label {
-  @apply text-sm font-medium text-[#0E2F5E] md:block hidden;
+  @apply text-sm font-medium text-[#0E2F5E];
 }
 
 input,
