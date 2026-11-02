@@ -36,5 +36,17 @@ export default async function Page() {
     );
   }
 
-  return <PracticalAssessmentClient tasks={tasks} />;
+  const email = access.viewer.email ?? access.viewer.profile.email;
+  const name =
+    access.viewer.profile.fullName?.trim() ||
+    email.split("@")[0] ||
+    "Learner";
+
+  return (
+    <PracticalAssessmentClient
+      tasks={tasks}
+      submitterName={name}
+      submitterEmail={email}
+    />
+  );
 }

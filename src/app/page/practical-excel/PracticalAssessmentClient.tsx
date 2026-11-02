@@ -37,7 +37,7 @@ const instructions: string[] = [
   "Click on each section to download the workbook and review the basic concepts for each task.",
   "Work through all Tasks directly inside the 'WRITE HERE' sheet. Do not rename the sheet tabs.",
   "Save your work regularly. When finished, save the file with your name in the filename, e.g. Jane_Doe_Assessment.xlsx.",
-  "Return to this page and submit the completed file using the form at the bottom, along with your name and email.",
+  "Return to this page and submit the completed file using the form at the bottom. Your name and email are filled in from your account.",
   "You'll receive a confirmation once your submission is received. Results are currently graded manually, so allow a few minutes for feedback.",
 ];
 
@@ -58,19 +58,18 @@ type SubmitStatus = "idle" | "submitting" | "success" | "error";
 
 export default function PracticalAssessmentPage({
   tasks,
+  submitterName,
+  submitterEmail,
 }: {
   tasks: PracticalTask[];
+  submitterName: string;
+  submitterEmail: string;
 }) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
   const [taskName, setTaskName] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<SubmitStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const isValidEmail = (value: string) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
   const validateFile = (f: File): string | null => {
     const lower = f.name.toLowerCase();
@@ -102,8 +101,7 @@ export default function PracticalAssessmentPage({
   };
 
   const resetForm = () => {
-    setName("");
-    setEmail("");
+    setTaskName("");
     setFile(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
@@ -112,14 +110,6 @@ export default function PracticalAssessmentPage({
     e.preventDefault();
     setErrorMessage(null);
 
-    if (!name.trim()) {
-      setErrorMessage("Please enter your name.");
-      return;
-    }
-    if (!isValidEmail(email)) {
-      setErrorMessage("Please enter a valid email address.");
-      return;
-    }
     if (!taskName) {
       setErrorMessage("Please select a task.");
       return;
@@ -132,8 +122,6 @@ export default function PracticalAssessmentPage({
     setStatus("submitting");
     try {
       const formData = new FormData();
-      formData.append("name", name.trim());
-      formData.append("email", email.trim());
       formData.append("taskName", taskName);
       formData.append("courseSlug", "excel-fundamentals");
       formData.append("file", file);
@@ -316,10 +304,11 @@ export default function PracticalAssessmentPage({
                   </label>
                   <input
                     type='text'
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder='Jane Doe'
-                    className='w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400'
+                    value={submitterName}
+                    readOnly
+                    aria-readonly='true'
+                    tabIndex={-1}
+                    className='w-full cursor-not-allowed rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-500 outline-none'
                   />
                 </div>
                 <div>
@@ -328,10 +317,11 @@ export default function PracticalAssessmentPage({
                   </label>
                   <input
                     type='email'
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder='jane@example.com'
-                    className='w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400'
+                    value={submitterEmail}
+                    readOnly
+                    aria-readonly='true'
+                    tabIndex={-1}
+                    className='w-full cursor-not-allowed rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-500 outline-none'
                   />
                 </div>
               </div>

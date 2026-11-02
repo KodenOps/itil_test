@@ -53,9 +53,14 @@ export async function POST(req: Request) {
       );
     }
 
+    // The submitter's identity always comes from the verified session, never
+    // from the form, so the name and email shown on the page cannot be
+    // swapped out by editing the request.
+    const email = (viewer.email ?? viewer.profile.email ?? "").trim();
+    const name =
+      viewer.profile.fullName?.trim() || email.split("@")[0] || "Learner";
+
     const formData = await req.formData();
-    const name = formData.get("name");
-    const email = formData.get("email");
     const taskName = formData.get("taskName");
     const courseSlugValue = formData.get("courseSlug");
     const file = formData.get("file");
@@ -65,12 +70,9 @@ export async function POST(req: Request) {
         : "excel-fundamentals";
     const taskLabel = typeof taskName === "string" ? taskName.trim() : "";
 
-    if (typeof name !== "string" || !name.trim()) {
-      return NextResponse.json({ error: "Name is required." }, { status: 400 });
-    }
-    if (typeof email !== "string" || !isValidEmail(email)) {
+    if (!isValidEmail(email)) {
       return NextResponse.json(
-        { error: "A valid email is required." },
+        { error: "Your account email is not valid. Please contact support." },
         { status: 400 },
       );
     }
@@ -118,8 +120,8 @@ export async function POST(req: Request) {
       .from("assessment_submissions")
       .insert({
         user_id: viewer.userId,
-        full_name: name.trim(),
-        email: email.trim(),
+        full_name: name,
+        email,
         file_path: file.name,
         course_slug: courseSlug,
         task_name: taskLabel || null,
@@ -149,10 +151,10 @@ export async function POST(req: Request) {
         from: fromAddress,
         to: toAddress.split(",").map((a) => a.trim()),
         replyTo: email,
-        subject: `New assessment submission — ${name.trim()}`,
+        subject: `New assessment submission — ${name}`,
         html: `
-          <p><strong>Name:</strong> ${escapeHtml(name.trim())}</p>
-          <p><strong>Email:</strong> ${escapeHtml(email.trim())}</p>
+          <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+          <p><strong>Email:</strong> ${escapeHtml(email)}</p>
           <p><strong>Task:</strong> ${escapeHtml(taskLabel)}</p>
           <p><strong>File:</strong> ${escapeHtml(file.name)} (${(file.size / 1024).toFixed(1)} KB)</p>
           <p>Grading status: <strong>Pending Grading</strong> — add the score in the admin dashboard.</p>
