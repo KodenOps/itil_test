@@ -17,10 +17,11 @@ export default function QuestionBankEmpty({
             {courseTitle}
           </p>
           <h1 className='mt-3 text-2xl font-black text-slate-900'>
-            No gradable questions for this course yet.
+            No exam questions for this track yet.
           </h1>
           <p className='mx-auto mt-3 max-w-xl text-sm leading-7 text-slate-600'>
-            Questions now live in Supabase. An administrator can push every
+            Maybe the recap and key-concept videos are enough for now. Sample
+            questions live in Supabase, and an administrator can push every
             bank from the legacy data files with the{" "}
             <span className='font-semibold text-slate-900'>
               Sync content
@@ -33,7 +34,7 @@ export default function QuestionBankEmpty({
             href={backHref}
             className='mt-6 inline-flex rounded-full bg-slate-900 px-6 py-3 text-sm font-bold text-white transition hover:bg-slate-800'
           >
-            Back to the course
+            Back to the recap
           </a>
         </div>
       </main>

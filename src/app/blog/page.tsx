@@ -41,11 +41,11 @@ export default function Page() {
 
       <div className='main mx-auto max-w-8xl px-4 mt-20 pb-20 pt-8 md:px-6'>
         <h2 className='text-center text-2xl font-bold text-[#2660A4] md:text-3xl'>
-          Welcome to My Blog
+          Exam notes & blog
         </h2>
         <p className='mx-auto mt-3 max-w-2xl text-center text-sm text-slate-600 sm:text-base'>
-          Browse the latest posts from the Kodenops publication, with responsive
-          cards and page navigation.
+          Study notes, syllabus changes and exam-day guidance from the Kodenops
+          publication — everything worth knowing before you sit the paper.
         </p>
 
         {posts.length === 0 ? (

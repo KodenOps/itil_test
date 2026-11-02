@@ -72,7 +72,7 @@ const Page = () => {
                     <div className='flex items-start justify-between gap-4'>
                       <div>
                         <p className='text-xs font-semibold uppercase tracking-[0.3em] text-white/80'>
-                          Learning track
+                          Exam track
                         </p>
                         <h2 className='mt-3 text-3xl font-black leading-tight'>
                           {mode}

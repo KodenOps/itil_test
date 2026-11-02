@@ -17,9 +17,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CertifyHub — Professional Exam Practice",
+  title: "CertifyHub — Exam Preparation & Practice",
   description:
-    "Structured certification tracks, practice banks, and learning activity in one place.",
+    "Recap each topic, watch the key concepts, then practise sample professional exam questions in the real exam format and conditions.",
   applicationName: "CertifyHub",
   icons: {
     icon: [

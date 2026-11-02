@@ -1215,7 +1215,7 @@ export default function LearnPage() {
               className='inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest text-white mb-4'
               style={{ backgroundColor: activeCategory.accentHex }}
             >
-              Learning path
+              Topic recap
             </div>
             <h1 className='text-3xl font-black tracking-tight text-slate-900 sm:text-4xl md:text-5xl'>
               {activeCategory.title}
@@ -1224,7 +1224,8 @@ export default function LearnPage() {
               {activeCategory.description}
             </p>
             <p className='mt-4 text-sm text-slate-500'>
-              {activeCategory.lessons.length} topics in this path
+              {activeCategory.lessons.length} recaps in this module, each with
+              a key-concept video you can replay before you practise.
             </p>
           </div>
         </div>
@@ -1288,7 +1289,7 @@ export default function LearnPage() {
           <aside className='hidden lg:block w-64 xl:w-72 shrink-0'>
             <div className='sticky top-24 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm'>
               <p className='text-xs font-bold uppercase tracking-widest text-slate-400 mb-4'>
-                In this path
+                In this module
               </p>
               <nav className='space-y-0.5 max-h-[calc(100vh-10rem)] overflow-y-auto pr-1'>
                 {activeCategory.lessons.map((lesson, i) => {

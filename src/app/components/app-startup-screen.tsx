@@ -146,7 +146,7 @@ export default function AppStartupScreen() {
             </span>
           </h1>
           <p className='mt-2 text-[10px] font-semibold uppercase tracking-[0.32em] text-white/55'>
-            Learn · Practise · Pass
+            Recap · Practise · Pass
           </p>
         </div>
 

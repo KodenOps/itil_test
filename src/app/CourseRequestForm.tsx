@@ -55,15 +55,15 @@ export default function CourseRequestForm({
       <div className='bg-gradient-to-r from-[#0E2F5E] to-[#2660A4] px-6 py-8 text-white sm:px-8'>
         <span className='inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em]'>
           <MdOutlinePlaylistAdd size={14} />
-          Course requests
+          Exam requests
         </span>
         <h2 className='mt-4 text-2xl font-black sm:text-3xl'>
-          Not seeing the course you need? Ask for it.
+          Sitting an exam we do not cover yet? Ask for it.
         </h2>
         <p className='mt-2 max-w-2xl text-sm leading-7 text-white/85'>
-          Tell us what you want to learn. Your request goes straight to the
-          CertifyHub team — and shows up in the admin dashboard so nothing gets
-          lost.
+          Tell us which certification you are preparing for. Your request goes
+          straight to the CertifyHub team — and shows up in the admin dashboard
+          so nothing gets lost.
         </p>
       </div>
 
@@ -96,8 +96,7 @@ export default function CourseRequestForm({
           </label>
         </div>
 
-        <label className='flex flex-col gap-1.5 text-sm font-semibold text-slate-700'>
-          Course or topic you want
+        <label className='flex flex-col gap-1.5 text-sm font-semibold text-slate-700'>            Exam or certification you need
           <input
             type='text'
             name='courseTitle'
@@ -178,17 +177,15 @@ export default function CourseRequestForm({
         )}
 
         <div className='flex flex-wrap items-center justify-between gap-3'>
-          <p className='text-xs leading-5 text-slate-500'>
-            {isSignedIn
-              ? "We attach this request to your account so the team can follow up."
-              : "No account needed — just make sure the email is right."}
+          <p className='text-xs leading-5 text-slate-500'>              {isSignedIn
+                ? "We attach this request to your account so the team can follow up."
+                : "No account needed — just make sure the email is right."}
           </p>
           <button
             type='submit'
             disabled={isPending}
             className='rounded-full bg-[#2660A4] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#1f4f8d] disabled:cursor-not-allowed disabled:opacity-60'
-          >
-            {isPending ? "Sending request…" : "Request this course"}
+          >              {isPending ? "Sending request…" : "Request this exam"}
           </button>
         </div>
       </form>

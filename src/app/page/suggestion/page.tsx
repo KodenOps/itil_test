@@ -45,11 +45,12 @@ const Page = () => {
               Feedback center
             </div>
             <h1 className='mt-6 max-w-4xl text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-7xl'>
-              Suggestions & Ideas Submission
+              Suggestions & ideas
             </h1>
             <p className='mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg'>
-              Kindly fill the form below to suggest new ideas or features you
-              would like to see on this platform.
+              Tell us which exam you are preparing for and what would help:
+              a topic recap, a key-concept video, or more sample questions in
+              the real exam format.
             </p>
           </div>
 

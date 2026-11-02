@@ -205,7 +205,7 @@ const categories: LessonCategory[] = [
 const cards: CourseCard[] = [
   {
     href: "/page/aws-exam",
-    label: "Exam Mode",
+    label: "Exam simulation",
     description:
       "Sit a timed, full-length AWS Cloud Practitioner style exam and see where you stand.",
     icon: <MdOutlineQuiz size={36} />,
@@ -214,7 +214,7 @@ const cards: CourseCard[] = [
   },
   {
     href: "/page/aws-practise",
-    label: "Practice Mode",
+    label: "Practice set",
     description:
       "Work through the question bank at your own pace, with answers explained as you go.",
     icon: <MdOutlinePlaylistAdd size={36} />,
@@ -227,8 +227,8 @@ export default function Page() {
   return (
     <CourseLessonPage
       badge='AWS Cloud Practitioner'
-      title='Learn the cloud the way AWS actually builds it.'
-      intro='A structured walk through the AWS Certified Cloud Practitioner syllabus: cloud concepts, core services, security and billing. Read a section, then test yourself on the same material in exam mode at the bottom of this page.'
+      title='The AWS exam, answered the way AWS asks it.'
+      intro='Every section of the AWS Certified Cloud Practitioner syllabus, recapped in the order you will meet it: cloud concepts, core services, security and billing. Read the recap, replay the key-concept videos, then practise the same material in exam conditions at the bottom of this page.'
       meta={["CLF-C02 syllabus", "4 sections", "14 lessons", "Exam + practice"]}
       categories={categories}
       practiceNote='Both modes use the same AWS question bank, so a weak exam run tells you exactly which section to reread above.'

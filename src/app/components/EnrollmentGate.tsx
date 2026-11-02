@@ -36,7 +36,7 @@ export default function EnrollmentGate({
             }}
           >
             <p className='text-xs font-semibold uppercase tracking-[0.3em] text-white/80'>
-              Enrollment required
+              Seat required
             </p>
             <h1 className='mt-3 text-3xl font-black sm:text-4xl'>
               {course.title}
@@ -48,9 +48,9 @@ export default function EnrollmentGate({
 
           <div className='space-y-6 px-8 py-8'>
             <div className='rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm leading-6 text-amber-900'>
-              This assessment is only available to enrolled learners. Enroll
-              now and you will be taken straight into it. You can hold two
-              active courses at a time.
+              This paper only opens for candidates holding a seat on the track.
+              Reserve one now and you will go straight into the recap. You can
+              hold two active exam tracks at a time.
             </div>
 
             <div className='flex flex-wrap items-center gap-3'>
@@ -61,7 +61,7 @@ export default function EnrollmentGate({
                   type='submit'
                   className='rounded-full bg-[#2660A4] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#1f4f8d]'
                 >
-                  Enroll and continue →
+                  Reserve a seat and continue →
                 </button>
               </form>
 
@@ -69,14 +69,14 @@ export default function EnrollmentGate({
                 href='/'
                 className='rounded-full border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50'
               >
-                Back to catalogue
+                Back to the exam catalogue
               </a>
 
               <a
                 href='/profile'
                 className='text-sm font-semibold text-[#2660A4] underline-offset-4 hover:underline'
               >
-                See my courses
+                See my exam tracks
               </a>
             </div>
           </div>

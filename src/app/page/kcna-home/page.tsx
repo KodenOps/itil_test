@@ -165,7 +165,7 @@ const categories: LessonCategory[] = [
 const cards: CourseCard[] = [
   {
     href: "/page/kcna-exam",
-    label: "Exam Mode",
+    label: "Exam simulation",
     description:
       "Sit a timed, full-length KCNA-style assessment and get a scored result at the end.",
     icon: <MdOutlineQuiz size={36} />,
@@ -174,7 +174,7 @@ const cards: CourseCard[] = [
   },
   {
     href: "/page/kcna-practice",
-    label: "Practice Mode",
+    label: "Practice set",
     description:
       "Work section by section through the KCNA question bank without the clock.",
     icon: <MdOutlinePlaylistAdd size={36} />,
@@ -186,9 +186,9 @@ const cards: CourseCard[] = [
 export default function Page() {
   return (
     <CourseLessonPage
-      badge='KCNA learning path'
+      badge='KCNA exam track'
       title='Kubernetes and cloud-native, explained for the exam room.'
-      intro='The KCNA syllabus in reading order: fundamentals, workloads and scheduling, cloud-native architecture, then security and ecosystem. Read a section here, then open exam mode at the bottom of the page to test the same material.'
+      intro='The KCNA syllabus recapped in exam order: fundamentals, workloads and scheduling, cloud-native architecture, then security and ecosystem. Watch the key concepts, then open the exam simulation at the bottom of the page and answer the same material as sample questions.'
       meta={["KCNA syllabus", "4 sections", "13 lessons", "Exam + practice"]}
       categories={categories}
       practiceNote='Both modes draw from the same KCNA question bank, so a low section score tells you which lesson above to revisit.'

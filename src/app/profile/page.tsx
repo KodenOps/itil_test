@@ -143,7 +143,7 @@ export default async function ProfilePage() {
             <div className='grid grid-cols-2 gap-4'>
               <StatCard
                 icon={<MdOutlineSchool size={18} />}
-                label='Active courses'
+                label='Active exam tracks'
                 value={`${activeEnrollments.length}/${ENROLLMENT_LIMIT}`}
                 hint={
                   activeEnrollments.length >= ENROLLMENT_LIMIT
@@ -153,7 +153,7 @@ export default async function ProfilePage() {
               />
               <StatCard
                 icon={<MdOutlineHistory size={18} />}
-                label='Assessments taken'
+                label='Exam attempts'
                 value={`${attempts.length}`}
                 hint='Last 30 recorded'
               />
@@ -161,14 +161,14 @@ export default async function ProfilePage() {
                 icon={<MdOutlineInsights size={18} />}
                 label='Average score'
                 value={`${averageScore}%`}
-                hint='Across recent attempts'
+                hint='Average across recent attempts'
                 valueColour={hasAttempts ? scoreColour(averageScore) : undefined}
               />
               <StatCard
                 icon={<MdOutlineEmojiEvents size={18} />}
                 label='Personal best'
                 value={`${bestScore}%`}
-                hint='Highest single attempt'
+                hint='Your highest single attempt'
                 valueColour={hasAttempts ? scoreColour(bestScore) : undefined}
               />
             </div>
@@ -180,10 +180,10 @@ export default async function ProfilePage() {
               <div className='flex items-end justify-between gap-3'>
                 <div>
                   <p className='text-xs font-semibold uppercase tracking-[0.3em] text-slate-500'>
-                    Your learning seats
+                    Your exam seats
                   </p>
                   <h2 className='mt-2 text-2xl font-black text-slate-900'>
-                    Enrolled courses
+                    Your exam tracks
                   </h2>
                 </div>
                 <Link
@@ -200,10 +200,10 @@ export default async function ProfilePage() {
                   <div className='flex flex-wrap items-end justify-between gap-2'>
                     <div>
                       <p className='text-xs font-semibold uppercase tracking-[0.3em] text-slate-500'>
-                        Score history
+                        Attempt history
                       </p>
                       <p className='mt-1 text-sm text-slate-600'>
-                        Newest first — green is 75%+, amber 50–74%, red below
+                        Newest first. Green is 75%+, amber 50–74%, red below
                         50%.
                       </p>
                     </div>

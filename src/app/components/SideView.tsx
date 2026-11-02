@@ -13,11 +13,11 @@ const SideView = async () => {
       <div className='titleText px-4 pt-4'>
         <Image src={mylogo} alt='Logo' width={80} />
         <h3 className='mt-4 text-white font-bold text-3xl  font-noto text-left leading-relaxed'>
-          Bootstrap your
+          Recap the topic.
         </h3>
         <div className='flex items-start gap-2 flex-col text-3xl'>
           <h3 className='text-[#6AF1F1]   font-noto font-bold '>
-            Trainings <span className='text-white'> Real Time</span>
+            Then <span className='text-white'>sit the exam.</span>
           </h3>
 
           <Image
@@ -29,12 +29,11 @@ const SideView = async () => {
         </div>
 
         <p className='fonts-noto text-white text-[14px] font-normal text-left'>
-          Learn from expertly curated content that keeps pace with the latest
-          industry trends and technological advancements. Our interactive
-          learning environment allows you to study at your own pace while
-          building confidence through hands-on practice. Join thousands of
-          learners worldwide who have already transformed their careers by
-          becoming certified professionals through mycertifyhub.
+          CertifyHub is an exam preparation platform, not a training course.
+          Each track starts with a short recap of the topic, then videos on the
+          key concepts examiners actually test. You finish by practising sample
+          questions written in the same format — and under the same conditions —
+          as the real professional exam.
         </p>
       </div>
       <ReviewBar reviews={reviews} />

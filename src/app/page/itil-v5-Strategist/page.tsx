@@ -1003,7 +1003,7 @@ export default function LearnPage() {
               {activeCategory.description}
             </p>
             <p className='mt-4 text-sm text-slate-500'>
-              {activeCategory.lessons.length} topics in this section
+              {activeCategory.lessons.length} recaps in this module
             </p>
           </div>
         </div>
@@ -1142,13 +1142,13 @@ export default function LearnPage() {
           })}
           <div className='border-t border-slate-200 pt-10 pb-16 w-full '>
             <p className='text-xs font-bold uppercase tracking-widest text-slate-400 mb-4'>
-              Practice With Exam Dumps
+              Practise with sample exam questions
             </p>
             <div className=''>
               {[
                 {
                   path: "/page/itil-strategist-dpi",
-                  label: "Exam Mode",
+                  label: "Exam simulation",
                   description: "Jump into the full or partial exam flow.",
                   IconName: MdOutlineQuiz,
                   accent: "from-[#2660A4] to-[#4F8FCA]",

@@ -56,7 +56,7 @@ export default function CourseLessonPage({
   intro,
   meta,
   categories,
-  practiceHeading = "Practise What You've Learnt",
+  practiceHeading = "Sit the paper in exam conditions",
   practiceNote,
   cards,
 }: Props) {
@@ -398,7 +398,7 @@ export default function CourseLessonPage({
                   <div className='flex items-start justify-between gap-4'>
                     <div>
                       <p className='text-xs font-semibold uppercase tracking-[0.3em] text-white/80'>
-                        Learning track
+                        Exam track
                       </p>
                       <h2 className='mt-3 text-3xl font-black leading-tight'>
                         {card.label}

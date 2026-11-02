@@ -801,7 +801,7 @@ export default function LearnPage() {
               {activeCategory.description}
             </p>
             <p className='mt-4 text-sm text-slate-500'>
-              {activeCategory.lessons.length} topics in this section
+              {activeCategory.lessons.length} recaps in this module
             </p>
           </div>
         </div>
@@ -914,15 +914,15 @@ export default function LearnPage() {
         {[
           {
             path: "/page/itil-exams",
-            label: "Exam Mode",
+            label: "Exam simulation",
             description: "Jump into the full or partial exam flow.",
             IconName: MdOutlineQuiz,
             accent: "from-[#2660A4] to-[#4F8FCA]",
           },
           {
             path: "/page/study-materials",
-            label: "Study Material",
-            description: "Browse supporting files and study references.",
+            label: "Recap notes",
+            description: "Skim the reference slides before you practise.",
             IconName: BiBook,
             accent: "from-[#26a465] to-[#39c682]",
           },
@@ -940,7 +940,7 @@ export default function LearnPage() {
                 <div className='flex items-start justify-between gap-4'>
                   <div>
                     <p className='text-xs font-semibold uppercase tracking-[0.3em] text-white/80'>
-                      Learning track
+                      Exam track
                     </p>
                     <h2 className='mt-3 text-3xl font-black leading-tight'>
                       {label}

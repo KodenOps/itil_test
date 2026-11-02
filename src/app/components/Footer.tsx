@@ -11,7 +11,8 @@ const Footer = () => {
             CertifyHub
           </p>
           <p className='mt-2 text-base font-semibold text-slate-900'>
-            Built for exam prep, learning paths, and steady momentum.
+            Built for exam day: quick recaps, key-concept videos, and practice
+            under real exam conditions.
           </p>
         </div>
 

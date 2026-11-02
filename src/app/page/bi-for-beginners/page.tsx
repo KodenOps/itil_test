@@ -880,7 +880,7 @@ export default function LearnPage() {
               {activeCategory.description}
             </p>
             <p className='mt-4 text-sm text-slate-500'>
-              {activeCategory.lessons.length} topics in this section
+              {activeCategory.lessons.length} recaps in this module
             </p>
           </div>
         </div>
@@ -1024,14 +1024,14 @@ export default function LearnPage() {
           })}
           <div className='border-t border-slate-200 pt-10 pb-16 w-full '>
             <p className='text-xs font-bold uppercase tracking-widest text-slate-400 mb-4'>
-              Practice With Sample PL-300 Questions
+              Practise with sample PL-300 questions
             </p>
             <div className=''>
               {[
                 {
                   // TODO: point this at your Power BI practice exam route
                   path: "/page/powerbi-pl-300",
-                  label: "Exam Mode",
+                  label: "Exam simulation",
                   description:
                     "Test yourself with practice questions for the PL-300 Power BI Data Analyst exam.",
                   IconName: MdOutlineQuiz,

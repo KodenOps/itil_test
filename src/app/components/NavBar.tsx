@@ -62,7 +62,7 @@ const NavBar = () => {
     { href: "/", label: "Home", icon: <FaHome size={15} /> },
     {
       href: "/profile",
-      label: "My Courses",
+      label: "My Exams",
       icon: <FaGraduationCap size={16} />,
       badge: activeCourses.length,
     },
@@ -218,7 +218,7 @@ const NavBar = () => {
                 </span>
               </span>
               <span className='mt-1.5 hidden text-[9px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:block'>
-                Learn · Practise · Pass
+                Recap · Practise · Pass
               </span>
             </span>
           </Link>
@@ -487,7 +487,7 @@ const NavBar = () => {
                     </span>
                   </p>
                   <p className='mt-1.5 text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-400'>
-                    Learn · Practise · Pass
+                    Recap · Practise · Pass
                   </p>
                 </div>
               </div>
@@ -534,7 +534,7 @@ const NavBar = () => {
                   Welcome to CertifyHub
                 </p>
                 <p className='mt-1 text-xs leading-relaxed text-slate-500'>
-                  Sign in to track your courses, scores and progress.
+                  Sign in to keep your recaps, attempts and scores together.
                 </p>
 
                 <button
@@ -633,7 +633,7 @@ const NavBar = () => {
                     <FaGraduationCap size={16} />
                   </span>
                   <span className='flex-1 text-[15px] font-semibold'>
-                    My enrolments
+                    My exam seats
                   </span>
                   <span className='rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500'>
                     {activeCourses.length}/2

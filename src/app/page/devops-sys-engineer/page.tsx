@@ -167,16 +167,16 @@ export default function Page() {
         <section className='mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 py-16 md:px-10 lg:px-12'>
           <div className='max-w-4xl mt-20'>
             <div className='inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 shadow-sm shadow-slate-200/70 backdrop-blur'>
-              DevOps + System Engineer learning path
+              DevOps & Systems Engineer exam track
             </div>
             <h1 className='mt-6 max-w-3xl text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-7xl'>
-              Build systems that scale, recover, and stay understandable.
+              Every system design question, answered before exam day.
             </h1>
             <p className='mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg'>
-              This landing page captures the core skills DevOps and system
-              engineer learners need to grow from tools and tactics into
-              production-ready thinking. Open any topic for a quick summary,
-              then jump into the deeper guide below.
+              A recap-first track for the DevOps and systems engineering papers:
+              open any topic for the short version, watch the key-concept video,
+              then test yourself with sample questions in the same format as the
+              real exam. Open any topic to start.
             </p>
           </div>
 
@@ -328,7 +328,7 @@ export default function Page() {
                     // onClick={() => scrollToSection(selectedTopic.id)}
                     className='rounded-full bg-slate-900 px-5 py-3 font-semibold text-white transition hover:bg-slate-800 flex items-center gap-2  items-center justify-center'
                   >
-                    Launch Learning Path <MdPlayArrow size={20} />
+                    Open the recap <MdPlayArrow size={20} />
                   </Link>
 
                   <button

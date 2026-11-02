@@ -31,11 +31,11 @@ const Page = () => {
     <div className='min-h-screen bg-white px-6 py-10 text-slate-900 flex flex-col items-center justify-center'>
       <div className='w-full max-w-2xl rounded-[28px] border border-slate-200 bg-white p-8 text-center shadow-xl shadow-slate-200/70'>
         <div className='inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700'>
-          Results
+          Simulation results
         </div>
 
         <h1 className='mt-5 text-3xl font-black text-[#2660A4]'>
-          Exam Completed!
+          Attempt complete
         </h1>
 
         {/* {percentage !== null && (
@@ -53,12 +53,14 @@ const Page = () => {
 
         {percentage !== null ? (
           percentage < 65 ? (
-            <p className='mt-4 text-xl italic text-rose-600'>
-              Olodo! You fail o!
+            <p className='mt-4 text-base leading-7 text-rose-600'>
+              Below the 65% pass mark. Review the topics behind your missed
+              questions, then run this paper again.
             </p>
           ) : (
-            <p className='mt-4 text-xl italic text-emerald-600'>
-              Smart Chap! Keep it up. Keep practicing
+            <p className='mt-4 text-base leading-7 text-emerald-600'>
+              At or above the 65% pass mark. Keep the recap open and repeat the
+              paper until this score feels routine.
             </p>
           )
         ) : (
@@ -68,7 +70,7 @@ const Page = () => {
         <div className='mt-8 grid w-full gap-4 md:grid-cols-2'>
           <div className='flex flex-col justify-center rounded-[28px] border border-slate-200 bg-[#2660A4] px-4 py-10 text-white shadow-lg shadow-blue-100'>
             <h4 className='text-lg font-semibold w-full text-center text-white/80'>
-              Your Score:
+              Your score
             </h4>
 
             <h2 className='text-4xl font-black w-full text-center text-white'>
@@ -78,7 +80,7 @@ const Page = () => {
 
           <div className='flex flex-col justify-center rounded-[28px] border border-slate-200 bg-slate-50 px-4 py-10'>
             <h4 className='text-lg font-semibold text-slate-500'>
-              Performance
+              Correct answers
             </h4>
 
             <p className='mt-2 text-xl font-bold text-slate-900'>
@@ -94,7 +96,7 @@ const Page = () => {
             router.push("/");
           }}
         >
-          <div className='flex items-center gap-2'>Go back Home</div>
+          <div className='flex items-center gap-2'>Back to my exam seats</div>
         </button>
       </div>
     </div>

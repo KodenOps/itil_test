@@ -193,14 +193,14 @@ const Page = () => {
         <section className='mx-auto mt-16 flex w-full max-w-7xl flex-col gap-10 px-6 py-14 md:px-10 lg:px-12'>
           <div className='max-w-4xl'>
             <div className='inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm shadow-slate-200/70 backdrop-blur'>
-              Study materials
+              Recap materials
             </div>
             <h1 className='mt-6 max-w-4xl text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-7xl'>
-              Study Materials
+              Recap materials
             </h1>
             <p className='mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg'>
-              Here you can find various study materials files to help you
-              prepare for your ITIL exam.
+              Reference files for the ITIL paper — the material to skim before
+              you open the practice questions, not a course to work through.
             </p>
 
             <div className='grid gap-5 md:grid-cols-2 xl:grid-cols-3 w-full md:mt-6 mt-4'>

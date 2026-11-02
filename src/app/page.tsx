@@ -32,24 +32,26 @@ const Page = async () => {
           <div className='grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end'>
             <div className='max-w-4xl'>
               <div className='inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm shadow-slate-200/70 backdrop-blur'>
-                CertifyHub exam prep portal
+                CertifyHub — exam preparation, not training
               </div>
               <h1 className='mt-6 max-w-4xl text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-7xl'>
-                Enroll in a track. Then study like it is yours.
+                Recap it. Then practise like it is exam day.
               </h1>
               <p className='mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg'>
-                Courses are locked until you enroll — your seat, your pace,
-                your activity trail. You can hold{" "}
+                Every exam track follows the same three steps: a focused recap
+                of the topic, short videos on the key concepts, then sample
+                questions written in the same format and run under the same
+                conditions as the professional paper. You can hold{" "}
                 <span className='font-semibold text-slate-900'>
-                  {ENROLLMENT_LIMIT} active courses
+                  {ENROLLMENT_LIMIT} active exam tracks
                 </span>{" "}
-                at a time, so pick the ones that move you forward now.
+                at a time, so choose the exams you are sitting next.
               </p>
             </div>
 
             <div className='rounded-[28px] border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/70'>
               <p className='text-xs font-semibold uppercase tracking-[0.3em] text-slate-500'>
-                Your learning seat
+                Your exam seats
               </p>
               <p className='mt-3 text-5xl font-black text-slate-900'>
                 {activeCount}
@@ -60,11 +62,11 @@ const Page = async () => {
               <p className='mt-2 text-sm text-slate-600'>
                 {viewer
                   ? activeCount >= ENROLLMENT_LIMIT
-                    ? "Both seats taken. Leave a course to switch tracks."
+                    ? "Both seats taken. Leave a track to prepare for another exam."
                     : `${ENROLLMENT_LIMIT - activeCount} seat${
                         ENROLLMENT_LIMIT - activeCount === 1 ? "" : "s"
                       } left.`
-                  : "Sign in to claim your seats and track progress."}
+                  : "Sign in to reserve a seat and keep your attempt history."}
               </p>
               <div className='mt-4 h-2 w-full overflow-hidden rounded-full bg-slate-100'>
                 <div
@@ -99,9 +101,9 @@ const Page = async () => {
 
           <div className='grid gap-4 rounded-[28px] border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/70 md:grid-cols-3'>
             {[
-              "Enrollment required before any assessment opens",
-              "Live enrollment counts for every course",
-              "Activity, scores and progress saved to your profile",
+              "Topic recap and key-concept videos before you practise",
+              "Sample questions in the real exam format, under exam conditions",
+              "Every attempt scored, saved and compared on your profile",
             ].map((item) => (
               <div key={item} className='rounded-2xl bg-slate-50 p-5'>
                 <p className='text-sm font-semibold text-slate-900'>{item}</p>

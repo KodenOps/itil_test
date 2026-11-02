@@ -78,7 +78,7 @@ export default function LoginForm() {
       // With "Confirm email" enabled Supabase returns a user but no session.
       if (!data.session) {
         setNotice(
-          "Account created. Check your inbox to confirm your email, then sign in. You start as a Learner.",
+          "Account created. Check your inbox to confirm your email, then sign in to start preparing. You begin as a Learner.",
         );
         form.reset();
         setMode("signin");
@@ -137,13 +137,13 @@ export default function LoginForm() {
         </button>
       </div>
 
-      <h3 className='text-3xl capitalize text-[#0E2F5E] text-center md:text-left font-bold'>
-        {mode === "signin" ? "sign In" : "create your account"}
+      <h3 className='text-3xl text-[#0E2F5E] text-center md:text-left font-bold'>
+        {mode === "signin" ? "Sign in" : "Create your account"}
       </h3>
       <p className='pt-2 pb-4 text-xl text-center md:text-left text-[#5A5C78]'>
         {mode === "signin"
-          ? "Use the email and password you registered with."
-          : "Register with your email and password. Every new account starts as a Learner."}
+          ? "Pick up where you left off — recaps, key-concept videos and exam-format practice."
+          : "One account keeps your recaps, videos and exam attempts together. Every new account starts as a Learner."}
       </p>
 
       <form className='w-full' onSubmit={handleSubmit}>
@@ -231,12 +231,6 @@ export default function LoginForm() {
               : "Create Account"}
         </button>
       </form>
-
-      <p className='mt-6 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-600'>
-        Accounts are created on this page only — social sign-in is disabled.
-        Instructors and admins are promoted by invitation from the admin
-        dashboard.
-      </p>
 
       <h3 className='text-center mt-8 pb-10 text-slate-700'>
         {mode === "signin" ? "New to CertifyHub?" : "Already registered?"}{" "}

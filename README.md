@@ -1,9 +1,12 @@
 # CertifyHub
 
-Exam-prep platform built with Next.js 15 (App Router), Supabase auth/database and
-Tailwind. Accounts are email + password only; every new account starts as a
-**Learner**, and **Instructor** / **Admin** access is granted by invitation from
-the admin dashboard.
+Exam preparation platform built with Next.js 15 (App Router), Supabase
+auth/database and Tailwind. It is deliberately not a training product: every
+track gives you a recap of the topic, short videos on the key concepts, then
+sample professional exam questions answered under the same format and
+conditions as the real paper. Accounts are email + password only; every new
+account starts as a **Learner**, and **Instructor** / **Admin** access is
+granted by invitation from the admin dashboard.
 
 ## What is in here
 

@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "CertifyHub — Professional Exam Practice",
+    name: "CertifyHub — Exam Preparation & Practice",
     short_name: "CertifyHub",
     description:
-      "Structured certification tracks, practice banks, and learning activity in one place.",
+      "Topic recaps, key-concept videos and exam-format practice for professional certifications.",
     id: "/",
     start_url: "/",
     scope: "/",

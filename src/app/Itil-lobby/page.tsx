@@ -44,7 +44,7 @@ const Page = () => {
                 path: "/page/itil-v5",
                 label: "ITIL V4/V5 Foundation",
                 description:
-                  "Process thinking, service value, and exam practice built around the ITIL path.",
+                  "Service value and process thinking recapped, then practised in ITIL exam format.",
                 IconName: MdOutlineWorkOutline,
                 accent: "from-[#2660A4] to-[#4F8FCA]",
               },
@@ -69,7 +69,7 @@ const Page = () => {
                     <div className='flex items-start justify-between gap-4'>
                       <div>
                         <p className='text-xs font-semibold uppercase tracking-[0.3em] text-white/80'>
-                          Learning track
+                          Exam track
                         </p>
                         <h2 className='mt-3 text-3xl font-black leading-tight'>
                           {label}
@@ -90,7 +90,7 @@ const Page = () => {
                     </div>
 
                     <div className='flex items-center justify-between gap-3 text-sm font-semibold text-white/85'>
-                      <span>Jump into the pathway</span>
+                      <span>Recap, then practise</span>
                       <span className='rounded-full border border-white/20 bg-white/10 px-4 py-2 transition group-hover:bg-white/20'>
                         Continue
                       </span>
@@ -104,8 +104,8 @@ const Page = () => {
           <div className='grid gap-4 rounded-[28px] border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/70 md:grid-cols-3'>
             {[
               "Clear exam entry points",
-              "Visually rich study paths",
-              "Fast navigation into practice or materials",
+              "Short recaps before every paper",
+              "Sample questions in the real exam format",
             ].map((item) => (
               <div key={item} className='rounded-2xl bg-slate-50 p-5'>
                 <p className='text-sm font-semibold text-slate-900'>{item}</p>

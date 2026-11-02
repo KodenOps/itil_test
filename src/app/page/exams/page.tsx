@@ -20,15 +20,16 @@ const Page = () => {
         <section className='mx-auto mt-16 flex w-full max-w-7xl flex-col gap-10 px-6 py-14 md:px-10 lg:px-12'>
           <div className='max-w-4xl'>
             <div className='inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm shadow-slate-200/70 backdrop-blur'>
-              Exam section
+              Exam practice
             </div>
             <h1 className='mt-6 max-w-4xl text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-7xl'>
-              Welcome To Your Exam Section
+              Sit the paper before you sit the paper.
             </h1>
             <p className='mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg'>
-              Get ready for your exams your way. Take a full timed simulation,
-              try a quick practice with instant feedback, or drill through the
-              entire question bank for maximum prep.
+              Recap the topic, watch the key-concept videos, then answer sample
+              questions written in the same format as the professional exam. Run
+              a full timed simulation under exam conditions, or take a shorter
+              set with feedback after each question.
             </p>
           </div>
 
@@ -71,7 +72,7 @@ const Page = () => {
                     <div className='flex items-start justify-between gap-4'>
                       <div>
                         <p className='text-xs font-semibold uppercase tracking-[0.3em] text-white/80'>
-                          Learning track
+                          Exam track
                         </p>
                         <h2 className='mt-3 text-3xl font-black leading-tight'>
                           {name}
@@ -92,7 +93,7 @@ const Page = () => {
                     </div>
 
                     <div className='flex items-center justify-between gap-3 text-sm font-semibold text-white/85'>
-                      <span>Jump in now</span>
+                      <span>Recap, then practise</span>
                       <span className='rounded-full border border-white/20 bg-white/10 px-4 py-2 transition group-hover:bg-white/20'>
                         Open
                       </span>
@@ -105,9 +106,9 @@ const Page = () => {
 
           <div className='grid gap-4 rounded-[28px] border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/70 md:grid-cols-3'>
             {[
-              "Full timed simulations",
-              "Faster practice paths",
-              "Extended question coverage",
+              "Full timed simulations under exam conditions",
+              "Short practice sets with instant feedback",
+              "Extended question coverage per topic",
             ].map((item) => (
               <div key={item} className='rounded-2xl bg-slate-50 p-5'>
                 <p className='text-sm font-semibold text-slate-900'>{item}</p>

@@ -230,7 +230,7 @@ export default function InstallPrompt() {
                 . This browser can&apos;t open the install dialog for us.
               </>
             ) : (
-              "Add it to your home screen for full-screen study, faster loads and offline access."
+              "Add it to your home screen for full-screen practice, faster loads and offline access."
             )}
           </p>
         </div>
