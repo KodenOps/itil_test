@@ -1,95 +1,85 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 export default function AppStartupScreen() {
-  // Defer mounting the motion + DOM work until after the first paint so the
-  // body is never blocked by the branding pass.
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // The body paint happens with just this card in place; once the browser
-    // is ready we fade the full branding pass in together, then unblock the
-    // rest of the app.
-    const raf = requestAnimationFrame(() => setReady(true));
-    return () => cancelAnimationFrame(raf);
+    // Wait for the real app shell to finish initializing.
+    try {
+      const startTime = performance.now();
+      const interval = setInterval(() => {
+        if (typeof window !== "undefined" && window.__NEXT_DATA__) {
+          setReady(true);
+          clearInterval(interval);
+        } else if (performance.now() - startTime > 8000) {
+          // Bail out after a generous timeout so this doesn't hang forever.
+          setReady(true);
+          clearInterval(interval);
+        }
+      }, 50);
+      return () => clearInterval(interval);
+    } catch {
+      setReady(true);
+    }
   }, []);
 
   return (
-    <AppStartScreen
-      ready={ready}
-    />
+    <div
+      className={`
+        fixed inset-0 z-[9999] overflow-hidden isolate
+        flex items-center justify-center
+        bg-[#0E2F5E] antialiased text-white
+        ${ready ? "pointer-events-none opacity-0" : "opacity-90"}
+      `}
+      aria-busy={!ready}
+      aria-label="Loading CertifyHub"
+      key={ready ? "dismissed" : "active"}
+    >
+      {/* Deep navy background wash behind the wordmark */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+        <div className="absolute top-[-30%] left-[-20%] h-[80%] w-[70%] rounded-full bg-[#2660A4]/30 blur-[120px]" />
+        <div className="absolute bottom-[-20%] right-[-10%] h-[60%] w-[50%] rounded-full bg-[#26a465]/25 blur-[110px]" />
+        <div className="absolute top-[40%] right-[12%] h-[30%] w-[30%] rounded-full bg-white/5 blur-[90px]" />
+      </div>
+
+      {/* Soft grid behind everything for a premium motion feel */}
+      <div
+        className="absolute inset-0 z-0 -translate-x-1/2 -translate-y-1/2 translate-y-[1px]"
+        aria-hidden="true"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px)
+          `,
+          backgroundSize: "48px 48px",
+        }}
+      />
+
+      {!ready ? <AppStartupContent ready={ready} /> : null}
+    </div>
   );
 }
 
-function AppStartScreen({ ready }: { ready: boolean }) {
+function AppStartupContent({ ready }: { ready: boolean }) {
   return (
     <>
-      <style>{cinemagraphStyles}</style>
-
-      <div
-        className={
-          `
-            fixed inset-0 z-[9999] overflow-hidden isolate
-            flex items-center justify-center
-            bg-[#0E2F5E] antialiased text-white
-          `
-        }
-        aria-busy={!ready}
-        aria-label="Loading CertifyHub"
-      >
-        {/* Deep navy background wash behind the wordmark */}
-        <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
-          <div className="absolute top-[-30%] left-[-20%] h-[80%] w-[70%] rounded-full bg-[#2660A4]/30 blur-[120px]" />
-          <div className="absolute bottom-[-20%] right-[-10%] h-[60%] w-[50%] rounded-full bg-[#26a465]/25 blur-[110px]" />
-          <div className="absolute top-[40%] right-[12%] h-[30%] w-[30%] rounded-full bg-white/5 blur-[90px]" />
-        </div>
-
-        {/* Soft grid behind everything for a premium motion feel */}
-        <div
-          className="absolute inset-0 z-0 -translate-x-1/2 -translate-y-1/2 translate-y-[1px]"
-          aria-hidden="true"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px)
-            `,
-            backgroundSize: "48px 48px",
-          }}
-        />
-
-        <AppStartCenter>
-          {/* Emblem */}
-          <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-[18px] bg-[#0d2c5d] shadow-2xl shadow-[#2660a4]/30 ring-1 ring-white/10">
-            <AppLogoMotion
-              ready={ready}
-            />
-          </div>
-
-          <AppWordmark ready={ready} />
-
-          <AppPillTag ready={ready} />
-
-          <AppProgress ready={ready} />
-        </AppStartCenter>
-
-        {/* Bottom status row */}
-        <AppStatusBar ready={ready} />
+      {/* Emblem */}
+      <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-[18px] bg-[#0d2c5d] shadow-2xl shadow-[#2660a4]/30 ring-1 ring-white/10">
+        <AppLogoMotion ready={ready} />
       </div>
-    </>
-  );
-}
 
-function AppStartCenter({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="relative z-10 flex flex-col items-center gap-5 px-5">
-      {children}
-    </div>
+      <AppWordmark ready={ready} />
+
+      <AppPillTag ready={ready} />
+
+      <AppProgress ready={ready} />
+
+      {/* Bottom status row */}
+      <AppStatusBar ready={ready} />
+    </>
   );
 }
 
@@ -263,7 +253,7 @@ function AppStatusBar({
 
 // Cinemagraph keyframes injected once. We keep them global so the motion
 // stays smooth even as React re-renders the rest of the card.
-const cinemagraphStyles = `
+const cinemagraphStyles = String.raw`
 @keyframes shimmer-rail {
   0%   { transform: translateX(-100%); }
   80%  { transform: translateX(150%); }
