@@ -31,6 +31,7 @@ export type EnrollmentRow = {
   status: Enrollment["status"];
   progress: number;
   enrolled_at: string;
+  completed_at: string | null;
   courses: {
     slug: string;
     title: string;
@@ -108,6 +109,7 @@ export function mapEnrollment(row: EnrollmentRow): Enrollment {
     status: row.status,
     progress: row.progress,
     enrolledAt: row.enrolled_at,
+    completedAt: row.completed_at ?? null,
   };
 }
 
@@ -119,7 +121,7 @@ export async function listEnrollments(): Promise<Enrollment[]> {
   const { data, error } = await viewer.supabase
     .from("course_enrollments")
     .select(
-      "id, course_id, status, progress, enrolled_at, courses(slug, title, summary, href, accent_from, accent_to)",
+      "id, course_id, status, progress, enrolled_at, completed_at, courses(slug, title, summary, href, accent_from, accent_to)",
     )
     .eq("user_id", viewer.userId)
     .order("enrolled_at", { ascending: false })

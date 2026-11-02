@@ -88,6 +88,95 @@ export async function enrollInCourse(
   return { ok: true };
 }
 
+export async function resetCourseProgress(
+  courseId: string,
+): Promise<EnrollmentActionResult> {
+  const viewer = await getViewer();
+
+  if (!viewer) {
+    return { ok: false, code: "NOT_AUTHENTICATED", message: "Sign in first." };
+  }
+
+  const { data: enrollment } = await viewer.supabase
+    .from("course_enrollments")
+    .select("id, status, courses!inner(slug, title)")
+    .eq("user_id", viewer.userId)
+    .eq("course_id", courseId)
+    .maybeSingle<{
+      id: string;
+      status: string;
+      courses: { slug: string; title: string } | null;
+    }>();
+
+  if (!enrollment) {
+    return { ok: false, code: "NOT_FOUND", message: "Course not found." };
+  }
+
+  // Turning a completed track back into an active seat must respect the
+  // two-course limit; otherwise the database trigger would reject the reset.
+  if (enrollment.status !== "active") {
+    const { count } = await viewer.supabase
+      .from("course_enrollments")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", viewer.userId)
+      .eq("status", "active")
+      .neq("id", enrollment.id);
+
+    if ((count ?? 0) >= ENROLLMENT_LIMIT) {
+      return {
+        ok: false,
+        code: "LIMIT",
+        message: `You already have ${ENROLLMENT_LIMIT} active tracks. Leave or complete one before resetting this track.`,
+      };
+    }
+  }
+
+  const courseSlug = enrollment.courses?.slug ?? "";
+
+  if (courseSlug) {
+    await viewer.supabase
+      .from("course_recap_completions")
+      .delete()
+      .eq("user_id", viewer.userId)
+      .eq("course_slug", courseSlug);
+  }
+
+  const { error } = await viewer.supabase
+    .from("course_enrollments")
+    .update({
+      progress: 0,
+      status: "active",
+      completed_at: null,
+      progress_reset_at: new Date().toISOString(),
+    })
+    .eq("id", enrollment.id);
+
+  if (error) {
+    console.error("Could not reset progress:", error.message);
+    return {
+      ok: false,
+      code: "UNKNOWN",
+      message:
+        error.message.includes("ENROLLMENT_LIMIT_REACHED")
+          ? "Free a seat before resetting this track."
+          : "Could not reset your progress. Please try again.",
+    };
+  }
+
+  await viewer.supabase.from("activity_events").insert({
+    user_id: viewer.userId,
+    event_type: "progress_reset",
+    course_slug: courseSlug || null,
+    summary: `Reset progress on ${enrollment.courses?.title ?? "a track"}`,
+    metadata: { courseId },
+  });
+
+  revalidatePath("/profile");
+  revalidatePath("/");
+
+  return { ok: true };
+}
+
 export async function leaveCourse(
   courseId: string,
 ): Promise<EnrollmentActionResult> {

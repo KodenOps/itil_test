@@ -748,3 +748,73 @@ create policy "Admins delete course requests"
 --  4. Sign in as that admin → Admin → Content → "Sync content" to move
 --     every question bank, task and review from src/data into the tables.
 -- ═══════════════════════════════════════════════════════════════════════
+
+-- ═══════════════════════════════════════════════════════════════════════
+-- 15. Recap completion + weighted course progress
+--
+-- Progress is now driven by two things only:
+--   • "Mark as completed" on each quick recap  (40% of the track)
+--   • assessment attempts scoring above 80%    (20% each, capped at 60%)
+--
+-- Tracks with an extra practical assessment split the assessment share
+-- into 50% MCQs + 10% practical. The practical only scores once an admin
+-- grades it at 70% or higher.
+--
+-- Power BI has no assessment yet, so its recaps carry the full 100%.
+-- Re-running this file is safe: every statement is idempotent.
+-- ═══════════════════════════════════════════════════════════════════════
+
+alter table public.course_enrollments
+  add column if not exists progress_reset_at timestamptz;
+
+alter table public.assessment_submissions
+  add column if not exists course_slug text
+    references public.courses(slug) on update cascade on delete set null,
+  add column if not exists task_name text;
+
+create index if not exists assessment_submissions_course_idx
+  on public.assessment_submissions (course_slug, created_at desc);
+
+create index if not exists assessment_submissions_user_idx
+  on public.assessment_submissions (user_id, created_at desc);
+
+create table if not exists public.course_recap_completions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  course_slug text not null references public.courses(slug)
+    on update cascade on delete cascade,
+  lesson_id text not null,
+  completed_at timestamptz not null default now(),
+  unique (user_id, course_slug, lesson_id)
+);
+
+create index if not exists course_recap_completions_user_idx
+  on public.course_recap_completions (user_id, course_slug);
+
+alter table public.course_recap_completions enable row level security;
+
+drop policy if exists "Users read their own recap completions"
+  on public.course_recap_completions;
+create policy "Users read their own recap completions"
+  on public.course_recap_completions for select
+  using (auth.uid() = user_id or public.is_staff());
+
+drop policy if exists "Users record their own recap completions"
+  on public.course_recap_completions;
+create policy "Users record their own recap completions"
+  on public.course_recap_completions for insert
+  with check (auth.uid() = user_id);
+
+drop policy if exists "Users clear their own recap completions"
+  on public.course_recap_completions;
+create policy "Users clear their own recap completions"
+  on public.course_recap_completions for delete
+  using (auth.uid() = user_id or public.is_admin());
+
+-- Staff need to add the practical score from the dashboard.
+drop policy if exists "Staff grade assessment submissions"
+  on public.assessment_submissions;
+create policy "Staff grade assessment submissions"
+  on public.assessment_submissions for update
+  using (public.is_staff())
+  with check (public.is_staff());

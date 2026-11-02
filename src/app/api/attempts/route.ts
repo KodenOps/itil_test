@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getViewer } from "@/lib/supabase/profile";
 import { isSameOriginRequest, rateLimit } from "@/lib/security/request";
+import { recalculateCourseProgress } from "@/lib/content/progress";
 
 export const dynamic = "force-dynamic";
 
@@ -69,10 +70,10 @@ export async function POST(request: Request) {
   if (courseSlug) {
     const { data: enrollment } = await viewer.supabase
       .from("course_enrollments")
-      .select("id, progress, courses!inner(slug)")
+      .select("id, courses!inner(slug)")
       .eq("user_id", viewer.userId)
       .eq("courses.slug", courseSlug)
-      .maybeSingle<{ id: string; progress: number }>();
+      .maybeSingle<{ id: string }>();
 
     if (!enrollment) {
       return NextResponse.json(
@@ -80,13 +81,6 @@ export async function POST(request: Request) {
         { status: 403 },
       );
     }
-
-    const progress = Math.max(enrollment.progress, Math.min(100, score));
-
-    await viewer.supabase
-      .from("course_enrollments")
-      .update({ progress })
-      .eq("id", enrollment.id);
   }
 
   const { error } = await viewer.supabase.from("quiz_attempts").insert({
@@ -109,6 +103,17 @@ export async function POST(request: Request) {
     );
   }
 
+  // The attempt is now stored, so the weighted progress can be recalculated:
+  // recaps + 20 points per attempt above 80% (capped), plus practicals where
+  // the track has them.
+  const breakdown = courseSlug
+    ? await recalculateCourseProgress(
+        viewer.supabase,
+        viewer.userId,
+        courseSlug,
+      )
+    : null;
+
   await viewer.supabase.from("activity_events").insert({
     user_id: viewer.userId,
     event_type: "quiz_attempt",
@@ -117,5 +122,9 @@ export async function POST(request: Request) {
     metadata: { mode: body.mode ?? "practice", score },
   });
 
-  return NextResponse.json({ ok: true, score });
+  return NextResponse.json({
+    ok: true,
+    score,
+    progress: breakdown?.progress ?? null,
+  });
 }

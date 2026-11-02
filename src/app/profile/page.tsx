@@ -11,6 +11,8 @@ import {
   MdOutlineInsights,
   MdOutlineEmojiEvents,
   MdOutlineHistory,
+  MdOutlineTaskAlt,
+  MdOutlinePendingActions,
 } from "react-icons/md";
 
 export const dynamic = "force-dynamic";
@@ -38,7 +40,8 @@ export default async function ProfilePage() {
   const viewer = await requireViewer();
   const { supabase, userId, profile } = viewer;
 
-  const [enrollments, attemptsResult, eventsResult] = await Promise.all([
+  const [enrollments, attemptsResult, eventsResult, submissionsResult] =
+    await Promise.all([
     listEnrollments(),
     supabase
       .from("quiz_attempts")
@@ -52,12 +55,22 @@ export default async function ProfilePage() {
       .eq("user_id", userId)
       .order("created_at", { ascending: false })
       .limit(20),
+    supabase
+      .from("assessment_submissions")
+      .select("id, course_slug, task_name, status, score, created_at")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(20),
   ]);
 
   const attempts = attemptsResult.data ?? [];
   const events = eventsResult.data ?? [];
+  const submissions = submissionsResult.data ?? [];
 
   const activeEnrollments = enrollments.filter((e) => e.status === "active");
+  const completedEnrollments = enrollments.filter(
+    (e) => e.status === "completed",
+  );
   const averageScore = attempts.length
     ? Math.round(
         attempts.reduce((total, attempt) => total + Number(attempt.score), 0) /
@@ -193,7 +206,85 @@ export default async function ProfilePage() {
                   Catalogue
                 </Link>
               </div>
-              <ProfileCourseList enrollments={enrollments} />
+              <ProfileCourseList enrollments={activeEnrollments} />
+
+              {completedEnrollments.length > 0 && (
+                <div className='mt-8 space-y-3'>
+                  <div className='flex items-center gap-2 text-emerald-700'>
+                    <MdOutlineTaskAlt size={18} />
+                    <p className='text-xs font-semibold uppercase tracking-[0.3em]'>
+                      Completed tracks
+                    </p>
+                  </div>
+                  <p className='text-sm text-slate-600'>
+                    Finished tracks stay recorded here. Reset one if you want
+                    to work through its recaps and assessments again.
+                  </p>
+                  <ProfileCourseList enrollments={completedEnrollments} />
+                </div>
+              )}
+
+              {submissions.length > 0 && (
+                <div className='rounded-3xl border border-slate-200 bg-white p-5 shadow-sm'>
+                  <div className='flex flex-wrap items-end justify-between gap-2'>
+                    <div>
+                      <p className='text-xs font-semibold uppercase tracking-[0.3em] text-slate-500'>
+                        Practical assessments
+                      </p>
+                      <p className='mt-1 text-sm text-slate-600'>
+                        Practicals are graded by an admin. They count toward
+                        your track once they score 70% or higher.
+                      </p>
+                    </div>
+                  </div>
+
+                  <ul className='mt-4 divide-y divide-slate-100'>
+                    {submissions.map((submission) => {
+                      const graded = submission.status === "graded";
+
+                      return (
+                        <li
+                          key={submission.id}
+                          className='flex flex-wrap items-start justify-between gap-3 py-3'
+                        >
+                          <div className='min-w-0'>
+                            <p className='truncate text-sm font-semibold text-slate-900'>
+                              {submission.task_name ??
+                                courseTitle(submission.course_slug)}
+                            </p>
+                            <p className='mt-0.5 text-xs text-slate-500'>
+                              Submitted{" "}
+                              {new Date(
+                                submission.created_at,
+                              ).toLocaleDateString("en-GB", {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              })}
+                            </p>
+                          </div>
+                          <span
+                            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
+                              graded
+                                ? "bg-emerald-50 text-emerald-700"
+                                : "bg-amber-50 text-amber-700"
+                            }`}
+                          >
+                            {graded ? (
+                              <MdOutlineTaskAlt size={13} />
+                            ) : (
+                              <MdOutlinePendingActions size={13} />
+                            )}
+                            {graded
+                              ? `${Math.round(Number(submission.score))}%`
+                              : "Pending Grading"}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
 
               {attempts.length > 0 && (
                 <div className='rounded-3xl border border-slate-200 bg-white p-5 shadow-sm'>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { leaveCourse } from "@/app/actions/enroll";
+import { leaveCourse, resetCourseProgress } from "@/app/actions/enroll";
 import { useAppStore } from "@/store/app-store";
 import type { Enrollment } from "@/types/app";
 import { MdCheckCircle, MdLockOutline } from "react-icons/md";
@@ -16,6 +16,7 @@ export default function ProfileCourseList({
   const router = useRouter();
   const { removeEnrollment } = useAppStore();
   const [pendingId, setPendingId] = useState<string | null>(null);
+  const [resettingId, setResettingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleLeave = async (enrollment: Enrollment) => {
@@ -32,6 +33,22 @@ export default function ProfileCourseList({
 
     removeEnrollment(enrollment.courseId);
     setPendingId(null);
+    router.refresh();
+  };
+
+  const handleReset = async (enrollment: Enrollment) => {
+    setResettingId(enrollment.courseId);
+    setError(null);
+
+    const result = await resetCourseProgress(enrollment.courseId);
+
+    setResettingId(null);
+
+    if (!result.ok) {
+      setError(result.message ?? "Could not reset your progress.");
+      return;
+    }
+
     router.refresh();
   };
 
@@ -77,7 +94,9 @@ export default function ProfileCourseList({
                 <p className='text-xs font-semibold uppercase tracking-[0.25em] text-slate-500'>
                   {enrollment.status === "active"
                     ? "In progress"
-                    : enrollment.status}
+                    : enrollment.status === "completed"
+                      ? "Completed track"
+                      : enrollment.status}
                 </p>
               </div>
               <h3 className='mt-2 text-lg font-black text-slate-900'>
@@ -95,6 +114,16 @@ export default function ProfileCourseList({
               >
                 Continue
               </Link>
+              <button
+                type='button'
+                onClick={() => handleReset(enrollment)}
+                disabled={resettingId === enrollment.courseId}
+                className='rounded-full border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm font-semibold text-amber-800 transition hover:bg-amber-100 disabled:opacity-50'
+              >
+                {resettingId === enrollment.courseId
+                  ? "Resetting…"
+                  : "Reset my progress"}
+              </button>
               <button
                 type='button'
                 onClick={() => handleLeave(enrollment)}
@@ -116,7 +145,11 @@ export default function ProfileCourseList({
                 )}
                 Progress
               </span>
-              <span>{enrollment.progress}%</span>
+              <span>
+                {enrollment.status === "completed"
+                  ? "100% · Track complete"
+                  : `${enrollment.progress}%`}
+              </span>
             </div>
             <div className='mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-100'>
               <div

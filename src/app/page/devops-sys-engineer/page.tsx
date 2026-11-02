@@ -5,6 +5,10 @@ import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
 import { MdPlayArrow } from "react-icons/md";
 import Link from "next/link";
+import {
+  RecapCompletionButton,
+  useRecapProgress,
+} from "@/app/components/RecapProgress";
 
 type TopicGroup = {
   id: string;
@@ -134,6 +138,7 @@ const topicGroups: TopicGroup[] = [
 ];
 
 export default function Page() {
+  const recap = useRecapProgress("devops-sys-engineer");
   const [selectedTopic, setSelectedTopic] = useState<TopicGroup | null>(null);
 
   useEffect(() => {
@@ -256,6 +261,18 @@ export default function Page() {
                   ))}
                 </div>
               </div>
+              <div className='mt-6'>
+                <RecapCompletionButton
+                  completed={recap.completed.has(selectedTopic.id)}
+                  pending={recap.pendingId === selectedTopic.id}
+                  onClick={() => void recap.markCompleted(selectedTopic.id)}
+                  accentHex='#2660A4'
+                />
+                {recap.error && (
+                  <p className='mt-2 text-sm text-red-600'>{recap.error}</p>
+                )}
+              </div>
+
               <div className='mt-8 flex flex-col gap-3 sm:flex-row'>
                 <button
                   type='button'
@@ -319,6 +336,18 @@ export default function Page() {
                       </span>
                     ))}
                   </div>
+                </div>
+
+                <div className='mt-6'>
+                  <RecapCompletionButton
+                    completed={recap.completed.has(selectedTopic.id)}
+                    pending={recap.pendingId === selectedTopic.id}
+                    onClick={() => void recap.markCompleted(selectedTopic.id)}
+                    accentHex='#2660A4'
+                  />
+                  {recap.error && (
+                    <p className='mt-2 text-sm text-red-600'>{recap.error}</p>
+                  )}
                 </div>
 
                 <div className='mt-8 flex flex-col gap-3 sm:flex-row w-full md:justify-between'>

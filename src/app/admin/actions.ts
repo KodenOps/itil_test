@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/supabase/profile";
+import { recalculateCourseProgress } from "@/lib/content/progress";
 import {
   COURSE_REQUEST_STATUSES,
   COURSE_REQUEST_STATUS_LABELS,
@@ -126,6 +127,69 @@ export async function setCourseRequestStatus(
   });
 
   revalidatePath("/admin");
+
+  return { ok: true };
+}
+
+export async function gradeAssessmentSubmission(
+  id: string,
+  score: string,
+): Promise<AdminActionResult> {
+  const viewer = await requireAdmin();
+  const numericScore = Number(score);
+
+  if (!Number.isFinite(numericScore) || numericScore < 0 || numericScore > 100) {
+    return { ok: false, message: "Enter a score between 0 and 100." };
+  }
+
+  const { data: submission, error: readError } = await viewer.supabase
+    .from("assessment_submissions")
+    .select("id, user_id, course_slug")
+    .eq("id", id)
+    .maybeSingle<{
+      id: string;
+      user_id: string;
+      course_slug: string | null;
+    }>();
+
+  if (readError || !submission) {
+    console.error("Could not load submission:", readError?.message);
+    return { ok: false, message: "Could not find that submission." };
+  }
+
+  const { error } = await viewer.supabase
+    .from("assessment_submissions")
+    .update({
+      status: "graded",
+      score: Math.round(numericScore * 100) / 100,
+      graded_at: new Date().toISOString(),
+      graded_by: viewer.userId,
+    })
+    .eq("id", id);
+
+  if (error) {
+    console.error("Could not grade submission:", error.message);
+    return { ok: false, message: "Could not save that score." };
+  }
+
+  if (submission.course_slug) {
+    await recalculateCourseProgress(
+      viewer.supabase,
+      submission.user_id,
+      submission.course_slug,
+    );
+  }
+
+  await viewer.supabase.from("activity_events").insert({
+    user_id: viewer.userId,
+    event_type: "assessment_graded",
+    course_slug: submission.course_slug,
+    summary: `Graded a practical assessment at ${numericScore}%`,
+    metadata: { submissionId: id, score: numericScore },
+  });
+
+  revalidatePath("/admin");
+  revalidatePath("/profile");
 
   return { ok: true };
 }

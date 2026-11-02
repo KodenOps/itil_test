@@ -135,6 +135,7 @@ export default function PracticalAssessmentPage({
       formData.append("name", name.trim());
       formData.append("email", email.trim());
       formData.append("taskName", taskName);
+      formData.append("courseSlug", "excel-fundamentals");
       formData.append("file", file);
 
       const res = await fetch("/api/submit-assessment", {
@@ -291,8 +292,9 @@ export default function PracticalAssessmentPage({
                 Submission received
               </h3>
               <p className='mt-2 text-sm text-emerald-800'>
-                Thanks — your workbook has been sent in for grading. We'll
-                follow up by email with your results.
+                Thanks — your workbook is queued for grading. Your practical
+                score shows as <strong>Pending Grading</strong> on My Exams
+                until an admin adds the result.
               </p>
               <button
                 type='button'

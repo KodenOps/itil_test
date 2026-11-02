@@ -53,28 +53,17 @@ export async function POST(req: Request) {
       );
     }
 
-    const apiKey = process.env.RESEND_API_KEY;
-    const fromAddress = process.env.ASSESSMENT_FROM;
-    const toAddress = process.env.ASSESSMENT_TO;
-
-    if (!apiKey || !fromAddress || !toAddress) {
-      console.error(
-        "Missing RESEND_API_KEY, ASSESSMENT_FROM, or ASSESSMENT_TO env vars.",
-      );
-      return NextResponse.json(
-        {
-          error:
-            "Submission is not configured yet. Please contact the site owner.",
-        },
-        { status: 500 },
-      );
-    }
-
     const formData = await req.formData();
     const name = formData.get("name");
     const email = formData.get("email");
     const taskName = formData.get("taskName");
+    const courseSlugValue = formData.get("courseSlug");
     const file = formData.get("file");
+    const courseSlug =
+      typeof courseSlugValue === "string" && courseSlugValue.trim()
+        ? courseSlugValue.trim()
+        : "excel-fundamentals";
+    const taskLabel = typeof taskName === "string" ? taskName.trim() : "";
 
     if (typeof name !== "string" || !name.trim()) {
       return NextResponse.json({ error: "Name is required." }, { status: 400 });
@@ -109,40 +98,88 @@ export async function POST(req: Request) {
       );
     }
 
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    // A seat on the track is required, and the submission is stored first so
+    // the admin dashboard can grade it even if the notification email fails.
+    const { data: enrollment } = await viewer.supabase
+      .from("course_enrollments")
+      .select("id, courses!inner(slug)")
+      .eq("user_id", viewer.userId)
+      .eq("courses.slug", courseSlug)
+      .maybeSingle<{ id: string }>();
 
-    const resend = new Resend(apiKey);
-
-    const { error } = await resend.emails.send({
-      from: fromAddress,
-      to: toAddress.split(",").map((a) => a.trim()),
-      replyTo: email,
-      subject: `New assessment submission — ${name.trim()}`,
-      html: `
-        <p><strong>Name:</strong> ${escapeHtml(name.trim())}</p>
-        <p><strong>Email:</strong> ${escapeHtml(email.trim())}</p>
-        <p><strong>Task:</strong> ${escapeHtml(typeof taskName === "string" ? taskName : "")}</p>
-        <p><strong>File:</strong> ${escapeHtml(file.name)} (${(file.size / 1024).toFixed(1)} KB)</p>
-        <p>Submitted via the Excel Practical Assessment page.</p>
-      `,
-      attachments: [
-        {
-          filename: file.name,
-          content: buffer,
-        },
-      ],
-    });
-
-    if (error) {
-      console.error("Resend error:", error);
+    if (!enrollment) {
       return NextResponse.json(
-        { error: "Failed to send submission. Please try again." },
-        { status: 502 },
+        { error: "You are not enrolled in this course." },
+        { status: 403 },
       );
     }
 
-    return NextResponse.json({ ok: true });
+    const { data: submission, error: insertError } = await viewer.supabase
+      .from("assessment_submissions")
+      .insert({
+        user_id: viewer.userId,
+        full_name: name.trim(),
+        email: email.trim(),
+        file_path: file.name,
+        course_slug: courseSlug,
+        task_name: taskLabel || null,
+        status: "pending",
+      })
+      .select("id")
+      .maybeSingle<{ id: string }>();
+
+    if (insertError || !submission) {
+      console.error("Could not store assessment submission:", insertError?.message);
+      return NextResponse.json(
+        { error: "Could not save your submission. Please try again." },
+        { status: 500 },
+      );
+    }
+
+    const apiKey = process.env.RESEND_API_KEY;
+    const fromAddress = process.env.ASSESSMENT_FROM;
+    const toAddress = process.env.ASSESSMENT_TO;
+
+    if (apiKey && fromAddress && toAddress) {
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const resend = new Resend(apiKey);
+
+      const { error } = await resend.emails.send({
+        from: fromAddress,
+        to: toAddress.split(",").map((a) => a.trim()),
+        replyTo: email,
+        subject: `New assessment submission — ${name.trim()}`,
+        html: `
+          <p><strong>Name:</strong> ${escapeHtml(name.trim())}</p>
+          <p><strong>Email:</strong> ${escapeHtml(email.trim())}</p>
+          <p><strong>Task:</strong> ${escapeHtml(taskLabel)}</p>
+          <p><strong>File:</strong> ${escapeHtml(file.name)} (${(file.size / 1024).toFixed(1)} KB)</p>
+          <p>Grading status: <strong>Pending Grading</strong> — add the score in the admin dashboard.</p>
+        `,
+        attachments: [
+          {
+            filename: file.name,
+            content: buffer,
+          },
+        ],
+      });
+
+      if (error) {
+        // The row is stored, so grading can still happen from the dashboard.
+        console.error("Resend error:", error);
+      }
+    } else {
+      console.warn(
+        "Assessment email is not configured; the submission is stored for dashboard grading.",
+      );
+    }
+
+    return NextResponse.json({
+      ok: true,
+      submissionId: submission.id,
+      status: "pending",
+    });
   } catch (err) {
     console.error("Assessment submission error:", err);
     return NextResponse.json(

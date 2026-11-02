@@ -186,6 +186,7 @@ const cards: CourseCard[] = [
 export default function Page() {
   return (
     <CourseLessonPage
+      courseSlug='kcna'
       badge='KCNA exam track'
       title='Kubernetes and cloud-native, explained for the exam room.'
       intro='The KCNA syllabus recapped in exam order: fundamentals, workloads and scheduling, cloud-native architecture, then security and ecosystem. Watch the key concepts, then open the exam simulation at the bottom of the page and answer the same material as sample questions.'

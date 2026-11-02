@@ -49,6 +49,7 @@ export type Enrollment = {
   status: "active" | "completed" | "withdrawn";
   progress: number;
   enrolledAt: string;
+  completedAt: string | null;
 };
 
 export type QuestionRecord = {

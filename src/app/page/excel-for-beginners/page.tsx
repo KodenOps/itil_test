@@ -12,6 +12,10 @@ import {
 } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import NavBar from "@/app/components/NavBar";
+import {
+  RecapCompletionButton,
+  useRecapProgress,
+} from "@/app/components/RecapProgress";
 import { IoBook } from "react-icons/io5";
 import Image from "next/image";
 import thumbnailUrl from "../../../../public/images/thumbnail.avif";
@@ -757,9 +761,15 @@ function DataTable({ data }: { data: string[][] }) {
 function LessonCard({
   lesson,
   accentHex,
+  completed,
+  pending,
+  onComplete,
 }: {
   lesson: TopicLesson;
   accentHex: string;
+  completed: boolean;
+  pending: boolean;
+  onComplete: () => void;
 }) {
   return (
     <article id={lesson.id} className='scroll-mt-32 mb-12'>
@@ -810,6 +820,15 @@ function LessonCard({
         </p>
         <p className='text-sm font-medium text-slate-800'>{lesson.takeaway}</p>
       </div>
+
+      <div className='mt-4'>
+        <RecapCompletionButton
+          completed={completed}
+          pending={pending}
+          onClick={onComplete}
+          accentHex={accentHex}
+        />
+      </div>
     </article>
   );
 }
@@ -817,6 +836,11 @@ function LessonCard({
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function LearnPage() {
+  const recap = useRecapProgress("excel-fundamentals");
+  const totalRecaps = categories.reduce(
+    (total, category) => total + category.lessons.length,
+    0,
+  );
   const [activeCategoryId, setActiveCategoryId] = useState(categories[0].id);
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [isMobileTocOpen, setIsMobileTocOpen] = useState(false);
@@ -918,6 +942,16 @@ export default function LearnPage() {
             <p className='mt-4 text-sm text-slate-500'>
               {activeCategory.lessons.length} recaps in this module
             </p>
+            <div className='mt-3 flex flex-wrap items-center gap-2 text-xs font-semibold'>
+              <span className='rounded-full bg-slate-100 px-3 py-1 text-slate-600'>
+                {recap.completed.size}/{totalRecaps} recaps completed
+              </span>
+              {recap.error && (
+                <span className='rounded-full bg-red-50 px-3 py-1 text-red-700'>
+                  {recap.error}
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
@@ -971,6 +1005,9 @@ export default function LearnPage() {
                 key={lesson.id}
                 lesson={lesson}
                 accentHex={activeCategory.accentHex}
+                completed={recap.completed.has(lesson.id)}
+                pending={recap.pendingId === lesson.id}
+                onComplete={() => void recap.markCompleted(lesson.id)}
               />
             ))}
           </div>

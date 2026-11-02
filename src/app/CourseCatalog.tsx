@@ -79,6 +79,7 @@ export default function CourseCatalog({
       status: "active",
       progress: 0,
       enrolledAt: new Date().toISOString(),
+      completedAt: null,
     });
 
     setMessage({ tone: "ok", text: `Seat reserved on ${course.title}. Start with the recap.` });

@@ -5,6 +5,10 @@ import Link from "next/link";
 import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
 import { MdOutlineMenuBook, MdClose } from "react-icons/md";
+import {
+  RecapCompletionButton,
+  useRecapProgress,
+} from "@/app/components/RecapProgress";
 
 export type Lesson = {
   id: string;
@@ -35,6 +39,7 @@ export type CourseCard = {
 };
 
 type Props = {
+  courseSlug: string;
   badge: string;
   title: string;
   intro: string;
@@ -51,6 +56,7 @@ type Props = {
  * course page ends with.
  */
 export default function CourseLessonPage({
+  courseSlug,
   badge,
   title,
   intro,
@@ -64,6 +70,11 @@ export default function CourseLessonPage({
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [isIndexOpen, setIsIndexOpen] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const recap = useRecapProgress(courseSlug);
+  const totalRecaps = categories.reduce(
+    (total, category) => total + category.lessons.length,
+    0,
+  );
 
   const activeCategory =
     categories.find((category) => category.id === activeCategoryId) ??
@@ -233,6 +244,17 @@ export default function CourseLessonPage({
               {activeCategory.description}
             </p>
 
+            <div className='mt-4 flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-500'>
+              <span className='rounded-full bg-slate-100 px-3 py-1'>
+                {recap.completed.size}/{totalRecaps} recaps completed
+              </span>
+              {recap.error && (
+                <span className='rounded-full bg-red-50 px-3 py-1 text-red-700'>
+                  {recap.error}
+                </span>
+              )}
+            </div>
+
             <div className='mt-10'>
               {activeCategory.lessons.map((lesson) => (
                 <article
@@ -326,6 +348,15 @@ export default function CourseLessonPage({
                     <p className='text-sm font-medium text-slate-800'>
                       {lesson.takeaway}
                     </p>
+                  </div>
+
+                  <div className='mt-4'>
+                    <RecapCompletionButton
+                      completed={recap.completed.has(lesson.id)}
+                      pending={recap.pendingId === lesson.id}
+                      onClick={() => void recap.markCompleted(lesson.id)}
+                      accentHex={activeCategory.accentHex}
+                    />
                   </div>
                 </article>
               ))}

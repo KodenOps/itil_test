@@ -226,6 +226,7 @@ const cards: CourseCard[] = [
 export default function Page() {
   return (
     <CourseLessonPage
+      courseSlug='aws-cloud-practitioner'
       badge='AWS Cloud Practitioner'
       title='The AWS exam, answered the way AWS asks it.'
       intro='Every section of the AWS Certified Cloud Practitioner syllabus, recapped in the order you will meet it: cloud concepts, core services, security and billing. Read the recap, replay the key-concept videos, then practise the same material in exam conditions at the bottom of this page.'
