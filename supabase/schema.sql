@@ -198,7 +198,7 @@ values
   ('devops-sys-engineer', 'DevOps & Sys Eng',
    'Architecture, reliability and production sense recapped, then examined the way the paper asks it.',
    'Exam track', 'Intermediate', '#6D2E46', '#A24E67',
-   '/page/devops-sys-engineer', 'engineering', 24, 7)
+   '/page/learning', 'engineering', 24, 7)
 on conflict (slug) do update set
   title = excluded.title,
   summary = excluded.summary,

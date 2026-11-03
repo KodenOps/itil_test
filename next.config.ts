@@ -23,6 +23,16 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "img.youtube.com" },
     ],
   },
+  async redirects() {
+    return [
+      {
+        // The DevOps track moved to the shared learning page.
+        source: "/page/devops-sys-engineer",
+        destination: "/page/learning",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

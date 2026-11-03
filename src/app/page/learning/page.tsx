@@ -7,7 +7,12 @@ import Link from "next/link";
 import thumbnailPic from "../../../../public/images/docker.webp";
 import thumbnailUrl from "../../../../public/images/thumbnail.avif";
 import Image from "next/image";
-import { MdPlayArrow } from "react-icons/md";
+import { MdCheckCircle, MdLockOutline, MdPlayArrow } from "react-icons/md";
+import {
+  RecapCompletionButton,
+  useRecapProgress,
+  useSequentialUnlock,
+} from "@/app/components/RecapProgress";
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 type TopicLesson = {
@@ -1121,7 +1126,26 @@ function LessonCard({
   );
 }
 
+function LockedSection({ title }: { title: string }) {
+  return (
+    <div className='mb-16 rounded-3xl border border-dashed border-slate-300 bg-slate-50/70 px-6 py-10 text-center'>
+      <span className='mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-200 text-slate-500'>
+        <MdLockOutline size={22} />
+      </span>
+      <h2 className='mt-4 text-xl font-black text-slate-800'>{title} is locked</h2>
+      <p className='mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600'>
+        Sections open one at a time. Finish the earlier sections and mark
+        each one completed, then this section unlocks.
+      </p>
+    </div>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
+
+const COURSE_SLUG = "devops-sys-engineer";
+
+const sectionIds = categories.map((category) => category.id);
 
 export default function LearnPage() {
   const [activeCategoryId, setActiveCategoryId] = useState(categories[0].id);
@@ -1129,7 +1153,12 @@ export default function LearnPage() {
   const [isMobileTocOpen, setIsMobileTocOpen] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
+  const recap = useRecapProgress(COURSE_SLUG);
+  const isLocked = useSequentialUnlock(sectionIds, recap.completed, recap.loaded);
+
   const activeCategory = categories.find((c) => c.id === activeCategoryId)!;
+  const sectionLocked = isLocked(activeCategory.id);
+  const sectionCompleted = recap.completed.has(activeCategory.id);
 
   // Track active lesson via IntersectionObserver
   useEffect(() => {
@@ -1178,20 +1207,35 @@ export default function LearnPage() {
           <div className='flex items-center gap-1 overflow-x-auto py-3 custom-scrollbar-x'>
             {categories.map((cat) => {
               const isActive = cat.id === activeCategoryId;
+              const locked = isLocked(cat.id);
+              const done = recap.completed.has(cat.id);
               return (
                 <button
                   key={cat.id}
                   type='button'
                   onClick={() => switchCategory(cat.id)}
-                  className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+                  disabled={locked}
+                  title={
+                    locked
+                      ? "Finish and mark the previous section completed to unlock this one."
+                      : undefined
+                  }
+                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
                     isActive
                       ? "text-white shadow-sm"
-                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                      : locked
+                        ? "cursor-not-allowed text-slate-300"
+                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                   }`}
                   style={
                     isActive ? { backgroundColor: cat.accentHex } : undefined
                   }
                 >
+                  {locked ? (
+                    <MdLockOutline size={13} />
+                  ) : done ? (
+                    <MdCheckCircle size={13} />
+                  ) : null}
                   {cat.title}
                 </button>
               );
@@ -1227,11 +1271,36 @@ export default function LearnPage() {
               {activeCategory.lessons.length} recaps in this module, each with
               a key-concept video you can replay before you practise.
             </p>
+
+            <div className='mt-6 flex flex-wrap items-center gap-3'>
+              {sectionLocked ? (
+                <span className='inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-500'>
+                  <MdLockOutline size={16} />
+                  Locked until the previous section is complete
+                </span>
+              ) : (
+                <RecapCompletionButton
+                  completed={sectionCompleted}
+                  pending={recap.pendingId === activeCategory.id}
+                  onClick={() => void recap.markCompleted(activeCategory.id)}
+                  accentHex={activeCategory.accentHex}
+                />
+              )}
+              <span className='text-sm font-semibold text-slate-500'>
+                {recap.completed.size} of {categories.length} sections complete
+              </span>
+            </div>
+
+            {recap.error && (
+              <p className='mt-3 text-sm font-semibold text-rose-600'>
+                {recap.error}
+              </p>
+            )}
           </div>
         </div>
 
         {/* ── Mobile TOC toggle ── */}
-        <div className='lg:hidden mb-6'>
+        <div className={sectionLocked ? "hidden" : "lg:hidden mb-6"}>
           <button
             type='button'
             onClick={() => setIsMobileTocOpen(!isMobileTocOpen)}
@@ -1276,17 +1345,25 @@ export default function LearnPage() {
         <div className='flex gap-10 pb-4'>
           {/* Lessons content */}
           <div className='min-w-0 flex-1'>
-            {activeCategory.lessons.map((lesson) => (
+            {sectionLocked ? (
+              <LockedSection title={activeCategory.title} />
+            ) : (
+              activeCategory.lessons.map((lesson) => (
               <LessonCard
                 key={lesson.id}
                 lesson={lesson}
                 accentHex={activeCategory.accentHex}
               />
-            ))}
+              ))
+            )}
           </div>
 
           {/* Sticky Table of Contents */}
-          <aside className='hidden lg:block w-64 xl:w-72 shrink-0'>
+          <aside
+            className={`hidden w-64 shrink-0 lg:block xl:w-72 ${
+              sectionLocked ? "lg:hidden" : ""
+            }`}
+          >
             <div className='sticky top-24 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm'>
               <p className='text-xs font-bold uppercase tracking-widest text-slate-400 mb-4'>
                 In this module
