@@ -79,8 +79,15 @@ export async function POST(request: Request) {
       const origin = new URL(request.url).origin;
 
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${origin}/forgot-password?link=1`,
+        // Request the recovery OTP (six-digit code). Supabase sends this when
+        // the Auth "Reset Password" email template includes {{ .Token }}.
+        // Do not pass redirectTo here: that switches the email to a magic link
+        // and creates a recovery session instead of a one-time code.
       });
+
+      if (error) {
+        console.error("Password reset OTP email failed:", error.message);
+      }
 
       if (error) {
         console.error("Password reset email failed:", error.message);

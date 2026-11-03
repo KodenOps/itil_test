@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import {
   MdArrowBack,
   MdCheckCircle,
@@ -10,16 +9,15 @@ import {
   MdLockReset,
   MdOutlineMarkEmailRead,
 } from "react-icons/md";
-import { createClient } from "@/lib/supabase/client";
 
-type Step = "email" | "code" | "link" | "done";
+type Step = "email" | "code" | "done";
 
 const INPUT =
   "w-full! rounded-xl! border! border-slate-200! bg-white! px-4! py-3! text-sm! text-slate-900! mb-0! outline-none transition focus:border-[#2660A4]!";
-const LABEL = "mb-1.5 block text-xs font-bold uppercase tracking-wide text-slate-500";
+const LABEL =
+  "mb-1.5 block text-xs font-bold uppercase tracking-wide text-slate-500";
 
 export default function ForgotPasswordForm() {
-  const searchParams = useSearchParams();
   const [step, setStep] = useState<Step>("email");
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -28,63 +26,6 @@ export default function ForgotPasswordForm() {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
-
-  const linkFlow = searchParams.get("link") === "1";
-  const linkCode = searchParams.get("code");
-
-  // The reset email may contain either the six-digit code or the default
-  // confirmation link. When the link is used, Supabase puts a recovery
-  // session in the URL fragment and the user only needs a new password.
-  useEffect(() => {
-    if (!linkFlow) return;
-
-    let cancelled = false;
-
-    const check = async () => {
-      try {
-        const supabase = createClient();
-
-        if (linkCode) {
-          const { error: exchangeError } =
-            await supabase.auth.exchangeCodeForSession(linkCode);
-
-          if (cancelled) return;
-
-          if (exchangeError) {
-            setStep("email");
-            setError(
-              "That reset link has expired. Request a new six-digit code below.",
-            );
-            return;
-          }
-        }
-
-        const { data } = await supabase.auth.getSession();
-
-        if (cancelled) return;
-
-        if (data.session) {
-          setStep("link");
-        } else {
-          setStep("email");
-          setError(
-            "That reset link has expired. Request a new six-digit code below.",
-          );
-        }
-      } catch {
-        if (!cancelled) {
-          setStep("email");
-          setError("Open the reset link from your email again, or request a code.");
-        }
-      }
-    };
-
-    void check();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [linkFlow, linkCode]);
 
   const sendCode = async () => {
     setPending(true);
@@ -114,7 +55,9 @@ export default function ForgotPasswordForm() {
           "If that email has an account, a six-digit reset code is on its way.",
       );
     } catch {
-      setError("Could not reach the server. Check your connection and try again.");
+      setError(
+        "Could not reach the server. Check your connection and try again.",
+      );
     } finally {
       setPending(false);
     }
@@ -162,38 +105,9 @@ export default function ForgotPasswordForm() {
       setConfirm("");
       setCode("");
     } catch {
-      setError("Could not reach the server. Check your connection and try again.");
-    } finally {
-      setPending(false);
-    }
-  };
-
-  const saveFromLink = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setError(null);
-
-    if (password !== confirm) {
-      setError("The two passwords do not match.");
-      return;
-    }
-
-    setPending(true);
-
-    try {
-      const supabase = createClient();
-      const { error: updateError } = await supabase.auth.updateUser({ password });
-
-      if (updateError) {
-        setError(updateError.message);
-        return;
-      }
-
-      await supabase.auth.signOut({ scope: "local" });
-      setStep("done");
-      setPassword("");
-      setConfirm("");
-    } catch {
-      setError("Could not update the password. Request a new reset email.");
+      setError(
+        "Could not reach the server. Check your connection and try again.",
+      );
     } finally {
       setPending(false);
     }
@@ -244,12 +158,15 @@ export default function ForgotPasswordForm() {
           ? "We will email a six-digit code. It can only be used once and expires quickly."
           : step === "code"
             ? `Enter the code sent to ${email}, then choose a new password.`
-            : "Your reset link is verified. Set a new password below."}
+            : "Your code is verified. Set a new password below."}
       </p>
 
       {notice && step === "code" && (
         <p className='mt-4 flex items-start gap-2 rounded-xl bg-emerald-50 px-4 py-3 text-xs leading-5 text-emerald-800'>
-          <MdOutlineMarkEmailRead size={16} className='mt-0.5 shrink-0' />
+          <MdOutlineMarkEmailRead
+            size={16}
+            className='mt-0.5 shrink-0'
+          />
           {notice}
         </p>
       )}
@@ -374,50 +291,6 @@ export default function ForgotPasswordForm() {
               Resend code
             </button>
           </div>
-        </form>
-      )}
-
-      {step === "link" && (
-        <form onSubmit={saveFromLink} className='mt-6'>
-          <label className={LABEL} htmlFor='link-password'>
-            New password
-          </label>
-          <input
-            id='link-password'
-            type='password'
-            autoComplete='new-password'
-            minLength={8}
-            maxLength={72}
-            required
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            placeholder='At least 8 characters'
-            className={INPUT}
-          />
-
-          <label className={LABEL} htmlFor='link-confirm'>
-            Confirm password
-          </label>
-          <input
-            id='link-confirm'
-            type='password'
-            autoComplete='new-password'
-            minLength={8}
-            maxLength={72}
-            required
-            value={confirm}
-            onChange={(event) => setConfirm(event.target.value)}
-            placeholder='Repeat the new password'
-            className={INPUT}
-          />
-
-          <button
-            type='submit'
-            disabled={pending}
-            className='w-full! rounded-full! bg-[#0E2F5E]! px-5! py-3! text-sm! font-bold! text-white! transition hover:bg-[#173f73]! disabled:opacity-60'
-          >
-            {pending ? "Updating password…" : "Update password"}
-          </button>
         </form>
       )}
 
