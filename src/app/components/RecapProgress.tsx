@@ -166,6 +166,37 @@ export function LockedLesson({
   );
 }
 
+/**
+ * Placeholder for a whole section that is not unlocked yet. Sections unlock
+ * one at a time, so nothing inside a locked section is rendered.
+ */
+export function LockedSectionCard({
+  title,
+  accentHex,
+  hint = "Each section unlocks when you mark the one before it completed.",
+}: {
+  title: string;
+  accentHex: string;
+  hint?: string;
+}) {
+  return (
+    <div className='mb-12 rounded-3xl border border-dashed border-slate-300 bg-slate-50/70 px-6 py-10 text-center'>
+      <span
+        className='mx-auto flex h-12 w-12 items-center justify-center rounded-full text-white'
+        style={{ backgroundColor: accentHex }}
+      >
+        <MdLockOutline size={20} />
+      </span>
+      <h3 className='mt-4 text-xl font-black text-slate-800'>
+        {title} is locked
+      </h3>
+      <p className='mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600'>
+        {hint}
+      </p>
+    </div>
+  );
+}
+
 export function RecapCompletionButton({
   completed,
   pending,

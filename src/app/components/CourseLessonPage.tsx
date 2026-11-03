@@ -4,9 +4,14 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
-import { MdOutlineMenuBook, MdClose } from "react-icons/md";
 import {
-  LockedLesson,
+  MdCheckCircle,
+  MdClose,
+  MdLockOutline,
+  MdOutlineMenuBook,
+} from "react-icons/md";
+import {
+  LockedSectionCard,
   RecapCompletionButton,
   useRecapProgress,
   useSequentialUnlock,
@@ -73,15 +78,10 @@ export default function CourseLessonPage({
   const [isIndexOpen, setIsIndexOpen] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const recap = useRecapProgress(courseSlug);
-  const totalRecaps = categories.reduce(
-    (total, category) => total + category.lessons.length,
-    0,
-  );
-  const orderedLessonIds = categories.flatMap((category) =>
-    category.lessons.map((lesson) => lesson.id),
-  );
+  const sectionIds = categories.map((category) => category.id);
+  const completedSections = sectionIds.filter((id) => recap.completed.has(id));
   const isLocked = useSequentialUnlock(
-    orderedLessonIds,
+    sectionIds,
     recap.completed,
     recap.loaded,
   );
@@ -89,6 +89,8 @@ export default function CourseLessonPage({
   const activeCategory =
     categories.find((category) => category.id === activeCategoryId) ??
     categories[0];
+  const sectionLocked = isLocked(activeCategory.id);
+  const sectionCompleted = recap.completed.has(activeCategory.id);
 
   useEffect(() => {
     if (observerRef.current) observerRef.current.disconnect();
@@ -139,16 +141,26 @@ export default function CourseLessonPage({
           <div className='flex items-center gap-1 overflow-x-auto py-3'>
             {categories.map((category) => {
               const isActive = category.id === activeCategoryId;
+              const locked = isLocked(category.id);
+              const done = recap.completed.has(category.id);
 
               return (
                 <button
                   key={category.id}
                   type='button'
                   onClick={() => switchCategory(category.id)}
-                  className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                  disabled={locked}
+                  title={
+                    locked
+                      ? "Finish and mark the previous section completed to unlock this one."
+                      : undefined
+                  }
+                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition ${
                     isActive
                       ? "text-white shadow-sm"
-                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                      : locked
+                        ? "cursor-not-allowed text-slate-300"
+                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                   }`}
                   style={
                     isActive
@@ -156,6 +168,11 @@ export default function CourseLessonPage({
                       : undefined
                   }
                 >
+                  {locked ? (
+                    <MdLockOutline size={13} />
+                  ) : done ? (
+                    <MdCheckCircle size={13} />
+                  ) : null}
                   {category.title}
                 </button>
               );
@@ -254,9 +271,25 @@ export default function CourseLessonPage({
               {activeCategory.description}
             </p>
 
+            <div className='mt-4'>
+              {sectionLocked ? (
+                <span className='inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-500'>
+                  <MdLockOutline size={16} />
+                  Locked until the previous section is completed
+                </span>
+              ) : (
+                <RecapCompletionButton
+                  completed={sectionCompleted}
+                  pending={recap.pendingId === activeCategory.id}
+                  onClick={() => void recap.markCompleted(activeCategory.id)}
+                  accentHex={activeCategory.accentHex}
+                />
+              )}
+            </div>
+
             <div className='mt-4 flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-500'>
               <span className='rounded-full bg-slate-100 px-3 py-1'>
-                {recap.completed.size}/{totalRecaps} recaps completed
+                {completedSections.length}/{sectionIds.length} sections completed
               </span>
               {recap.error && (
                 <span className='rounded-full bg-red-50 px-3 py-1 text-red-700'>
@@ -266,15 +299,13 @@ export default function CourseLessonPage({
             </div>
 
             <div className='mt-10'>
-              {activeCategory.lessons.map((lesson) =>
-                isLocked(lesson.id) ? (
-                  <LockedLesson
-                    key={lesson.id}
-                    lessonId={lesson.id}
-                    title={lesson.title}
-                    accentHex={activeCategory.accentHex}
-                  />
-                ) : (
+              {sectionLocked ? (
+                <LockedSectionCard
+                  title={activeCategory.title}
+                  accentHex={activeCategory.accentHex}
+                />
+              ) : (
+                activeCategory.lessons.map((lesson) => (
                 <article
                   key={lesson.id}
                   id={lesson.id}
@@ -368,16 +399,8 @@ export default function CourseLessonPage({
                     </p>
                   </div>
 
-                  <div className='mt-4'>
-                    <RecapCompletionButton
-                      completed={recap.completed.has(lesson.id)}
-                      pending={recap.pendingId === lesson.id}
-                      onClick={() => void recap.markCompleted(lesson.id)}
-                      accentHex={activeCategory.accentHex}
-                    />
-                  </div>
                 </article>
-                ),
+                ))
               )}
             </div>
           </div>

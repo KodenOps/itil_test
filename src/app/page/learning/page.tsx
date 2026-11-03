@@ -9,6 +9,7 @@ import thumbnailUrl from "../../../../public/images/thumbnail.avif";
 import Image from "next/image";
 import { MdCheckCircle, MdLockOutline, MdPlayArrow } from "react-icons/md";
 import {
+  LockedSectionCard,
   RecapCompletionButton,
   useRecapProgress,
   useSequentialUnlock,
@@ -1126,21 +1127,6 @@ function LessonCard({
   );
 }
 
-function LockedSection({ title }: { title: string }) {
-  return (
-    <div className='mb-16 rounded-3xl border border-dashed border-slate-300 bg-slate-50/70 px-6 py-10 text-center'>
-      <span className='mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-200 text-slate-500'>
-        <MdLockOutline size={22} />
-      </span>
-      <h2 className='mt-4 text-xl font-black text-slate-800'>{title} is locked</h2>
-      <p className='mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600'>
-        Sections open one at a time. Finish the earlier sections and mark
-        each one completed, then this section unlocks.
-      </p>
-    </div>
-  );
-}
-
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 const COURSE_SLUG = "devops-sys-engineer";
@@ -1157,6 +1143,7 @@ export default function LearnPage() {
   const isLocked = useSequentialUnlock(sectionIds, recap.completed, recap.loaded);
 
   const activeCategory = categories.find((c) => c.id === activeCategoryId)!;
+  const completedSections = sectionIds.filter((id) => recap.completed.has(id));
   const sectionLocked = isLocked(activeCategory.id);
   const sectionCompleted = recap.completed.has(activeCategory.id);
 
@@ -1287,7 +1274,7 @@ export default function LearnPage() {
                 />
               )}
               <span className='text-sm font-semibold text-slate-500'>
-                {recap.completed.size} of {categories.length} sections complete
+                {completedSections.length} of {sectionIds.length} sections complete
               </span>
             </div>
 
@@ -1346,7 +1333,10 @@ export default function LearnPage() {
           {/* Lessons content */}
           <div className='min-w-0 flex-1'>
             {sectionLocked ? (
-              <LockedSection title={activeCategory.title} />
+              <LockedSectionCard
+                title={activeCategory.title}
+                accentHex={activeCategory.accentHex}
+              />
             ) : (
               activeCategory.lessons.map((lesson) => (
               <LessonCard

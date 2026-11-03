@@ -3,19 +3,77 @@ import { createClient } from "@/lib/supabase/server";
 type ServerClient = Awaited<ReturnType<typeof createClient>>;
 
 /**
- * Number of quick-recap sections per track. This is the server-side source
- * of truth for the recap share of progress, so a client cannot inflate its
- * own percentage by sending a different total.
+ * Section ids of every hand-built track, in the order a learner must finish
+ * them. The page components render the same ids and the completion button
+ * posts the section id, so this list is the server-side source of truth for
+ * both ordering and the recap share of progress.
  */
-export const RECAP_TOTALS: Record<string, number> = {
-  "itil-foundation": 31,
-  "itil-strategist": 31,
-  "excel-fundamentals": 48,
-  "power-bi": 29,
-  kcna: 13,
-  "aws-cloud-practitioner": 14,
-  "devops-sys-engineer": 6,
+export const RECAP_SECTIONS: Record<string, string[]> = {
+  "itil-foundation": [
+    "introduction",
+    "key-concepts",
+    "four-dimensions",
+    "service-value-system",
+    "management-practices",
+  ],
+  "itil-strategist": [
+    "introduction",
+    "key-concepts",
+    "guiding-principles",
+    "direct",
+    "plan",
+    "improve",
+    "supporting-practices",
+  ],
+  "excel-fundamentals": [
+    "getting-started",
+    "core-formulas",
+    "data-management",
+    "visualization",
+    "pivot-analysis",
+    "advanced-excel",
+    "formatting-presentation",
+    "financial-statistical-functions",
+    "error-handling-auditing",
+    "collaboration-sharing",
+    "modern-excel-automation",
+  ],
+  "power-bi": [
+    "introduction",
+    "get-transform-data",
+    "data-modeling",
+    "dax",
+    "visualize",
+    "publish-share",
+    "performance-governance",
+  ],
+  kcna: ["fundamentals", "workloads", "cloud-native", "security"],
+  "aws-cloud-practitioner": [
+    "cloud-concepts",
+    "core-services",
+    "security",
+    "billing-support",
+  ],
+  "devops-sys-engineer": [
+    "architecture-system-thinking",
+    "scalability-reliability",
+    "data-backend-fundamentals",
+    "execution-influence",
+    "operations-production-sense",
+    "hands-on-labs",
+  ],
 };
+
+/**
+ * Number of recap sections per track. Derived from the section lists so a
+ * client cannot inflate its own percentage by sending a different total.
+ */
+export const RECAP_TOTALS: Record<string, number> = Object.fromEntries(
+  Object.entries(RECAP_SECTIONS).map(([slug, sections]) => [
+    slug,
+    sections.length,
+  ]),
+);
 
 /** Tracks with an extra practical assessment (manual grading). */
 export const PRACTICAL_COURSES = new Set(["excel-fundamentals"]);
@@ -167,11 +225,19 @@ async function loadBreakdown(
     recapOnly = (count ?? 0) === 0;
   }
 
+  const sectionIds = RECAP_SECTIONS[courseSlug] ?? [];
+
   let completionQuery = client
     .from("course_recap_completions")
     .select("id", { count: "exact", head: true })
     .eq("user_id", userId)
     .eq("course_slug", courseSlug);
+
+  // Older builds recorded one row per recap, which no longer maps to a
+  // section. Only count ids that are still a section of this track.
+  if (sectionIds.length > 0) {
+    completionQuery = completionQuery.in("lesson_id", sectionIds);
+  }
 
   if (resetAt) {
     completionQuery = completionQuery.gt("completed_at", resetAt);

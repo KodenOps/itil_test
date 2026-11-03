@@ -3,6 +3,7 @@ import { getViewer } from "@/lib/supabase/profile";
 import { createClient } from "@/lib/supabase/server";
 import { isSameOriginRequest, rateLimit } from "@/lib/security/request";
 import {
+  RECAP_SECTIONS,
   listRecapCompletions,
   recalculateCourseProgress,
   resolveRecapTotal,
@@ -156,19 +157,24 @@ export async function POST(request: Request) {
     );
   }
 
-  // Studio courses unlock one section at a time, so a learner cannot skip
-  // ahead by posting a later section id directly.
-  const { data: page } = await viewer.supabase
-    .from("course_pages")
-    .select("sections")
-    .eq("course_slug", courseSlug)
-    .maybeSingle<{ sections: unknown }>();
+  // Sections unlock one at a time, so a learner cannot skip ahead by posting
+  // a later section id directly. Hand-built tracks are listed in code; studio
+  // courses read the ids off their saved page.
+  let sectionIds = RECAP_SECTIONS[courseSlug] ?? [];
 
-  const sectionIds = Array.isArray(page?.sections)
-    ? (page.sections as { id?: unknown }[])
-        .map((section) => (typeof section?.id === "string" ? section.id : null))
-        .filter((id): id is string => Boolean(id))
-    : [];
+  if (sectionIds.length === 0) {
+    const { data: page } = await viewer.supabase
+      .from("course_pages")
+      .select("sections")
+      .eq("course_slug", courseSlug)
+      .maybeSingle<{ sections: unknown }>();
+
+    sectionIds = Array.isArray(page?.sections)
+      ? (page.sections as { id?: unknown }[])
+          .map((section) => (typeof section?.id === "string" ? section.id : null))
+          .filter((id): id is string => Boolean(id))
+      : [];
+  }
 
   if (sectionIds.length > 0) {
     const index = sectionIds.indexOf(lessonId);

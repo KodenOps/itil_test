@@ -144,9 +144,14 @@ learners get.
 
 Sections open one at a time on `/courses/<slug>`: a section stays locked until
 the learner marks the one before it complete, and those completions are what
-the track's progress is calculated from. The DevOps track on
-`/page/learning` works the same way: one *Mark as completed* button per
-module, in order, and `/page/devops-sys-engineer` now redirects there. A
+the track's progress is calculated from. Every hand-built track page (ITIL
+Foundation, ITIL Strategist, Excel, Power BI, AWS, KCNA and DevOps on
+`/page/learning`) follows the same rule: one *Mark as completed* button per
+section in the section header, never one per recap, and the next section stays
+locked until it is pressed. `/page/devops-sys-engineer` now redirects to
+`/page/learning`. Section ids and their order live in
+`RECAP_SECTIONS` in [`src/lib/content/progress.ts`](src/lib/content/progress.ts),
+so the API rejects a section that is out of turn. A
 studio track with no questions in
 its bank is scored on sections alone (100%); once the bank has questions, the
 usual 40% sections / 60% assessment split applies.

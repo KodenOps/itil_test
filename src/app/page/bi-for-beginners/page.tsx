@@ -3,11 +3,11 @@
 import Footer from "@/app/components/Footer";
 import React, { useEffect, useRef, useState } from "react";
 import { BiBook } from "react-icons/bi";
-import { MdOutlineQuiz, MdPlayArrow } from "react-icons/md";
+import { MdCheckCircle, MdLockOutline, MdOutlineQuiz, MdPlayArrow } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import NavBar from "@/app/components/NavBar";
 import {
-  LockedLesson,
+  LockedSectionCard,
   RecapCompletionButton,
   useRecapProgress,
   useSequentialUnlock,
@@ -724,15 +724,9 @@ function CodeBlock({ data, accentHex }: { data: string; accentHex: string }) {
 function LessonCard({
   lesson,
   accentHex,
-  completed,
-  pending,
-  onComplete,
 }: {
   lesson: TopicLesson;
   accentHex: string;
-  completed: boolean;
-  pending: boolean;
-  onComplete: () => void;
 }) {
   return (
     <article id={lesson.id} className='scroll-mt-32 mb-12'>
@@ -787,14 +781,6 @@ function LessonCard({
         <p className='text-sm font-medium text-slate-800'>{lesson.takeaway}</p>
       </div>
 
-      <div className='mt-4'>
-        <RecapCompletionButton
-          completed={completed}
-          pending={pending}
-          onClick={onComplete}
-          accentHex={accentHex}
-        />
-      </div>
     </article>
   );
 }
@@ -803,15 +789,10 @@ function LessonCard({
 
 export default function LearnPage() {
   const recap = useRecapProgress("power-bi");
-  const totalRecaps = categories.reduce(
-    (total, category) => total + category.lessons.length,
-    0,
-  );
-  const orderedLessonIds = categories.flatMap((category) =>
-    category.lessons.map((lesson) => lesson.id),
-  );
+  const sectionIds = categories.map((category) => category.id);
+  const completedSections = sectionIds.filter((id) => recap.completed.has(id));
   const isLocked = useSequentialUnlock(
-    orderedLessonIds,
+    sectionIds,
     recap.completed,
     recap.loaded,
   );
@@ -822,6 +803,8 @@ export default function LearnPage() {
   const router = useRouter();
 
   const activeCategory = categories.find((c) => c.id === activeCategoryId)!;
+  const sectionLocked = isLocked(activeCategory.id);
+  const sectionCompleted = recap.completed.has(activeCategory.id);
 
   useEffect(() => {
     if (observerRef.current) observerRef.current.disconnect();
@@ -868,20 +851,35 @@ export default function LearnPage() {
           <div className='flex items-center gap-1 overflow-x-auto py-3 custom-scrollbar-x'>
             {categories.map((cat) => {
               const isActive = cat.id === activeCategoryId;
+              const locked = isLocked(cat.id);
+              const done = recap.completed.has(cat.id);
               return (
                 <button
                   key={cat.id}
                   type='button'
                   onClick={() => switchCategory(cat.id)}
-                  className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+                  disabled={locked}
+                  title={
+                    locked
+                      ? "Finish and mark the previous section completed to unlock this one."
+                      : undefined
+                  }
+                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
                     isActive
                       ? "text-white shadow-sm"
-                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                      : locked
+                        ? "cursor-not-allowed text-slate-300"
+                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                   }`}
                   style={
                     isActive ? { backgroundColor: cat.accentHex } : undefined
                   }
                 >
+                  {locked ? (
+                    <MdLockOutline size={13} />
+                  ) : done ? (
+                    <MdCheckCircle size={13} />
+                  ) : null}
                   {cat.title}
                 </button>
               );
@@ -916,9 +914,25 @@ export default function LearnPage() {
             <p className='mt-4 text-sm text-slate-500'>
               {activeCategory.lessons.length} recaps in this module
             </p>
+            <div className='mt-5'>
+              {sectionLocked ? (
+                <span className='inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-500'>
+                  <MdLockOutline size={16} />
+                  Locked until the previous section is completed
+                </span>
+              ) : (
+                <RecapCompletionButton
+                  completed={sectionCompleted}
+                  pending={recap.pendingId === activeCategory.id}
+                  onClick={() => void recap.markCompleted(activeCategory.id)}
+                  accentHex={activeCategory.accentHex}
+                />
+              )}
+            </div>
+
             <div className='mt-3 flex flex-wrap items-center gap-2 text-xs font-semibold'>
               <span className='rounded-full bg-slate-100 px-3 py-1 text-slate-600'>
-                {recap.completed.size}/{totalRecaps} recaps completed
+                {completedSections.length}/{sectionIds.length} sections completed
               </span>
               {recap.error && (
                 <span className='rounded-full bg-red-50 px-3 py-1 text-red-700'>
@@ -974,24 +988,19 @@ export default function LearnPage() {
         {/* ── Two-column layout ── */}
         <div className='flex gap-10 pb-24'>
           <div className='min-w-0 flex-1'>
-            {activeCategory.lessons.map((lesson) =>
-              isLocked(lesson.id) ? (
-                <LockedLesson
-                  key={lesson.id}
-                  lessonId={lesson.id}
-                  title={lesson.title}
-                  accentHex={activeCategory.accentHex}
-                />
-              ) : (
+            {sectionLocked ? (
+              <LockedSectionCard
+                title={activeCategory.title}
+                accentHex={activeCategory.accentHex}
+              />
+            ) : (
+              activeCategory.lessons.map((lesson) => (
                 <LessonCard
                   key={lesson.id}
                   lesson={lesson}
                   accentHex={activeCategory.accentHex}
-                  completed={recap.completed.has(lesson.id)}
-                  pending={recap.pendingId === lesson.id}
-                  onComplete={() => void recap.markCompleted(lesson.id)}
                 />
-              ),
+              ))
             )}
           </div>
 
