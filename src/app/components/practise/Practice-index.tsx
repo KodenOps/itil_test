@@ -8,7 +8,31 @@ interface Question {
   question: string;
   options: string[];
   answer: number; // index of the correct option
+  answerIndexes?: number[];
+  multiple?: boolean;
+  image?: { src: string };
   short_explanation: string; // rename here to match your data
+}
+
+/** Every correct option text for one question. */
+function correctTexts(question: Question): string[] {
+  const indexes =
+    question.answerIndexes && question.answerIndexes.length > 0
+      ? question.answerIndexes
+      : typeof question.answer === "number"
+        ? [question.answer]
+        : [];
+
+  return indexes
+    .map((index) => question.options[index])
+    .filter((value): value is string => Boolean(value));
+}
+
+function sameSelection(given: string[] = [], expected: string[]): boolean {
+  return (
+    given.length === expected.length &&
+    expected.every((value) => given.includes(value))
+  );
 }
 
 interface PractiseProps {
@@ -33,7 +57,7 @@ const Practise = ({
   const [shuffledQuestions, setShuffledQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [selectedAnswers, setSelectedAnswers] = useState<{
-    [key: number]: string;
+    [key: number]: string[];
   }>({});
   const [submittedQuestions, setSubmittedQuestions] = useState<{
     [key: number]: boolean;
@@ -59,7 +83,15 @@ const Practise = ({
       const parsed = JSON.parse(saved);
       setShuffledQuestions(parsed.shuffledQuestions);
       setCurrentIndex(parsed.currentIndex);
-      setSelectedAnswers(parsed.selectedAnswers);
+      // Older saved sessions stored a single option text per question.
+      setSelectedAnswers(
+        Object.fromEntries(
+          Object.entries(parsed.selectedAnswers ?? {}).map(([key, value]) => [
+            key,
+            Array.isArray(value) ? value : value ? [String(value)] : [],
+          ]),
+        ),
+      );
       setSubmittedQuestions(parsed.submittedQuestions || {});
       setIsSubmitted(!!parsed.submittedQuestions?.[parsed.currentIndex]);
       setTimeLeft(parsed.timeLeft);
@@ -111,19 +143,27 @@ const Practise = ({
 
   const handleOptionSelect = (option: string) => {
     if (isSubmitted) return;
-    setSelectedAnswers((prev) => ({
-      ...prev,
-      [currentIndex]: option,
-    }));
+
+    const multiple = Boolean(shuffledQuestions[currentIndex]?.multiple);
+
+    setSelectedAnswers((prev) => {
+      const current = prev[currentIndex] ?? [];
+      const next = multiple
+        ? current.includes(option)
+          ? current.filter((value) => value !== option)
+          : [...current, option]
+        : [option];
+
+      return { ...prev, [currentIndex]: next };
+    });
   };
 
   const handleSubmitAnswer = () => {
-    if (!selectedAnswers[currentIndex]) return;
-    const isCorrect =
-      selectedAnswers[currentIndex] ===
-      shuffledQuestions[currentIndex].options[
-        shuffledQuestions[currentIndex].answer
-      ];
+    if ((selectedAnswers[currentIndex] ?? []).length === 0) return;
+    const isCorrect = sameSelection(
+      selectedAnswers[currentIndex],
+      correctTexts(shuffledQuestions[currentIndex]),
+    );
 
     setScore((prev) => prev + (isCorrect ? 1 : 0));
     setSubmittedQuestions((prev) => ({ ...prev, [currentIndex]: true }));
@@ -179,17 +219,27 @@ const Practise = ({
       <div className='p-5 text-xl'>
         {shuffledQuestions.length > 0 &&
           shuffledQuestions[currentIndex].question}
+        {shuffledQuestions.length > 0 &&
+          shuffledQuestions[currentIndex].image?.src && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={shuffledQuestions[currentIndex].image?.src}
+              alt=''
+              className='mt-4 max-h-72 rounded-xl border border-slate-200 object-contain'
+            />
+          )}
       </div>
 
       {/* Options */}
       <div className='p-5'>
         {shuffledQuestions.length > 0 &&
           shuffledQuestions[currentIndex].options.map((option, index) => {
-            const selected = selectedAnswers[currentIndex] === option;
-            const correct =
-              shuffledQuestions[currentIndex].options[
-                shuffledQuestions[currentIndex].answer
-              ] === option;
+            const multiple = Boolean(shuffledQuestions[currentIndex].multiple);
+            const selectedAnswersNow = selectedAnswers[currentIndex] ?? [];
+            const selected = selectedAnswersNow.includes(option);
+            const correct = correctTexts(
+              shuffledQuestions[currentIndex],
+            ).includes(option);
             const isCorrect = isSubmitted && correct;
             const isWrong = isSubmitted && selected && !correct;
 
@@ -203,7 +253,7 @@ const Practise = ({
 						hover:bg-slate-50 rounded-md`}
               >
                 <input
-                  type='radio'
+                  type={multiple ? "checkbox" : "radio"}
                   id={`option-${index}`}
                   className='w-6 h-6 accent-green-600 cursor-pointer'
                   name={`question-${currentIndex}`}
@@ -228,9 +278,9 @@ const Practise = ({
         <div className='p-5 flex justify-center'>
           <button
             onClick={handleSubmitAnswer}
-            disabled={!selectedAnswers[currentIndex]}
+            disabled={(selectedAnswers[currentIndex] ?? []).length === 0}
             className={`px-10 py-4 ${
-              selectedAnswers[currentIndex]
+              (selectedAnswers[currentIndex] ?? []).length > 0
                 ? "bg-blue-600"
                 : "bg-gray-400 cursor-not-allowed"
             } text-white rounded-lg`}
@@ -252,10 +302,10 @@ const Practise = ({
               ✨ Notification ✨
             </h2>
             <div className='flex items-center justify-center mb-3'>
-              {selectedAnswers[currentIndex] ===
-              shuffledQuestions[currentIndex].options[
-                shuffledQuestions[currentIndex].answer
-              ] ? (
+              {sameSelection(
+                selectedAnswers[currentIndex],
+                correctTexts(shuffledQuestions[currentIndex]),
+              ) ? (
                 <p className='text-green-600 font-semibold'>
                   ✅ You got it right!
                 </p>

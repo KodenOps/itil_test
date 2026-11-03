@@ -59,6 +59,9 @@ export type QuestionRecord = {
   options: string[];
   answerIndex: number | null;
   answerText: string | null;
+  /** Every correct option, for questions that accept more than one. */
+  answerIndexes: number[];
+  isMulti: boolean;
   explanation: string;
   imageUrl: string | null;
 };

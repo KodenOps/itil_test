@@ -8,6 +8,8 @@ type QuestionRow = {
   options: string[];
   answer_index: number | null;
   answer_text: string | null;
+  answer_indexes: unknown;
+  is_multi: boolean | null;
   explanation: string;
   image_url: string | null;
 };
@@ -23,7 +25,7 @@ export async function getQuestions(courseSlug: string): Promise<QuestionRecord[]
     const { data, error } = await supabase
       .from("questions")
       .select(
-        "external_id, category, prompt, options, answer_index, answer_text, explanation, image_url",
+        "external_id, category, prompt, options, answer_index, answer_text, answer_indexes, is_multi, explanation, image_url",
       )
       .eq("course_slug", courseSlug)
       .order("position", { ascending: true })
@@ -32,16 +34,36 @@ export async function getQuestions(courseSlug: string): Promise<QuestionRecord[]
 
     if (error) throw error;
 
-    return (data ?? []).map((row) => ({
-      externalId: row.external_id,
-      category: row.category,
-      prompt: row.prompt,
-      options: Array.isArray(row.options) ? row.options : [],
-      answerIndex: row.answer_index,
-      answerText: row.answer_text,
-      explanation: row.explanation ?? "",
-      imageUrl: row.image_url,
-    }));
+    return (data ?? []).map((row) => {
+      const options = Array.isArray(row.options) ? row.options : [];
+      const stored = Array.isArray(row.answer_indexes)
+        ? (row.answer_indexes as unknown[])
+            .map((value) => Number(value))
+            .filter(
+              (value) =>
+                Number.isInteger(value) && value >= 0 && value < options.length,
+            )
+        : [];
+      const answerIndexes =
+        stored.length > 0
+          ? stored
+          : row.answer_index !== null && Number.isInteger(row.answer_index)
+            ? [Number(row.answer_index)]
+            : [];
+
+      return {
+        externalId: row.external_id,
+        category: row.category,
+        prompt: row.prompt,
+        options,
+        answerIndex: row.answer_index,
+        answerText: row.answer_text,
+        answerIndexes,
+        isMulti: Boolean(row.is_multi) || answerIndexes.length > 1,
+        explanation: row.explanation ?? "",
+        imageUrl: row.image_url,
+      };
+    });
   } catch (error) {
     console.error(`Could not load questions for ${courseSlug}:`, error);
     return [];
@@ -51,25 +73,47 @@ export async function getQuestions(courseSlug: string): Promise<QuestionRecord[]
 /** Shape expected by <Exam /> and <Practice /> (answer compared as text). */
 export function toTextQuestions(records: QuestionRecord[]) {
   return records
-    .filter((q) => q.options.length > 0 && q.answerText !== null)
-    .map((q, index) => ({
-      id: q.externalId ?? `${index}`,
-      question: q.prompt,
-      options: q.options,
-      answer: q.answerText as string,
-      ShortExplanation: q.explanation,
-    }));
+    .filter(
+      (q) =>
+        q.options.length > 0 &&
+        (q.answerText !== null || q.answerIndexes.length > 0),
+    )
+    .map((q, index) => {
+      const fromIndexes = q.answerIndexes
+        .map((position) => q.options[position])
+        .filter((value): value is string => Boolean(value));
+      const answers =
+        fromIndexes.length > 0
+          ? fromIndexes
+          : q.answerText
+            ? [q.answerText]
+            : [];
+
+      return {
+        id: q.externalId ?? `${index}`,
+        question: q.prompt,
+        options: q.options,
+        answer: answers[0] ?? "",
+        answers,
+        multiple: q.isMulti || answers.length > 1,
+        ...(q.imageUrl ? { image: { src: q.imageUrl } } : {}),
+        ShortExplanation: q.explanation,
+      };
+    });
 }
 
 /** Shape expected by <Exam_index /> and <Practice-index /> (answer index). */
 export function toIndexQuestions(records: QuestionRecord[]) {
   return records
-    .filter((q) => q.options.length > 0 && q.answerIndex !== null)
+    .filter((q) => q.options.length > 0 && q.answerIndexes.length > 0)
     .map((q, index) => ({
       id: q.externalId ?? `${index}`,
       question: q.prompt,
       options: q.options,
-      answer: q.answerIndex as number,
+      answer: q.answerIndexes[0],
+      answerIndexes: q.answerIndexes,
+      multiple: q.isMulti || q.answerIndexes.length > 1,
+      ...(q.imageUrl ? { image: { src: q.imageUrl } } : {}),
       short_explanation: q.explanation,
     }));
 }

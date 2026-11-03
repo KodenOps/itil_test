@@ -9,7 +9,26 @@ interface Question {
   question: string;
   options: string[];
   answer: number; // now using index instead of string
+  answerIndexes?: number[];
+  multiple?: boolean;
+  image?: { src: string };
   short_explanation?: string;
+}
+
+/** Every correct option position for one question. */
+function correctIndexes(question: Question): number[] {
+  if (question.answerIndexes && question.answerIndexes.length > 0) {
+    return question.answerIndexes;
+  }
+
+  return typeof question.answer === "number" ? [question.answer] : [];
+}
+
+function sameSelection(given: number[] = [], expected: number[]): boolean {
+  return (
+    given.length === expected.length &&
+    expected.every((value) => given.includes(value))
+  );
 }
 
 const LOCAL_STORAGE_KEY = "quizState";
@@ -27,7 +46,7 @@ const Exam = ({
   const [shuffledQuestions, setShuffledQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [selectedAnswers, setSelectedAnswers] = useState<{
-    [key: number]: number;
+    [key: number]: number[];
   }>({});
   const [submittedQuestions, setSubmittedQuestions] = useState<{
     [key: number]: boolean;
@@ -52,7 +71,19 @@ const Exam = ({
       const parsed = JSON.parse(savedState);
       setShuffledQuestions(parsed.shuffledQuestions);
       setCurrentIndex(parsed.currentIndex);
-      setSelectedAnswers(parsed.selectedAnswers);
+      // Older saved sessions stored a single index per question.
+      setSelectedAnswers(
+        Object.fromEntries(
+          Object.entries(parsed.selectedAnswers ?? {}).map(([key, value]) => [
+            key,
+            Array.isArray(value)
+              ? value.map((item) => Number(item))
+              : typeof value === "number"
+                ? [value]
+                : [],
+          ]),
+        ),
+      );
       setSubmittedQuestions(parsed.submittedQuestions || {});
       setScore(parsed.score);
       setTimeLeft(parsed.timeLeft);
@@ -103,15 +134,24 @@ const Exam = ({
   // Handle selecting an option (store index)
   const handleOptionSelect = (optionIndex: number) => {
     if (isSubmitted) return;
-    setSelectedAnswers((prev) => ({
-      ...prev,
-      [currentIndex]: optionIndex,
-    }));
+
+    const multiple = Boolean(shuffledQuestions[currentIndex]?.multiple);
+
+    setSelectedAnswers((prev) => {
+      const current = prev[currentIndex] ?? [];
+      const next = multiple
+        ? current.includes(optionIndex)
+          ? current.filter((value) => value !== optionIndex)
+          : [...current, optionIndex].sort((a, b) => a - b)
+        : [optionIndex];
+
+      return { ...prev, [currentIndex]: next };
+    });
   };
 
   // Submit current answer
   const handleSubmitAnswer = () => {
-    if (selectedAnswers[currentIndex] === undefined) return;
+    if ((selectedAnswers[currentIndex] ?? []).length === 0) return;
     setSubmittedQuestions((prev) => ({
       ...prev,
       [currentIndex]: true,
@@ -137,7 +177,13 @@ const Exam = ({
   const handleFinish = () => {
     const totalScore = Object.keys(selectedAnswers).reduce((acc, key) => {
       const i = parseInt(key);
-      return selectedAnswers[i] === shuffledQuestions[i].answer ? acc + 1 : acc;
+      const question = shuffledQuestions[i];
+
+      if (!question) return acc;
+
+      return sameSelection(selectedAnswers[i], correctIndexes(question))
+        ? acc + 1
+        : acc;
     }, 0);
 
     localStorage.setItem("finalScore", JSON.stringify(totalScore));
@@ -188,14 +234,27 @@ const Exam = ({
       <div className='p-5 text-xl'>
         {shuffledQuestions.length > 0 &&
           shuffledQuestions[currentIndex].question}
+        {shuffledQuestions.length > 0 &&
+          shuffledQuestions[currentIndex].image?.src && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={shuffledQuestions[currentIndex].image?.src}
+              alt=''
+              className='mt-4 max-h-72 rounded-xl border border-slate-200 object-contain'
+            />
+          )}
       </div>
 
       {/* Options */}
       <div className='p-5'>
         {shuffledQuestions.length > 0 &&
           shuffledQuestions[currentIndex].options.map((option, index) => {
-            const selected = selectedAnswers[currentIndex] === index;
-            const correct = shuffledQuestions[currentIndex].answer === index;
+            const multiple = Boolean(shuffledQuestions[currentIndex].multiple);
+            const selectedAnswersNow = selectedAnswers[currentIndex] ?? [];
+            const selected = selectedAnswersNow.includes(index);
+            const correct = correctIndexes(
+              shuffledQuestions[currentIndex],
+            ).includes(index);
             const isCorrect = isSubmitted && correct;
             const isWrong = isSubmitted && selected && !correct;
 
@@ -210,14 +269,14 @@ const Exam = ({
                 onClick={() => handleOptionSelect(index)}
               >
                 <input
-                  type='radio'
+                  type={multiple ? "checkbox" : "radio"}
                   id={`option-${index}`}
                   className='w-6 h-6 accent-green-600 cursor-pointer'
                   name={`question-${currentIndex}`}
                   value={index}
                   checked={selected}
                   disabled={isSubmitted}
-                  onChange={() => handleOptionSelect(index)}
+                  readOnly
                 />
                 <label
                   htmlFor={`option-${index}`}
@@ -245,9 +304,9 @@ const Exam = ({
         {!isSubmitted ? (
           <button
             onClick={handleSubmitAnswer}
-            disabled={selectedAnswers[currentIndex] === undefined}
+            disabled={(selectedAnswers[currentIndex] ?? []).length === 0}
             className={`px-10 py-4 ${
-              selectedAnswers[currentIndex] !== undefined
+              (selectedAnswers[currentIndex] ?? []).length > 0
                 ? "bg-blue-600"
                 : "bg-gray-400 cursor-not-allowed"
             } text-white rounded-lg`}

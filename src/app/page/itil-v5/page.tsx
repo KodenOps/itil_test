@@ -8,8 +8,10 @@ import { MdOutlineQuiz } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import NavBar from "@/app/components/NavBar";
 import {
+  LockedLesson,
   RecapCompletionButton,
   useRecapProgress,
+  useSequentialUnlock,
 } from "@/app/components/RecapProgress";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -726,6 +728,14 @@ export default function LearnPage() {
     (total, category) => total + category.lessons.length,
     0,
   );
+  const orderedLessonIds = categories.flatMap((category) =>
+    category.lessons.map((lesson) => lesson.id),
+  );
+  const isLocked = useSequentialUnlock(
+    orderedLessonIds,
+    recap.completed,
+    recap.loaded,
+  );
   const [activeCategoryId, setActiveCategoryId] = useState(categories[0].id);
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [isMobileTocOpen, setIsMobileTocOpen] = useState(false);
@@ -885,16 +895,25 @@ export default function LearnPage() {
         {/* ── Two-column layout ── */}
         <div className='flex gap-10 pb-24'>
           <div className='min-w-0 flex-1'>
-            {activeCategory.lessons.map((lesson) => (
-              <LessonCard
-                key={lesson.id}
-                lesson={lesson}
-                accentHex={activeCategory.accentHex}
-                completed={recap.completed.has(lesson.id)}
-                pending={recap.pendingId === lesson.id}
-                onComplete={() => void recap.markCompleted(lesson.id)}
-              />
-            ))}
+            {activeCategory.lessons.map((lesson) =>
+              isLocked(lesson.id) ? (
+                <LockedLesson
+                  key={lesson.id}
+                  lessonId={lesson.id}
+                  title={lesson.title}
+                  accentHex={activeCategory.accentHex}
+                />
+              ) : (
+                <LessonCard
+                  key={lesson.id}
+                  lesson={lesson}
+                  accentHex={activeCategory.accentHex}
+                  completed={recap.completed.has(lesson.id)}
+                  pending={recap.pendingId === lesson.id}
+                  onComplete={() => void recap.markCompleted(lesson.id)}
+                />
+              ),
+            )}
           </div>
 
           <aside className='hidden lg:block w-64 xl:w-72 shrink-0'>

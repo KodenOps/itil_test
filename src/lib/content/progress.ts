@@ -58,19 +58,47 @@ export function getRecapTotal(courseSlug: string) {
   return RECAP_TOTALS[courseSlug] ?? 0;
 }
 
+/**
+ * Studio-built courses are not in the static map: their recap total is the
+ * number of sections on the published page, so locking and progress always
+ * match what the learner can actually see.
+ */
+export async function resolveRecapTotal(
+  client: ServerClient,
+  courseSlug: string,
+): Promise<number> {
+  if (Object.hasOwn(RECAP_TOTALS, courseSlug)) {
+    return RECAP_TOTALS[courseSlug];
+  }
+
+  const { data, error } = await client
+    .from("course_pages")
+    .select("sections")
+    .eq("course_slug", courseSlug)
+    .maybeSingle<{ sections: unknown }>();
+
+  if (error || !data) return 0;
+
+  return Array.isArray(data.sections) ? data.sections.length : 0;
+}
+
 export function computeProgress(input: {
   courseSlug: string;
   recapCompleted: number;
   qualifyingAttempts: number;
   practicalScore: number | null;
+  recapTotal?: number;
+  /** Overrides the per-course rule, e.g. a studio track with no bank yet. */
+  recapOnly?: boolean;
 }): Omit<CourseProgressBreakdown, "courseSlug"> {
-  const recapTotal = getRecapTotal(input.courseSlug);
+  const recapTotal =
+    input.recapTotal ?? getRecapTotal(input.courseSlug);
   const recapCompleted = Math.max(
     0,
     Math.min(recapTotal, Math.floor(input.recapCompleted)),
   );
 
-  if (RECAP_ONLY_COURSES.has(input.courseSlug)) {
+  if (input.recapOnly ?? RECAP_ONLY_COURSES.has(input.courseSlug)) {
     const progress =
       recapTotal > 0 ? Math.round((recapCompleted / recapTotal) * 100) : 0;
 
@@ -123,7 +151,21 @@ async function loadBreakdown(
   courseSlug: string,
   resetAt: string | null,
 ): Promise<CourseProgressBreakdown> {
-  const recapTotal = getRecapTotal(courseSlug);
+  const recapTotal = await resolveRecapTotal(client, courseSlug);
+  const isStudioCourse = !Object.hasOwn(RECAP_TOTALS, courseSlug);
+
+  // A studio track is only weighted against an assessment once its bank has
+  // questions; until then its sections are the whole path.
+  let recapOnly = false;
+
+  if (isStudioCourse) {
+    const { count } = await client
+      .from("questions")
+      .select("id", { count: "exact", head: true })
+      .eq("course_slug", courseSlug);
+
+    recapOnly = (count ?? 0) === 0;
+  }
 
   let completionQuery = client
     .from("course_recap_completions")
@@ -195,6 +237,8 @@ async function loadBreakdown(
       recapCompleted: recapCompleted ?? 0,
       qualifyingAttempts: qualifyingAttempts ?? 0,
       practicalScore,
+      recapTotal,
+      recapOnly,
     }),
   };
 }

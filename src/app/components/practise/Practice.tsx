@@ -12,7 +12,23 @@ interface Question {
   question: string;
   options: string[];
   answer: string;
+  answers?: string[];
+  multiple?: boolean;
+  image?: { src: string };
   ShortExplanation: string;
+}
+
+/** The option texts that count as correct for one question. */
+function correctTexts(question: Question): string[] {
+  if (question.answers && question.answers.length > 0) return question.answers;
+  return question.answer ? [question.answer] : [];
+}
+
+function sameSelection(given: string[] = [], expected: string[]): boolean {
+  return (
+    given.length === expected.length &&
+    expected.every((value) => given.includes(value))
+  );
 }
 
 interface PractiseProps {
@@ -61,7 +77,7 @@ const Practise = ({
   const [shuffledQuestions, setShuffledQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [selectedAnswers, setSelectedAnswers] = useState<{
-    [key: number]: string;
+    [key: number]: string[];
   }>({});
   const [submittedQuestions, setSubmittedQuestions] = useState<{
     [key: number]: boolean;
@@ -77,7 +93,15 @@ const Practise = ({
       const parsed = JSON.parse(saved);
       setShuffledQuestions(parsed.shuffledQuestions);
       setCurrentIndex(parsed.currentIndex);
-      setSelectedAnswers(parsed.selectedAnswers);
+      // Older saved sessions stored a single option text per question.
+      setSelectedAnswers(
+        Object.fromEntries(
+          Object.entries(parsed.selectedAnswers ?? {}).map(([key, value]) => [
+            key,
+            Array.isArray(value) ? value : value ? [String(value)] : [],
+          ]),
+        ),
+      );
       setSubmittedQuestions(parsed.submittedQuestions || {});
       setIsSubmitted(!!parsed.submittedQuestions?.[parsed.currentIndex]);
       setShowFeedback(!!parsed.submittedQuestions?.[parsed.currentIndex]);
@@ -127,16 +151,25 @@ const Practise = ({
 
   const handleOptionSelect = (option: string) => {
     if (isSubmitted) return;
-    setSelectedAnswers((prev) => ({
-      ...prev,
-      [currentIndex]: option,
-    }));
+    setSelectedAnswers((prev) => {
+      const multiple = Boolean(shuffledQuestions[currentIndex]?.multiple);
+      const current = prev[currentIndex] ?? [];
+      const next = multiple
+        ? current.includes(option)
+          ? current.filter((value) => value !== option)
+          : [...current, option]
+        : [option];
+
+      return { ...prev, [currentIndex]: next };
+    });
   };
 
   const handleSubmitAnswer = () => {
-    if (!selectedAnswers[currentIndex]) return;
-    const isCorrect =
-      selectedAnswers[currentIndex] === shuffledQuestions[currentIndex].answer;
+    if ((selectedAnswers[currentIndex] ?? []).length === 0) return;
+    const isCorrect = sameSelection(
+      selectedAnswers[currentIndex],
+      correctTexts(shuffledQuestions[currentIndex]),
+    );
     setScore((prev) => prev + (isCorrect ? 1 : 0));
     setSubmittedQuestions((prev) => ({ ...prev, [currentIndex]: true }));
     setIsSubmitted(true);
@@ -247,8 +280,12 @@ const Practise = ({
 
           <div className='space-y-3'>
             {currentQuestion.options.map((option, index) => {
-              const isSelected = selectedAnswers[currentIndex] === option;
-              const isCorrectOption = currentQuestion.answer === option;
+              const isSelected = (selectedAnswers[currentIndex] ?? []).includes(
+                option,
+              );
+              const isCorrectOption = correctTexts(currentQuestion).includes(
+                option,
+              );
               const showAsCorrect = isSubmitted && isCorrectOption;
               const showAsWrong = isSubmitted && isSelected && !isCorrectOption;
 
@@ -306,9 +343,9 @@ const Practise = ({
               <button
                 type='button'
                 onClick={handleSubmitAnswer}
-                disabled={!selectedAnswers[currentIndex]}
+                disabled={(selectedAnswers[currentIndex] ?? []).length === 0}
                 className={`rounded-full px-6 py-2.5 text-sm font-bold text-white shadow-sm transition ${
-                  selectedAnswers[currentIndex]
+                  (selectedAnswers[currentIndex] ?? []).length > 0
                     ? "hover:brightness-110"
                     : "cursor-not-allowed opacity-40"
                 }`}
@@ -324,13 +361,19 @@ const Practise = ({
         {showFeedback && (
           <div
             className={`rounded-2xl border px-5 py-4 mb-6 ${
-              selectedAnswers[currentIndex] === currentQuestion.answer
+              sameSelection(
+                selectedAnswers[currentIndex],
+                correctTexts(currentQuestion),
+              )
                 ? "border-emerald-200 bg-emerald-50"
                 : "border-red-200 bg-red-50"
             }`}
           >
             <div className='flex items-center gap-2 mb-1.5'>
-              {selectedAnswers[currentIndex] === currentQuestion.answer ? (
+              {sameSelection(
+                selectedAnswers[currentIndex],
+                correctTexts(currentQuestion),
+              ) ? (
                 <>
                   <MdCheckCircle size={18} className='text-emerald-600' />
                   <p className='text-sm font-bold text-emerald-800'>Correct!</p>
@@ -363,7 +406,11 @@ const Practise = ({
             {shuffledQuestions.map((q, i) => {
               const submitted = submittedQuestions[i];
               const wasCorrect =
-                submitted && selectedAnswers[i] === shuffledQuestions[i].answer;
+                submitted &&
+                sameSelection(
+                  selectedAnswers[i],
+                  correctTexts(shuffledQuestions[i]),
+                );
               return (
                 <button
                   key={q.id}

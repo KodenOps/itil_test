@@ -7,7 +7,12 @@ import {
   normalizeSections,
   type StudioCourse,
 } from "@/lib/content/cms";
+import { listCourseQuestions } from "@/lib/content/questionBank";
+import { parseQuestionBank, isTestFormat } from "@/types/questionBank";
+import type { BankQuestion } from "@/types/questionBank";
 import { safeRedirectPath } from "@/lib/security/redirect";
+
+const QUESTION_CHUNK = 200;
 
 export type StudioResult<T = object> =
   | ({ ok: true } & T)
@@ -346,6 +351,124 @@ export async function saveCoursePage(
   revalidatePath(`/page/${course.slug}`);
 
   return { ok: true };
+}
+
+export async function loadQuestionBank(
+  slug: string,
+): Promise<StudioResult<{ questions: BankQuestion[] }>> {
+  await requireAdmin();
+
+  // The studio editor opens lazily, so a failed read is surfaced as an empty
+  // bank rather than blocking the course page itself.
+  return { ok: true, questions: await listCourseQuestions(slug) };
+}
+
+export async function saveQuestionBank(input: {
+  slug: string;
+  format: string;
+  questions: unknown;
+  mode: "replace" | "append";
+}): Promise<StudioResult<{ count: number; errors: string[] }>> {
+  const viewer = await requireAdmin();
+
+  const slug = clean(input.slug, 120);
+  const mode = input.mode === "append" ? "append" : "replace";
+  const format = isTestFormat(input.format) ? input.format : "exam-index";
+
+  if (!slug) {
+    return { ok: false, message: "Choose a course first." };
+  }
+
+  const { data: course } = await viewer.supabase
+    .from("courses")
+    .select("slug, title")
+    .eq("slug", slug)
+    .maybeSingle<{ slug: string; title: string }>();
+
+  if (!course) {
+    return { ok: false, message: "That course no longer exists." };
+  }
+
+  const parsed = parseQuestionBank(input.questions, format);
+
+  if (parsed.questions.length === 0) {
+    return {
+      ok: false,
+      message: parsed.errors[0] ?? "There are no questions to save.",
+    };
+  }
+
+  const seen = new Set<string>();
+  const rows = parsed.questions.map((question, index) => {
+    let externalId = question.externalId || `q-${index + 1}`;
+
+    while (seen.has(externalId)) {
+      externalId = `${externalId}-${index + 1}`;
+    }
+
+    seen.add(externalId);
+    const correct = question.answers[0];
+
+    return {
+      course_slug: slug,
+      external_id: externalId,
+      category: question.category || null,
+      prompt: question.prompt,
+      options: question.options,
+      answer_index: correct,
+      answer_text: question.options[correct] ?? null,
+      answer_indexes: question.answers,
+      is_multi: question.multiple,
+      format: question.format,
+      explanation: question.explanation,
+      image_url: question.imageUrl || null,
+      position: mode === "append" ? 10_000 + index : index,
+    };
+  });
+
+  if (mode === "replace") {
+    const { error: clearError } = await viewer.supabase
+      .from("questions")
+      .delete()
+      .eq("course_slug", slug);
+
+    if (clearError) {
+      console.error("Could not clear the question bank:", clearError.message);
+      return { ok: false, message: "Could not replace the existing questions." };
+    }
+  }
+
+  for (let start = 0; start < rows.length; start += QUESTION_CHUNK) {
+    const chunk = rows.slice(start, start + QUESTION_CHUNK);
+
+    const { error } = await viewer.supabase
+      .from("questions")
+      .upsert(chunk, { onConflict: "course_slug,external_id" });
+
+    if (error) {
+      console.error("Could not save the question bank:", error.message);
+      return {
+        ok: false,
+        message:
+          error.code === "42703"
+            ? "Re-run supabase/schema.sql to add the new question columns."
+            : "Could not save the question bank. Check the JSON and try again.",
+      };
+    }
+  }
+
+  await viewer.supabase.from("activity_events").insert({
+    user_id: viewer.userId,
+    event_type: "question_bank_updated",
+    course_slug: slug,
+    summary: `Updated the question bank for ${course.title}`,
+    metadata: { count: rows.length, mode, format },
+  });
+
+  revalidatePath("/admin");
+  revalidatePath(`/courses/${slug}`);
+
+  return { ok: true, count: rows.length, errors: parsed.errors };
 }
 
 export async function deleteCourse(

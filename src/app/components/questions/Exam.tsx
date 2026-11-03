@@ -10,6 +10,22 @@ interface Question {
   question: string;
   options: string[];
   answer: string;
+  answers?: string[];
+  multiple?: boolean;
+  image?: { src: string };
+}
+
+/** The option texts that count as correct for one question. */
+function correctAnswers(question: Question): string[] {
+  if (question.answers && question.answers.length > 0) return question.answers;
+  return question.answer ? [question.answer] : [];
+}
+
+function sameSelection(given: string[] = [], expected: string[]): boolean {
+  return (
+    given.length === expected.length &&
+    expected.every((value) => given.includes(value))
+  );
 }
 
 const LOCAL_STORAGE_KEY = "quizState";
@@ -26,7 +42,7 @@ const Exam = ({
   const [shuffledQuestions, setShuffledQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [selectedAnswers, setSelectedAnswers] = useState<{
-    [key: number]: string;
+    [key: number]: string[];
   }>({});
   const [submittedQuestions, setSubmittedQuestions] = useState<{
     [key: number]: boolean;
@@ -49,7 +65,15 @@ const Exam = ({
       const parsed = JSON.parse(savedState);
       setShuffledQuestions(parsed.shuffledQuestions);
       setCurrentIndex(parsed.currentIndex);
-      setSelectedAnswers(parsed.selectedAnswers);
+      // Older saved sessions stored a single string per question.
+      setSelectedAnswers(
+        Object.fromEntries(
+          Object.entries(parsed.selectedAnswers ?? {}).map(([key, value]) => [
+            key,
+            Array.isArray(value) ? value : value ? [String(value)] : [],
+          ]),
+        ),
+      );
       setSubmittedQuestions(parsed.submittedQuestions || {});
       setScore(parsed.score);
       setTimeLeft(parsed.timeLeft);
@@ -96,14 +120,23 @@ const Exam = ({
 
   const handleOptionSelect = (option: string) => {
     if (isSubmitted) return;
-    setSelectedAnswers((prev) => ({
-      ...prev,
-      [currentIndex]: option,
-    }));
+
+    const multiple = Boolean(shuffledQuestions[currentIndex]?.multiple);
+
+    setSelectedAnswers((prev) => {
+      const current = prev[currentIndex] ?? [];
+      const next = multiple
+        ? current.includes(option)
+          ? current.filter((value) => value !== option)
+          : [...current, option]
+        : [option];
+
+      return { ...prev, [currentIndex]: next };
+    });
   };
 
   const handleSubmitAnswer = () => {
-    if (!selectedAnswers[currentIndex]) return;
+    if ((selectedAnswers[currentIndex] ?? []).length === 0) return;
     setSubmittedQuestions((prev) => ({
       ...prev,
       [currentIndex]: true,
@@ -127,7 +160,13 @@ const Exam = ({
   const handleFinish = () => {
     const totalScore = Object.keys(selectedAnswers).reduce((acc, key) => {
       const i = parseInt(key);
-      return selectedAnswers[i] === shuffledQuestions[i].answer ? acc + 1 : acc;
+      const question = shuffledQuestions[i];
+
+      if (!question) return acc;
+
+      return sameSelection(selectedAnswers[i], correctAnswers(question))
+        ? acc + 1
+        : acc;
     }, 0);
 
     localStorage.setItem("finalScore", JSON.stringify(totalScore));
@@ -201,13 +240,29 @@ const Exam = ({
                   shuffledQuestions[currentIndex].question}
               </p>
 
+              {shuffledQuestions.length > 0 &&
+                shuffledQuestions[currentIndex].image?.src && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={shuffledQuestions[currentIndex].image?.src}
+                    alt=''
+                    className='mt-4 max-h-72 rounded-2xl border border-slate-200 object-contain'
+                  />
+                )}
+
               <div className='mt-6 space-y-3'>
                 {shuffledQuestions.length > 0 &&
                   shuffledQuestions[currentIndex].options.map(
                     (option, index) => {
-                      const selected = selectedAnswers[currentIndex] === option;
-                      const correct =
-                        shuffledQuestions[currentIndex].answer === option;
+                      const multiple = Boolean(
+                        shuffledQuestions[currentIndex].multiple,
+                      );
+                      const selectedAnswersNow =
+                        selectedAnswers[currentIndex] ?? [];
+                      const selected = selectedAnswersNow.includes(option);
+                      const correct = correctAnswers(
+                        shuffledQuestions[currentIndex],
+                      ).includes(option);
                       const isCorrect = isSubmitted && correct;
                       const isWrong = isSubmitted && selected && !correct;
 
@@ -217,7 +272,7 @@ const Exam = ({
                           className={`flex items-center border rounded-2xl bg-slate-50/70 p-4 text-lg transition hover:bg-slate-100 md:text-xl ${isCorrect ? "border-green-500" : ""} ${isWrong ? "border-red-500" : ""} ${!isCorrect && !isWrong ? "border-transparent" : ""}`}
                         >
                           <input
-                            type='radio'
+                            type={multiple ? "checkbox" : "radio"}
                             id={`option-${index}`}
                             className='h-6 w-6 cursor-pointer accent-green-600'
                             name={`question-${currentIndex}`}
@@ -262,8 +317,8 @@ const Exam = ({
                 {!isSubmitted ? (
                   <button
                     onClick={handleSubmitAnswer}
-                    disabled={!selectedAnswers[currentIndex]}
-                    className={`rounded-full px-6 py-3 font-semibold text-white transition ${selectedAnswers[currentIndex] ? "bg-[#2660A4] hover:bg-[#1f4f8d]" : "cursor-not-allowed bg-slate-300"}`}
+                    disabled={(selectedAnswers[currentIndex] ?? []).length === 0}
+                    className={`rounded-full px-6 py-3 font-semibold text-white transition ${(selectedAnswers[currentIndex] ?? []).length > 0 ? "bg-[#2660A4] hover:bg-[#1f4f8d]" : "cursor-not-allowed bg-slate-300"}`}
                   >
                     Submit
                   </button>

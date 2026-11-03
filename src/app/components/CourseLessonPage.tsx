@@ -6,8 +6,10 @@ import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
 import { MdOutlineMenuBook, MdClose } from "react-icons/md";
 import {
+  LockedLesson,
   RecapCompletionButton,
   useRecapProgress,
+  useSequentialUnlock,
 } from "@/app/components/RecapProgress";
 
 export type Lesson = {
@@ -74,6 +76,14 @@ export default function CourseLessonPage({
   const totalRecaps = categories.reduce(
     (total, category) => total + category.lessons.length,
     0,
+  );
+  const orderedLessonIds = categories.flatMap((category) =>
+    category.lessons.map((lesson) => lesson.id),
+  );
+  const isLocked = useSequentialUnlock(
+    orderedLessonIds,
+    recap.completed,
+    recap.loaded,
   );
 
   const activeCategory =
@@ -256,7 +266,15 @@ export default function CourseLessonPage({
             </div>
 
             <div className='mt-10'>
-              {activeCategory.lessons.map((lesson) => (
+              {activeCategory.lessons.map((lesson) =>
+                isLocked(lesson.id) ? (
+                  <LockedLesson
+                    key={lesson.id}
+                    lessonId={lesson.id}
+                    title={lesson.title}
+                    accentHex={activeCategory.accentHex}
+                  />
+                ) : (
                 <article
                   key={lesson.id}
                   id={lesson.id}
@@ -359,7 +377,8 @@ export default function CourseLessonPage({
                     />
                   </div>
                 </article>
-              ))}
+                ),
+              )}
             </div>
           </div>
 

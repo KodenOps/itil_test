@@ -142,8 +142,25 @@ their **Page URL** to the studio URL in the editor. Enrolment gates and the
 admin preview use the same renderer, so what you see in Preview is what
 learners get.
 
-Question banks and assessments are deliberately separate: keep using
-**Courses & content → Sync content from src/data** for those.
+Sections open one at a time on `/courses/<slug>`: a section stays locked until
+the learner marks the one before it complete, and those completions are what
+the track's progress is calculated from. A studio track with no questions in
+its bank is scored on sections alone (100%); once the bank has questions, the
+usual 40% sections / 60% assessment split applies.
+
+The **Questions** tab in the same editor builds the bank for that course:
+switch between the drag-and-drop builder and a JSON textarea for bulk upload,
+pick one of the existing test formats (exam/practice, index/text answers),
+mark a question as multi-answer, and attach an image. Pasted JSON accepts an
+array or `{ "questions": [...] }`; `answer` can be an option index, an option
+letter, the option text, or an array of any of those for multi-answer items.
+`Save question bank` replaces the course's questions, or appends to them.
+
+The **Delete course** button removes the course with its page, draft and
+question bank; attempts and activity stay in the log.
+
+For the seeded tracks you can still use **Courses & content → Sync content from
+src/data**, which only ever writes the banks that live in `src/data`.
 
 ### 7. Run
 

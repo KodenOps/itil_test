@@ -24,13 +24,20 @@ import {
   MdOutlineArrowUpward,
   MdOutlineDragIndicator,
   MdOutlineOpenInNew,
+  MdQuiz,
   MdSave,
   MdTitle,
   MdVisibility,
   MdCampaign,
 } from "react-icons/md";
 import CourseSections from "@/app/components/CourseSections";
-import { createCourse, saveCoursePage, updateCourse } from "./actions";
+import QuestionBank from "./QuestionBank";
+import {
+  createCourse,
+  deleteCourse,
+  saveCoursePage,
+  updateCourse,
+} from "./actions";
 import type { StudioCourse } from "@/lib/content/cms";
 import {
   BLOCK_TYPE_LABELS,
@@ -100,13 +107,17 @@ export default function CourseStudio({
 }) {
   const router = useRouter();
   const [created, setCreated] = useState<StudioCourse[]>([]);
+  const [removed, setRemoved] = useState<string[]>([]);
   const [activeSlug, setActiveSlug] = useState(courses[0]?.slug ?? "");
   const [showCreate, setShowCreate] = useState(courses.length === 0);
 
   const allCourses = useMemo(() => {
     const seen = new Set(courses.map((course) => course.slug));
-    return [...courses, ...created.filter((course) => !seen.has(course.slug))];
-  }, [courses, created]);
+
+    return [...courses, ...created.filter((course) => !seen.has(course.slug))].filter(
+      (course) => !removed.includes(course.slug),
+    );
+  }, [courses, created, removed]);
 
   const active = allCourses.find((course) => course.slug === activeSlug);
 
@@ -200,9 +211,9 @@ export default function CourseStudio({
             <li>Drag blocks to reorder them. Arrow buttons work on mobile.</li>
             <li>New courses open at /courses/&lt;slug&gt; once saved.</li>
             <li>
-              Question banks still come from{" "}
-              <span className='font-semibold text-slate-800'>Content sync</span>,
-              not this editor.
+              The <span className='font-semibold text-slate-800'>Questions</span>{" "}
+              tab builds a bank by hand, from pasted JSON, or drag-and-drop —
+              single or multi-answer.
             </li>
           </ul>
         </div>
@@ -214,6 +225,12 @@ export default function CourseStudio({
             key={active.slug}
             course={active}
             initialSections={pages[active.slug] ?? []}
+            onDeleted={(slug) => {
+              setRemoved((previous) => [...previous, slug]);
+              const next = allCourses.find((course) => course.slug !== slug);
+              setActiveSlug(next?.slug ?? "");
+              router.refresh();
+            }}
           />
         ) : (
           <div className='rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center'>
@@ -395,9 +412,11 @@ function NewCourseForm({ onCreated }: { onCreated: (course: StudioCourse) => voi
 function CourseEditor({
   course,
   initialSections,
+  onDeleted,
 }: {
   course: StudioCourse;
   initialSections: CourseSection[];
+  onDeleted: (slug: string) => void;
 }) {
   const router = useRouter();
   const [meta, setMeta] = useState<EditorMeta>(() => metaFromCourse(course));
@@ -407,8 +426,9 @@ function CourseEditor({
   const [baseline, setBaseline] = useState(() =>
     JSON.stringify({ meta: metaFromCourse(course), sections: initialSections }),
   );
-  const [tab, setTab] = useState<"edit" | "preview">("edit");
+  const [tab, setTab] = useState<"edit" | "preview" | "questions">("edit");
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [status, setStatus] = useState<{
     tone: "ok" | "error";
     text: string;
@@ -666,6 +686,28 @@ function CourseEditor({
     router.refresh();
   };
 
+  const remove = async () => {
+    const confirmed = window.confirm(
+      `Delete “${meta.title || course.slug}” permanently?\n\nThis removes the course, its page, its draft and its question bank. Learner attempts stay in the activity log.`,
+    );
+
+    if (!confirmed) return;
+
+    setDeleting(true);
+    setStatus(null);
+
+    const result = await deleteCourse({ id: course.id });
+
+    setDeleting(false);
+
+    if (!result.ok) {
+      setStatus({ tone: "error", text: result.message });
+      return;
+    }
+
+    onDeleted(course.slug);
+  };
+
   return (
     <div className='space-y-5'>
       <div className='rounded-[28px] border border-slate-200 bg-white p-5 shadow-lg shadow-slate-200/60'>
@@ -708,6 +750,17 @@ function CourseEditor({
               </button>
               <button
                 type='button'
+                onClick={() => setTab("questions")}
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition ${
+                  tab === "questions"
+                    ? "bg-white text-slate-900 shadow-sm"
+                    : "text-slate-500 hover:text-slate-800"
+                }`}
+              >
+                <MdQuiz size={13} /> Questions
+              </button>
+              <button
+                type='button'
                 onClick={() => setTab("preview")}
                 className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition ${
                   tab === "preview"
@@ -736,6 +789,16 @@ function CourseEditor({
             >
               <MdSave size={14} />
               {saving ? "Saving…" : dirty ? "Save changes" : "Saved"}
+            </button>
+
+            <button
+              type='button'
+              onClick={remove}
+              disabled={deleting || saving}
+              className='inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-bold text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-50'
+            >
+              <MdDeleteOutline size={14} />
+              {deleting ? "Deleting…" : "Delete course"}
             </button>
           </div>
         </div>
@@ -1168,6 +1231,11 @@ function CourseEditor({
             </button>
           )}
         </>
+      ) : tab === "questions" ? (
+        <QuestionBank
+          courseSlug={course.slug}
+          courseTitle={meta.title || course.slug}
+        />
       ) : (
         <div className='rounded-[28px] border border-slate-200 bg-slate-50/60 p-4 sm:p-6'>
           <p className='mb-5 text-xs font-bold uppercase tracking-[0.25em] text-slate-500'>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { MdCheckCircle } from "react-icons/md";
+import { MdCheckCircle, MdLockOutline } from "react-icons/md";
 
 type ProgressResponse = {
   signedIn?: boolean;
@@ -22,6 +22,7 @@ export function useRecapProgress(courseSlug: string) {
   const [enrolled, setEnrolled] = useState(true);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -44,6 +45,8 @@ export function useRecapProgress(courseSlug: string) {
         setEnrolled(Boolean(data.enrolled));
       } catch {
         /* progress tracking is best-effort until the first interaction */
+      } finally {
+        if (!cancelled) setLoaded(true);
       }
     }
 
@@ -98,10 +101,69 @@ export function useRecapProgress(courseSlug: string) {
     markCompleted,
     pendingId,
     error,
+    loaded,
     signedIn,
     enrolled,
     clearError: () => setError(null),
   };
+}
+
+/**
+ * Lessons unlock in order: the first incomplete lesson is the next one to
+ * study, and everything after it stays locked. Returns a predicate so each
+ * page can render its own locked state.
+ */
+export function useSequentialUnlock(
+  orderedIds: string[],
+  completed: Set<string>,
+  loaded = true,
+) {
+  const firstIncomplete = orderedIds.findIndex((id) => !completed.has(id));
+
+  return (id: string) => {
+    if (!loaded) return false;
+
+    const index = orderedIds.indexOf(id);
+    if (index < 0) return false;
+
+    // Everything is done — keep the whole track open for revision.
+    if (firstIncomplete < 0) return false;
+
+    return index > firstIncomplete;
+  };
+}
+
+/** Placeholder card shown in place of a lesson that is not unlocked yet. */
+export function LockedLesson({
+  lessonId,
+  title,
+  accentHex,
+}: {
+  lessonId: string;
+  title: string;
+  accentHex: string;
+}) {
+  return (
+    <article
+      id={lessonId}
+      className='scroll-mt-32 mb-12 rounded-2xl border border-slate-200 bg-slate-50/70 px-5 py-6'
+    >
+      <div className='flex items-start gap-3'>
+        <span
+          className='mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white'
+          style={{ backgroundColor: `${accentHex}66` }}
+        >
+          <MdLockOutline size={16} />
+        </span>
+        <div>
+          <h3 className='text-lg font-bold text-slate-500'>{title}</h3>
+          <p className='mt-1 text-sm leading-6 text-slate-500'>
+            Finish the previous lesson and mark it completed to unlock this one.
+          </p>
+        </div>
+      </div>
+    </article>
+  );
 }
 
 export function RecapCompletionButton({

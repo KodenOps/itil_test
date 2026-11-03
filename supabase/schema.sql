@@ -290,6 +290,14 @@ create table if not exists public.questions (
 
 create index if not exists questions_course_idx on public.questions (course_slug);
 
+--  Questions built in the course studio carry their own delivery format and
+--  may accept more than one correct option. `answer_index` / `answer_text`
+--  stay as the single-answer fallback so older banks keep working.
+alter table public.questions
+  add column if not exists format text not null default 'exam-index',
+  add column if not exists is_multi boolean not null default false,
+  add column if not exists answer_indexes jsonb not null default '[]'::jsonb;
+
 -- ── 7. Learning tasks (practical exercises from src/data) ────────────────
 
 create table if not exists public.learning_tasks (

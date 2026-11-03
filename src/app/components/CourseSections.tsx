@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import {
   MdArrowForward,
   MdDownload,
@@ -338,6 +339,54 @@ function Block({ block }: { block: ContentBlock }) {
   }
 }
 
+/** One section card, also used by the sequential learner view. */
+export function CourseSectionCard({
+  section,
+  index,
+  footer,
+}: {
+  section: CourseSection;
+  index: number;
+  footer?: ReactNode;
+}) {
+  return (
+    <section
+      id={`section-${section.id}`}
+      className='scroll-mt-28 rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm sm:p-8'
+    >
+      <div className='flex items-start gap-4'>
+        <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0E2F5E] text-sm font-black text-white'>
+          {String(index + 1).padStart(2, "0")}
+        </span>
+        <div className='min-w-0'>
+          <h2 className='text-2xl font-black tracking-tight text-slate-900'>
+            {section.title}
+          </h2>
+          {section.intro ? (
+            <p className='mt-2 max-w-3xl text-sm leading-7 text-slate-600'>
+              {section.intro}
+            </p>
+          ) : null}
+        </div>
+      </div>
+
+      {section.blocks.length > 0 ? (
+        <div className='mt-6 space-y-5'>
+          {section.blocks.map((block) => (
+            <Block key={block.id} block={block} />
+          ))}
+        </div>
+      ) : (
+        <p className='mt-5 rounded-2xl bg-slate-50 px-4 py-4 text-sm text-slate-500'>
+          This section has no content blocks yet.
+        </p>
+      )}
+
+      {footer ? <div className='mt-7'>{footer}</div> : null}
+    </section>
+  );
+}
+
 /**
  * Renders a studio-built page. Shared by the public course page and the
  * studio's live preview so both always look the same.
@@ -350,39 +399,11 @@ export default function CourseSections({
   return (
     <div className='space-y-8'>
       {sections.map((section, index) => (
-        <section
+        <CourseSectionCard
           key={section.id}
-          id={`section-${section.id}`}
-          className='scroll-mt-28 rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm sm:p-8'
-        >
-          <div className='flex items-start gap-4'>
-            <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0E2F5E] text-sm font-black text-white'>
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <div className='min-w-0'>
-              <h2 className='text-2xl font-black tracking-tight text-slate-900'>
-                {section.title}
-              </h2>
-              {section.intro ? (
-                <p className='mt-2 max-w-3xl text-sm leading-7 text-slate-600'>
-                  {section.intro}
-                </p>
-              ) : null}
-            </div>
-          </div>
-
-          {section.blocks.length > 0 ? (
-            <div className='mt-6 space-y-5'>
-              {section.blocks.map((block) => (
-                <Block key={block.id} block={block} />
-              ))}
-            </div>
-          ) : (
-            <p className='mt-5 rounded-2xl bg-slate-50 px-4 py-4 text-sm text-slate-500'>
-              This section has no content blocks yet.
-            </p>
-          )}
-        </section>
+          section={section}
+          index={index}
+        />
       ))}
     </div>
   );

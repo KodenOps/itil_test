@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { getViewer } from "@/lib/supabase/profile";
+import { createClient } from "@/lib/supabase/server";
 import { isSameOriginRequest, rateLimit } from "@/lib/security/request";
 import {
-  RECAP_TOTALS,
-  getRecapTotal,
   listRecapCompletions,
   recalculateCourseProgress,
+  resolveRecapTotal,
 } from "@/lib/content/progress";
 
 export const dynamic = "force-dynamic";
@@ -32,13 +32,15 @@ export async function GET(request: Request) {
   const viewer = await getViewer();
 
   if (!viewer) {
+    const anonymousClient = await createClient();
+
     return NextResponse.json(
       {
         signedIn: false,
         enrolled: false,
         completed: [] as string[],
         progress: 0,
-        total: getRecapTotal(courseSlug),
+        total: await resolveRecapTotal(anonymousClient, courseSlug),
       },
       { headers: NO_STORE },
     );
@@ -64,7 +66,7 @@ export async function GET(request: Request) {
         enrollment?.status === "active" || enrollment?.status === "completed",
       completed,
       progress: enrollment?.progress ?? 0,
-      total: getRecapTotal(courseSlug),
+      total: await resolveRecapTotal(viewer.supabase, courseSlug),
     },
     { headers: NO_STORE },
   );
@@ -124,16 +126,18 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!Object.hasOwn(RECAP_TOTALS, courseSlug)) {
+  if (lessonId.length > 120) {
     return NextResponse.json(
-      { error: "Unknown course." },
+      { error: "Invalid recap." },
       { status: 400, headers: NO_STORE },
     );
   }
 
-  if (lessonId.length > 120) {
+  const recapTotal = await resolveRecapTotal(viewer.supabase, courseSlug);
+
+  if (recapTotal === 0) {
     return NextResponse.json(
-      { error: "Invalid recap." },
+      { error: "Unknown course." },
       { status: 400, headers: NO_STORE },
     );
   }
@@ -150,6 +154,43 @@ export async function POST(request: Request) {
       { error: "Reserve a seat on this track to record progress." },
       { status: 403, headers: NO_STORE },
     );
+  }
+
+  // Studio courses unlock one section at a time, so a learner cannot skip
+  // ahead by posting a later section id directly.
+  const { data: page } = await viewer.supabase
+    .from("course_pages")
+    .select("sections")
+    .eq("course_slug", courseSlug)
+    .maybeSingle<{ sections: unknown }>();
+
+  const sectionIds = Array.isArray(page?.sections)
+    ? (page.sections as { id?: unknown }[])
+        .map((section) => (typeof section?.id === "string" ? section.id : null))
+        .filter((id): id is string => Boolean(id))
+    : [];
+
+  if (sectionIds.length > 0) {
+    const index = sectionIds.indexOf(lessonId);
+
+    if (index < 0) {
+      return NextResponse.json(
+        { error: "Unknown section." },
+        { status: 400, headers: NO_STORE },
+      );
+    }
+
+    const done = new Set(
+      await listRecapCompletions(viewer.supabase, viewer.userId, courseSlug),
+    );
+    const previous = sectionIds.slice(0, index);
+
+    if (previous.some((id) => !done.has(id))) {
+      return NextResponse.json(
+        { error: "Finish the earlier sections first." },
+        { status: 409, headers: NO_STORE },
+      );
+    }
   }
 
   const { error } = await viewer.supabase.from("course_recap_completions").upsert(
@@ -184,7 +225,8 @@ export async function POST(request: Request) {
       completed: lessonId,
       progress: breakdown?.progress ?? 0,
       recapCompleted: breakdown?.recapCompleted ?? 0,
-      recapTotal: breakdown?.recapTotal ?? getRecapTotal(courseSlug),
+      recapTotal: breakdown?.recapTotal ?? recapTotal,
+      total: breakdown?.recapTotal ?? recapTotal,
     },
     { headers: NO_STORE },
   );

@@ -2,9 +2,10 @@ import { notFound, redirect } from "next/navigation";
 import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
 import EnrollmentGate from "@/app/components/EnrollmentGate";
-import CourseSections from "@/app/components/CourseSections";
+import SequentialCourseSections from "@/app/components/SequentialCourseSections";
 import { checkCourseAccess } from "@/lib/content/courses";
 import { getCourseSections } from "@/lib/content/cms";
+import { listRecapCompletions } from "@/lib/content/progress";
 import {
   MdArrowBack,
   MdOutlineMenuBook,
@@ -47,6 +48,22 @@ export default async function CourseContentPage({
 
   const sections = await getCourseSections(slug);
   const course = access.course;
+
+  const { data: enrollment } = await access.viewer.supabase
+    .from("course_enrollments")
+    .select("progress, status")
+    .eq("user_id", access.viewer.userId)
+    .eq("course_id", course.id)
+    .maybeSingle<{ progress: number; status: string }>();
+
+  const completed = await listRecapCompletions(
+    access.viewer.supabase,
+    access.viewer.userId,
+    slug,
+  );
+
+  const completedSet = new Set(completed);
+  const enrolled = enrollment?.status === "active" || enrollment?.status === "completed";
 
   return (
     <div className='min-h-screen bg-white text-slate-900'>
@@ -113,18 +130,44 @@ export default async function CourseContentPage({
                   On this page
                 </p>
                 <nav className='mt-3 space-y-1'>
-                  {sections.map((section, index) => (
-                    <a
-                      key={section.id}
-                      href={`#section-${section.id}`}
-                      className='flex items-start gap-2 rounded-xl px-2 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-[#0E2F5E]'
-                    >
-                      <span className='mt-0.5 text-[10px] font-black text-slate-400'>
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      <span className='leading-5'>{section.title}</span>
-                    </a>
-                  ))}
+                  {sections.map((section, index) => {
+                    const previous = index === 0 ? null : sections[index - 1];
+                    const locked = previous ? !completedSet.has(previous.id) : false;
+                    const done = completedSet.has(section.id);
+
+                    return (
+                      <a
+                        key={section.id}
+                        href={`#section-${section.id}`}
+                        className={`flex items-start gap-2 rounded-xl px-2 py-2 text-sm font-medium transition ${
+                          locked
+                            ? "text-slate-400 hover:bg-slate-50"
+                            : "text-slate-600 hover:bg-slate-50 hover:text-[#0E2F5E]"
+                        }`}
+                      >
+                        <span
+                          className={`mt-0.5 text-[10px] font-black ${
+                            locked ? "text-slate-300" : "text-slate-400"
+                          }`}
+                        >
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <span className='min-w-0 flex-1 leading-5'>
+                          {section.title}
+                        </span>
+                        {done && (
+                          <span className='mt-0.5 shrink-0 text-[10px] font-bold text-emerald-600'>
+                            ✓
+                          </span>
+                        )}
+                        {locked && (
+                          <span className='mt-0.5 shrink-0 text-[10px] text-slate-300'>
+                            🔒
+                          </span>
+                        )}
+                      </a>
+                    );
+                  })}
                   {sections.length === 0 && (
                     <p className='px-2 py-2 text-xs text-slate-400'>
                       Content is being prepared.
@@ -136,7 +179,14 @@ export default async function CourseContentPage({
 
             <div className='min-w-0'>
               {sections.length > 0 ? (
-                <CourseSections sections={sections} />
+                <SequentialCourseSections
+                  courseSlug={slug}
+                  sections={sections}
+                  accentHex={course.accentFrom}
+                  completed={completed}
+                  progress={enrollment?.progress ?? 0}
+                  enrolled={enrolled}
+                />
               ) : (
                 <div className='rounded-[28px] border border-dashed border-slate-300 bg-white p-10 text-center'>
                   <p className='text-lg font-black text-slate-900'>
