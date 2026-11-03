@@ -486,14 +486,31 @@ export async function deleteCourse(
     return { ok: false, message: "That course no longer exists." };
   }
 
-  const pageResult = await viewer.supabase
-    .from("course_pages")
+  // Deleting the course row cascades to its page, questions, modules,
+  // enrollments and recap completions. Attempts and submissions keep their
+  // history with a null course_slug.
+  const { data: deleted, error: courseError } = await viewer.supabase
+    .from("courses")
     .delete()
-    .eq("course_slug", course.slug);
+    .eq("id", input.id)
+    .select("id");
 
-  if (pageResult.error) {
-    console.error("Could not delete the course page:", pageResult.error.message);
-    return { ok: false, message: "Could not delete the course page." };
+  if (courseError) {
+    console.error("Could not delete the course:", courseError.message);
+    return {
+      ok: false,
+      message:
+        courseError.code === "42501"
+          ? "Your account is not allowed to delete courses."
+          : "Could not delete the course. Try again.",
+    };
+  }
+
+  if (!deleted || deleted.length === 0) {
+    return {
+      ok: false,
+      message: "Nothing was deleted — re-run supabase/schema.sql so admins can delete courses.",
+    };
   }
 
   const draftResult = await viewer.supabase
@@ -515,7 +532,9 @@ export async function deleteCourse(
 
   revalidatePath("/");
   revalidatePath("/admin");
+  revalidatePath("/profile");
   revalidatePath(`/courses/${course.slug}`);
+  revalidatePath("/dashboard");
 
   return { ok: true };
 }
