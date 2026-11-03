@@ -2,7 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/supabase/profile";
-import { normalizeSections, type StudioCourse } from "@/lib/content/cms";
+import {
+  normalizeDraftMeta,
+  normalizeSections,
+  type StudioCourse,
+} from "@/lib/content/cms";
 import { safeRedirectPath } from "@/lib/security/redirect";
 
 export type StudioResult<T = object> =
@@ -236,6 +240,55 @@ export async function updateCourse(input: {
   return { ok: true };
 }
 
+export async function saveCourseDraft(
+  slug: string,
+  meta: unknown,
+  sections: unknown,
+): Promise<StudioResult<{ savedAt: string }>> {
+  const viewer = await requireAdmin();
+
+  const { data: course } = await viewer.supabase
+    .from("courses")
+    .select("slug")
+    .eq("slug", slug)
+    .maybeSingle<{ slug: string }>();
+
+  if (!course) {
+    return { ok: false, message: "That course no longer exists." };
+  }
+
+  const cleanMeta = normalizeDraftMeta(meta);
+
+  if (!cleanMeta) {
+    return { ok: false, message: "Could not read the draft details." };
+  }
+
+  const savedAt = new Date().toISOString();
+  const { error } = await viewer.supabase.from("course_drafts").upsert(
+    {
+      course_slug: course.slug,
+      payload: {
+        meta: cleanMeta,
+        sections: normalizeSections(sections),
+      },
+      updated_by: viewer.userId,
+      updated_at: savedAt,
+    },
+    { onConflict: "course_slug" },
+  );
+
+  if (error) {
+    console.error("Could not autosave course draft:", error.message);
+    return {
+      ok: false,
+      message:
+        "Could not autosave the draft. Re-run supabase/schema.sql to create the course_drafts table.",
+    };
+  }
+
+  return { ok: true, savedAt };
+}
+
 export async function saveCoursePage(
   slug: string,
   sections: unknown,
@@ -246,7 +299,7 @@ export async function saveCoursePage(
     .from("courses")
     .select("slug, title")
     .eq("slug", slug)
-    .maybeSingle<{ slug: string; title: string }>();
+    .maybeSingle<{ slug: string; title: string; id: string }>();
 
   if (!course) {
     return { ok: false, message: "That course no longer exists." };
@@ -269,6 +322,17 @@ export async function saveCoursePage(
     return { ok: false, message: "Could not save the page content." };
   }
 
+  // Publishing makes the draft the live page, so there is nothing left to
+  // autosave. A missing table is harmless here: the live save already worked.
+  const { error: draftError } = await viewer.supabase
+    .from("course_drafts")
+    .delete()
+    .eq("course_slug", course.slug);
+
+  if (draftError) {
+    console.warn("Could not clear the published course draft:", draftError.message);
+  }
+
   await viewer.supabase.from("activity_events").insert({
     user_id: viewer.userId,
     event_type: "course_page_updated",
@@ -280,6 +344,55 @@ export async function saveCoursePage(
   revalidatePath("/admin");
   revalidatePath(`/courses/${course.slug}`);
   revalidatePath(`/page/${course.slug}`);
+
+  return { ok: true };
+}
+
+export async function deleteCourse(
+  input: { id: string },
+): Promise<StudioResult> {
+  const viewer = await requireAdmin();
+
+  const { data: course } = await viewer.supabase
+    .from("courses")
+    .select("slug, title")
+    .eq("id", input.id)
+    .maybeSingle<{ slug: string; title: string; id: string }>();
+
+  if (!course) {
+    return { ok: false, message: "That course no longer exists." };
+  }
+
+  const pageResult = await viewer.supabase
+    .from("course_pages")
+    .delete()
+    .eq("course_slug", course.slug);
+
+  if (pageResult.error) {
+    console.error("Could not delete the course page:", pageResult.error.message);
+    return { ok: false, message: "Could not delete the course page." };
+  }
+
+  const draftResult = await viewer.supabase
+    .from("course_drafts")
+    .delete()
+    .eq("course_slug", course.slug);
+
+  if (draftResult.error) {
+    console.warn("Could not delete the course draft:", draftResult.error.message);
+  }
+
+  await viewer.supabase.from("activity_events").insert({
+    user_id: viewer.userId,
+    event_type: "course_deleted",
+    course_slug: course.slug,
+    summary: `Deleted the course ${course.title}`,
+    metadata: { courseId: course.id },
+  });
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+  revalidatePath(`/courses/${course.slug}`);
 
   return { ok: true };
 }

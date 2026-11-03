@@ -1,5 +1,6 @@
 "use client";
 
+import type { CourseDraftMeta } from "@/types/cms";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -94,6 +95,7 @@ export default function CourseStudio({
   pages,
 }: {
   courses: StudioCourse[];
+  drafts: Record<string, CourseDraftMeta>;
   pages: Record<string, CourseSection[]>;
 }) {
   const router = useRouter();

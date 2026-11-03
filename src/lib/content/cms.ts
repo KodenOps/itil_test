@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import type { CourseDraftMeta } from "@/types/cms";
 import {
   CONTENT_BLOCK_TYPES,
   newId,
@@ -234,3 +235,52 @@ export async function listStudioCourses(): Promise<StudioCourse[]> {
     return [];
   }
 }
+
+/** List all course draft maps from storage. */
+export async function listCourseDraftMap(): Promise<Record<string, CourseDraftMeta>> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('course_drafts')
+    .select('payload')
+    .maybeSingle();
+  
+  if (error || !data || !data.payload) return {};
+  
+  const drafts = data.payload as Record<string, unknown>;
+  const result: Record<string, CourseDraftMeta> = {};
+  
+  for (const [courseSlug, rawPayload] of Object.entries(drafts ?? {})) {
+    const payload = rawPayload as Record<string, unknown> | undefined;
+    const meta = payload ? normalizeDraftMeta(payload.meta) : null;
+    if (meta) {
+      result[courseSlug] = meta;
+    }
+  }
+  
+  return result;
+}
+
+
+/** Normalise and validate a course draft meta object from raw storage. */
+export function normalizeDraftMeta(meta: unknown): CourseDraftMeta | null {
+  if (!meta || typeof meta !== 'object') return null;
+  const m = meta as Record<string, unknown>;
+  
+  const required = ['title', 'summary', 'track', 'level', 'accentFrom', 'accentTo', 'href', 'isPublished'];
+  for (const key of required) {
+    if (!(key in m)) return null;
+  }
+  
+  return {
+    title: String(m.title).trim() || 'Untitled course',
+    summary: String(m.summary).trim(),
+    track: String(m.track).trim() || 'Exam track',
+    level: String(m.level).trim() || 'All levels',
+    accentFrom: String(m.accentFrom).trim(),
+    accentTo: String(m.accentTo).trim(),
+    href: String(m.href).trim(),
+    isPublished: Boolean(m.isPublished),
+    estimatedHours: Number(m.estimatedHours) || 12,
+  };
+}
+

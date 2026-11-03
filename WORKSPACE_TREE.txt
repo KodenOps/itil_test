@@ -1,0 +1,18 @@
+### /workspace/chats/fb848c4b8f268ca96347df79
+
+```text
+src/
+  app/
+    admin/
+      page.tsx
+      studio/
+        actions.ts
+        CourseStudio.tsx
+  lib/
+    content/
+      cms.ts
+    utils/
+      ui.ts
+  types/
+    cms.ts
+```

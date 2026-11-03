@@ -62,6 +62,42 @@ export type CourseSection = {
   blocks: ContentBlock[];
 };
 
+export type CourseQuestionOption = {
+  id: string;
+  text: string;
+  correct: boolean;
+  imageUrl: string;
+};
+
+export type CourseQuestion = {
+  id: string;
+  text: string;
+  options: CourseQuestionOption[];
+  mode: "single" | "multiple";
+  allowMultiple: boolean;
+  correctIds: string[];
+};
+
+export type CourseDraftMeta = {
+  title: string;
+  summary: string;
+  track: string;
+  level: string;
+  estimatedHours: number;
+  accentFrom: string;
+  accentTo: string;
+  href: string;
+  isPublished: boolean;
+};
+
+/** The unpublished editor state stored separately from the live page. */
+export type CourseDraft = {
+  meta: CourseDraftMeta;
+  sections: CourseSection[];
+  savedAt: string;
+};
+
+
 export function newId(): string {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
     return crypto.randomUUID();

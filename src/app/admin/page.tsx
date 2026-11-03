@@ -3,7 +3,11 @@ import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
 import { requireAdmin } from "@/lib/supabase/profile";
 import { listCourses } from "@/lib/content/courses";
-import { listCoursePageMap, listStudioCourses } from "@/lib/content/cms";
+import {
+  listCourseDraftMap,
+  listCoursePageMap,
+  listStudioCourses,
+} from "@/lib/content/cms";
 import { storedFileName } from "@/lib/storage";
 import {
   ROLE_LABELS,
@@ -266,6 +270,7 @@ export default async function AdminPage({
       ? {
           courses: await listStudioCourses(),
           pages: await listCoursePageMap(),
+          drafts: await listCourseDraftMap(),
         }
       : null;
 
@@ -860,6 +865,7 @@ export default async function AdminPage({
                 <CourseStudio
                   courses={studioData.courses}
                   pages={studioData.pages}
+                  drafts={studioData.drafts}
                 />
               )}
             </div>
