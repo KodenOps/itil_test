@@ -249,8 +249,10 @@ export default async function ProfilePage() {
                         >
                           <div className='min-w-0'>
                             <p className='truncate text-sm font-semibold text-slate-900'>
-                              {submission.task_name ??
-                                courseTitle(submission.course_slug)}
+                              {submission.task_name ?? "Practical assessment"}
+                            </p>
+                            <p className='mt-0.5 truncate text-xs font-semibold text-[#2660A4]'>
+                              {courseTitle(submission.course_slug)} track
                             </p>
                             <p className='mt-0.5 text-xs text-slate-500'>
                               Submitted{" "}

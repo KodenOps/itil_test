@@ -17,6 +17,9 @@
 --   11. Assessment submissions (practical Excel uploads)
 --   12. Course requests (homepage "request a course" form)
 --   13. RLS policies + helper functions + admin metrics RPCs
+--   15. Recap completion + weighted course progress
+--   16. Practical submission storage (private bucket)
+--   17. Course pages + image uploads for the admin studio
 --
 --  First admin: register normally (you get "learner"), then run
 --      update public.profiles set role = 'admin' where email = 'you@example.com';
@@ -862,3 +865,61 @@ create policy "Owners and staff delete assessment files"
       or public.is_staff()
     )
   );
+
+-- ── 17. Course pages built in the admin studio ───────────────────────────
+--  Each course has one JSON document holding its sections and content blocks
+--  (heading, paragraph, image, video, code, callout, …). Keeping the page as
+--  a single document makes reordering and drag-and-drop saves atomic.
+
+create table if not exists public.course_pages (
+  course_slug text primary key
+    references public.courses(slug) on update cascade on delete cascade,
+  sections jsonb not null default '[]'::jsonb
+    check (jsonb_typeof(sections) = 'array'),
+  updated_by uuid references auth.users(id) on delete set null,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.course_pages enable row level security;
+
+drop policy if exists "Course pages are public" on public.course_pages;
+create policy "Course pages are public"
+  on public.course_pages for select
+  using (true);
+
+drop policy if exists "Admins manage course pages" on public.course_pages;
+create policy "Admins manage course pages"
+  on public.course_pages for all
+  to authenticated
+  using (public.is_admin())
+  with check (public.is_admin());
+
+--  Course images uploaded from the studio live in a public bucket. Only
+--  admins can write; anyone can read the resulting public URL.
+insert into storage.buckets (id, name, public)
+values ('course-assets', 'course-assets', true)
+on conflict (id) do update set public = true;
+
+drop policy if exists "Course assets are public" on storage.objects;
+create policy "Course assets are public"
+  on storage.objects for select
+  using (bucket_id = 'course-assets');
+
+drop policy if exists "Admins upload course assets" on storage.objects;
+create policy "Admins upload course assets"
+  on storage.objects for insert
+  to authenticated
+  with check (bucket_id = 'course-assets' and public.is_admin());
+
+drop policy if exists "Admins update course assets" on storage.objects;
+create policy "Admins update course assets"
+  on storage.objects for update
+  to authenticated
+  using (bucket_id = 'course-assets' and public.is_admin())
+  with check (bucket_id = 'course-assets' and public.is_admin());
+
+drop policy if exists "Admins delete course assets" on storage.objects;
+create policy "Admins delete course assets"
+  on storage.objects for delete
+  to authenticated
+  using (bucket_id = 'course-assets' and public.is_admin());

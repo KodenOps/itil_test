@@ -107,10 +107,10 @@ export default function ProfileCourseList({
               </p>
             </div>
 
-            <div className='flex items-center gap-2'>
+            <div className='flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center'>
               <Link
                 href={enrollment.courseHref}
-                className='rounded-full bg-slate-900 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800'
+                className='inline-flex w-full items-center justify-center whitespace-nowrap rounded-full bg-slate-900 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800 sm:w-auto'
               >
                 Continue
               </Link>
@@ -118,7 +118,7 @@ export default function ProfileCourseList({
                 type='button'
                 onClick={() => handleReset(enrollment)}
                 disabled={resettingId === enrollment.courseId}
-                className='rounded-full border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm font-semibold text-amber-800 transition hover:bg-amber-100 disabled:opacity-50'
+                className='inline-flex w-full items-center justify-center whitespace-nowrap rounded-full border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm font-semibold text-amber-800 transition hover:bg-amber-100 disabled:opacity-50 sm:w-auto'
               >
                 {resettingId === enrollment.courseId
                   ? "Resetting…"
@@ -128,7 +128,7 @@ export default function ProfileCourseList({
                 type='button'
                 onClick={() => handleLeave(enrollment)}
                 disabled={pendingId === enrollment.courseId}
-                className='rounded-full border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50'
+                className='inline-flex w-full items-center justify-center whitespace-nowrap rounded-full border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50 sm:w-auto'
               >
                 {pendingId === enrollment.courseId ? "Leaving…" : "Leave"}
               </button>

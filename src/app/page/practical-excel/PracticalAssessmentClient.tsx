@@ -338,8 +338,8 @@ export default function PracticalAssessmentPage({
                   onChange={(e) => setTaskName(e.target.value)}
                 >
                   <option value=''>Select Task</option>
-                  <option value='task-1'>Task 1</option>
-                  <option value='task-2'>Task 2</option>
+                  <option value='Excel-Task-1'>Excel-Task-1</option>
+                  <option value='Excel-Task-2'>Excel-Task-2</option>
                 </select>
               </div>
               <div>

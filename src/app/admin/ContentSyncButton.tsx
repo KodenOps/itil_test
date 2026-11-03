@@ -57,7 +57,7 @@ export default function ContentSyncButton() {
         disabled={isSyncing}
         className='rounded-full bg-[#2660A4] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#1f4f8d] disabled:opacity-60'
       >
-        {isSyncing ? "Syncing question banks…" : "Sync content from src/data"}
+        {isSyncing ? "Syncing question banks…" : "Sync question bank from /data"}
       </button>
       {message && (
         <p

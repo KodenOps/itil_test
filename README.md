@@ -18,6 +18,9 @@ granted by invitation from the admin dashboard.
 | Question banks from Postgres | [`src/lib/content/questions.ts`](src/lib/content/questions.ts) |
 | Legacy `src/data` → database seed | [`src/lib/content/seed.ts`](src/lib/content/seed.ts) |
 | Admin dashboard | [`src/app/admin/page.tsx`](src/app/admin/page.tsx) |
+| Course studio (drag-and-drop page builder) | [`src/app/admin/studio/CourseStudio.tsx`](src/app/admin/studio/CourseStudio.tsx) |
+| Public page for studio courses | [`src/app/courses/[slug]/page.tsx`](src/app/courses/[slug]/page.tsx) |
+| Password reset (6-digit OTP) | [`src/app/forgot-password/page.tsx`](src/app/forgot-password/page.tsx) |
 | Course requests (homepage form → email + admin) | [`src/app/actions/course-request.ts`](src/app/actions/course-request.ts) |
 | Profile & learning activity | [`src/app/profile/page.tsx`](src/app/profile/page.tsx) |
 | PWA manifest, service worker, offline page | [`src/app/manifest.ts`](src/app/manifest.ts), [`public/sw.js`](public/sw.js) |
@@ -107,9 +110,42 @@ KCNA, AWS, Excel), the practical tasks and the testimonials into Postgres.
 
 Assessment routes, the Excel quiz, the practical tasks and the login-page
 testimonials read from the database after that. `src/data` remains only as the
-one-time seed source.
+one-time seed source. Re-run the sync whenever a bank in `src/data` changes —
+the studio does not edit assessment questions.
 
-### 5. Run
+### 5. Password reset codes
+
+`/forgot-password` asks the backend for a **six-digit one-time code**, then
+uses that code to set a new password. The code itself is generated and mailed
+by Supabase Auth's recovery flow, so turn on the code in the email template:
+
+- Supabase Dashboard → **Authentication → Email Templates → Reset Password**.
+- Include `{{ .Token }}` in the body, for example:
+  `<p>Your six-digit reset code is <strong>{{ .Token }}</strong>.</p>`
+- Keep `{{ .ConfirmationURL }}` if you also want the link flow. The page can
+  finish a reset from either the code or the emailed link.
+
+Without the template change users only receive the default link; the link flow
+still works, but the code step will not have a code to accept.
+
+### 6. Build course pages in the studio
+
+Open **Admin → Course studio**. Create a course, then drag headings, body
+text, images, video embeds/links, code blocks, callouts, quotes, lists, links
+and file downloads into sections. Images upload to the public `course-assets`
+bucket; everything else is stored in `public.course_pages` as one JSON document
+per course, so a save is atomic.
+
+New courses are added to the catalogue immediately and open at
+`/courses/<slug>`. Existing tracks keep their hand-built pages until you change
+their **Page URL** to the studio URL in the editor. Enrolment gates and the
+admin preview use the same renderer, so what you see in Preview is what
+learners get.
+
+Question banks and assessments are deliberately separate: keep using
+**Courses & content → Sync content from src/data** for those.
+
+### 7. Run
 
 ```bash
 npm ci

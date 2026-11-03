@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useAppStore } from "@/store/app-store";
@@ -21,6 +22,7 @@ export default function LoginForm() {
   // protocol-relative URLs would execute or redirect off-site.
   const callbackUrl = safeRedirectPath(searchParams.get("callbackUrl"), "/");
   const urlError = searchParams.get("error");
+  const resetDone = searchParams.get("reset") === "1";
 
   const switchMode = (next: Mode) => {
     setMode(next);
@@ -198,6 +200,23 @@ export default function LoginForm() {
           minLength={mode === "signup" ? 8 : undefined}
           required
         />
+
+        {mode === "signin" && (
+          <div className='-mt-2 mb-4 flex justify-end'>
+            <Link
+              href='/forgot-password'
+              className='text-sm font-semibold text-[#2660A4] underline-offset-4 hover:underline'
+            >
+              Forgot password?
+            </Link>
+          </div>
+        )}
+
+        {resetDone && (
+          <p className='mb-4 rounded-xl bg-emerald-50 px-4 py-2.5 text-sm text-emerald-800'>
+            Password updated. Sign in with your new password.
+          </p>
+        )}
 
         {urlError && (
           <p className='mb-4 rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700'>

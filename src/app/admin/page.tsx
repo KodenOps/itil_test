@@ -3,6 +3,7 @@ import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
 import { requireAdmin } from "@/lib/supabase/profile";
 import { listCourses } from "@/lib/content/courses";
+import { listCoursePageMap, listStudioCourses } from "@/lib/content/cms";
 import { storedFileName } from "@/lib/storage";
 import {
   ROLE_LABELS,
@@ -16,6 +17,7 @@ import AdminCourseRequestStatus from "./AdminCourseRequestStatus";
 import AdminGradeSubmission from "./AdminGradeSubmission";
 import { AdminInviteForm, AdminRevokeButton } from "./AdminInvite";
 import ContentSyncButton from "./ContentSyncButton";
+import CourseStudio from "./studio/CourseStudio";
 import {
   MdOutlinePeopleAlt,
   MdOutlineSchool,
@@ -40,6 +42,7 @@ type View =
   | "invitations"
   | "requests"
   | "courses"
+  | "studio"
   | "grading"
   | "activity";
 
@@ -49,6 +52,7 @@ const VIEWS: { id: View; label: string }[] = [
   { id: "invitations", label: "Invitations" },
   { id: "requests", label: "Course requests" },
   { id: "courses", label: "Courses & content" },
+  { id: "studio", label: "Course studio" },
   { id: "grading", label: "Practical grading" },
   { id: "activity", label: "Learning activity" },
 ];
@@ -256,6 +260,14 @@ export default async function AdminPage({
   const people = new Map(
     (peopleResult.data ?? []).map((person) => [person.id, person]),
   );
+
+  const studioData =
+    view === "studio"
+      ? {
+          courses: await listStudioCourses(),
+          pages: await listCoursePageMap(),
+        }
+      : null;
 
   const topCourses = [...courses].sort((a, b) => b.enrolled - a.enrolled);
   const maxEnrolled = Math.max(1, ...courses.map((course) => course.enrolled));
@@ -804,9 +816,52 @@ export default async function AdminPage({
                   </div>
                   <div className='mt-6'>
                     <ContentSyncButton />
+                    <Link
+                      href='/admin?view=studio'
+                      className='mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-white/80 underline-offset-4 transition hover:text-white hover:underline'
+                    >
+                      Build a course page in the studio →
+                    </Link>
                   </div>
                 </div>
               </div>
+            </div>
+          )}
+
+          {view === "studio" && (
+            <div className='space-y-6'>
+              <div className='flex flex-wrap items-end justify-between gap-3'>
+                <div>
+                  <p className='text-xs font-semibold uppercase tracking-[0.3em] text-slate-500'>
+                    Course studio
+                  </p>
+                  <h2 className='mt-2 text-2xl font-black text-slate-900'>
+                    Write a page the way you would a blog post
+                  </h2>
+                  <p className='mt-1 max-w-2xl text-sm text-slate-600'>
+                    Create a course, add sections, then drag headings, body
+                    text, images, videos, code samples and links into place.
+                    Question banks still come from{" "}
+                    <Link
+                      href='/admin?view=courses'
+                      className='font-semibold text-[#2660A4] underline-offset-4 hover:underline'
+                    >
+                      Content sync
+                    </Link>
+                    .
+                  </p>
+                </div>
+                <span className='rounded-full bg-[#2660A4]/10 px-4 py-2 text-sm font-bold text-[#2660A4]'>
+                  {studioData?.courses.length ?? 0} courses
+                </span>
+              </div>
+
+              {studioData && (
+                <CourseStudio
+                  courses={studioData.courses}
+                  pages={studioData.pages}
+                />
+              )}
             </div>
           )}
 
@@ -838,6 +893,11 @@ export default async function AdminPage({
                 {submissions.map((submission) => {
                   const isGraded = submission.status === "graded";
                   const hasStoredFile = submission.file_path.includes("/");
+                  const trackTitle =
+                    courses.find((course) => course.slug === submission.course_slug)
+                      ?.title ??
+                    submission.course_slug ??
+                    "Practical assessment";
 
                   return (
                     <article
@@ -847,7 +907,7 @@ export default async function AdminPage({
                       <div className='flex flex-wrap items-start justify-between gap-3'>
                         <div className='min-w-0'>
                           <p className='text-xs font-semibold uppercase tracking-[0.2em] text-slate-500'>
-                            {submission.course_slug ?? "Practical assessment"}
+                            {trackTitle}
                           </p>
                           <h3 className='mt-1 text-lg font-black text-slate-900'>
                             {submission.full_name}
@@ -870,6 +930,12 @@ export default async function AdminPage({
                       </div>
 
                       <div className='mt-4 grid gap-2 rounded-2xl bg-slate-50 p-4 text-xs text-slate-600 sm:grid-cols-2'>
+                        <p>
+                          <span className='font-semibold text-slate-800'>
+                            Track:
+                          </span>{" "}
+                          {trackTitle}
+                        </p>
                         <p>
                           <span className='font-semibold text-slate-800'>
                             Task:

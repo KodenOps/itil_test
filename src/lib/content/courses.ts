@@ -153,16 +153,21 @@ export async function checkCourseAccess(slug: string) {
 
   const { data: courseRow } = await viewer.supabase
     .from("courses")
-    .select("id, slug, title, summary, href, accent_from, accent_to")
+    .select(
+      "id, slug, title, summary, track, level, href, accent_from, accent_to, estimated_hours",
+    )
     .eq("slug", slug)
     .maybeSingle<{
       id: string;
       slug: string;
       title: string;
       summary: string;
+      track: string;
+      level: string;
       href: string;
       accent_from: string;
       accent_to: string;
+      estimated_hours: number;
     }>();
 
   if (!courseRow) {
@@ -183,9 +188,12 @@ export async function checkCourseAccess(slug: string) {
       slug: courseRow.slug,
       title: courseRow.title,
       summary: courseRow.summary,
+      track: courseRow.track,
+      level: courseRow.level,
       href: courseRow.href,
       accentFrom: courseRow.accent_from,
       accentTo: courseRow.accent_to,
+      estimatedHours: Number(courseRow.estimated_hours ?? 12),
     },
     enrolled: enrollment?.status === "active" || enrollment?.status === "completed",
   };

@@ -23,7 +23,13 @@ function ensureEnv(key: string): string {
 }
 
 /** Routes that need a verified session. Everything else is public. */
-const PROTECTED_PREFIXES = ["/admin", "/profile", "/page", "/score"];
+const PROTECTED_PREFIXES = [
+  "/admin",
+  "/profile",
+  "/page",
+  "/courses",
+  "/score",
+];
 
 /** Public even though they live under a protected prefix. */
 const PUBLIC_EXCEPTIONS = ["/page/suggestion"];
