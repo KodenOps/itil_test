@@ -245,6 +245,9 @@ export default async function AdminPage({
     1,
     ...daily.map((row) => row.signups + row.enrollments + row.attempts),
   );
+  const hasDailyActivity = daily.some(
+    (row) => row.signups + row.enrollments + row.attempts > 0,
+  );
 
   const personIds = [
     ...new Set([
@@ -385,20 +388,28 @@ export default async function AdminPage({
                     </div>
                   </div>
 
-                  <div className='mt-6 flex h-48 items-end gap-1.5'>
+                  <div className='mt-6 flex h-48 items-stretch gap-1.5'>
                     {daily.map((row) => {
                       const total = row.signups + row.enrollments + row.attempts;
                       const height = Math.max(4, (total / maxDaily) * 100);
                       return (
                         <div
                           key={row.day}
-                          className='group relative flex flex-1 flex-col items-center justify-end gap-1'
+                          className='group relative flex flex-1 flex-col items-center gap-1'
                           title={`${row.day}: ${row.signups} signups · ${row.enrollments} enrollments · ${row.attempts} attempts`}
                         >
-                          <div className='flex w-full flex-col justify-end overflow-hidden rounded-t-md' style={{ height: `${height}%` }}>
-                            <div className='w-full bg-[#2660A4]' style={{ flex: row.signups || 0 }} />
-                            <div className='w-full bg-[#26a465]' style={{ flex: row.enrollments || 0 }} />
-                            <div className='w-full bg-[#F97316]' style={{ flex: row.attempts || 0 }} />
+                          {/* The track has to be a definite height for the bar's
+                              percentage to resolve; a plain percentage inside an
+                              auto-height column collapses to 0px. */}
+                          <div className='flex w-full flex-1 flex-col justify-end'>
+                            <div
+                              className='flex w-full flex-col justify-end overflow-hidden rounded-t-md'
+                              style={{ height: `${height}%` }}
+                            >
+                              <div className='w-full bg-[#2660A4]' style={{ flex: row.signups || 0 }} />
+                              <div className='w-full bg-[#26a465]' style={{ flex: row.enrollments || 0 }} />
+                              <div className='w-full bg-[#F97316]' style={{ flex: row.attempts || 0 }} />
+                            </div>
                           </div>
                           <span className='text-[9px] font-semibold text-slate-400'>
                             {new Date(row.day).getDate()}
@@ -406,12 +417,22 @@ export default async function AdminPage({
                         </div>
                       );
                     })}
-                    {daily.length === 0 && (
-                      <p className='text-sm text-slate-500'>
-                        No activity recorded yet.
-                      </p>
-                    )}
                   </div>
+                  {daily.length === 0 && (
+                    <p className='mt-3 text-sm text-slate-500'>
+                      No activity recorded yet.
+                    </p>
+                  )}
+                  {daily.length > 0 && !hasDailyActivity && (
+                    <p className='mt-3 text-sm text-slate-500'>
+                      No signups, enrollments or attempts in the last 14 days.
+                    </p>
+                  )}
+                  {dailyResult.error && (
+                    <p className='mt-3 text-sm font-semibold text-red-600'>
+                      Activity could not be loaded: {dailyResult.error.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className='grid gap-4 sm:grid-cols-2'>
