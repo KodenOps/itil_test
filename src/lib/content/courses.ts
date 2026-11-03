@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getViewer } from "@/lib/supabase/profile";
+import { isStaff } from "@/lib/supabase/profile";
 import type { Course, Enrollment } from "@/types/app";
 
 type CourseRow = {
@@ -46,6 +47,10 @@ export type EnrollmentRow = {
  * Course catalogue + enrolment counts. Counts come from a SECURITY DEFINER
  * aggregate so a learner can see how popular a course is without being able
  * to read anybody else's enrolment rows.
+ *
+ * `course_stats` is `grant execute ... to anon, authenticated`, so its export
+ * is public; the catalogue is public too, so that call is fine there. The
+ * *admin dashboard* only ever calls the aggregate from an admin context.
  */
 export async function listCourses(): Promise<Course[]> {
   try {

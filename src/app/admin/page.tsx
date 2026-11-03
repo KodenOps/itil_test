@@ -2,6 +2,7 @@ import Link from "next/link";
 import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
 import { requireAdmin } from "@/lib/supabase/profile";
+import { isStaff } from "@/lib/supabase/profile";
 import { listCourses } from "@/lib/content/courses";
 import {
   listCourseDraftMap,
@@ -219,7 +220,11 @@ export default async function AdminPage({
       .order("created_at", { ascending: false })
       .limit(150)
       .returns<SubmissionRow[]>(),
-  ]);
+   ]);
+
+  // Supabase RPC responses carry { data, error }. The .returns<T>()
+  // override sets the data shape; error stays PostgrestError | null.
+  const dailyError = dailyResult.error;
 
   const stats = (statsResult.data ?? {}) as Partial<PlatformStats>;
   const users = (usersResult.data ?? []) as ProfileRow[];
@@ -248,6 +253,14 @@ export default async function AdminPage({
   const hasDailyActivity = daily.some(
     (row) => row.signups + row.enrollments + row.attempts > 0,
   );
+
+  // The two staff-only RPCs are gated in the fetch above, but a non-staff
+  // Defense in depth: requireAdmin() already blocks non-admins at the page
+  // level, but re-check isStaff() here so a misconfigured grant or a disabled
+  // RLS policy still cannot leak platform metrics to a staff-only viewer.
+  const cannotViewMetrics = !isStaff(viewer)
+    || statsResult.error
+    || dailyResult.error !== null;
 
   const personIds = [
     ...new Set([
@@ -388,50 +401,58 @@ export default async function AdminPage({
                     </div>
                   </div>
 
-                  <div className='mt-6 flex h-48 items-stretch gap-1.5'>
-                    {daily.map((row) => {
-                      const total = row.signups + row.enrollments + row.attempts;
-                      const height = Math.max(4, (total / maxDaily) * 100);
-                      return (
-                        <div
-                          key={row.day}
-                          className='group relative flex flex-1 flex-col items-center gap-1'
-                          title={`${row.day}: ${row.signups} signups · ${row.enrollments} enrollments · ${row.attempts} attempts`}
-                        >
-                          {/* The track has to be a definite height for the bar's
-                              percentage to resolve; a plain percentage inside an
-                              auto-height column collapses to 0px. */}
-                          <div className='flex w-full flex-1 flex-col justify-end'>
+                  {cannotViewMetrics ? (
+                    <p className='mt-6 text-sm text-slate-500'>
+                      You do not have permission to view platform metrics.
+                    </p>
+                  ) : (
+                    <>
+                      <div className='mt-6 flex h-48 items-stretch gap-1.5'>
+                        {daily.map((row) => {
+                          const total = row.signups + row.enrollments + row.attempts;
+                          const height = Math.max(4, (total / maxDaily) * 100);
+                          return (
                             <div
-                              className='flex w-full flex-col justify-end overflow-hidden rounded-t-md'
-                              style={{ height: `${height}%` }}
+                              key={row.day}
+                              className='group relative flex flex-1 flex-col items-center gap-1'
+                              title={`${row.day}: ${row.signups} signups · ${row.enrollments} enrollments · ${row.attempts} attempts`}
                             >
-                              <div className='w-full bg-[#2660A4]' style={{ flex: row.signups || 0 }} />
-                              <div className='w-full bg-[#26a465]' style={{ flex: row.enrollments || 0 }} />
-                              <div className='w-full bg-[#F97316]' style={{ flex: row.attempts || 0 }} />
+                              {/* The track has to be a definite height for the bar’s
+                                  percentage to resolve; a plain percentage inside an
+                                  auto-height column collapses to 0px. */}
+                              <div className='flex w-full flex-1 flex-col justify-end'>
+                                <div
+                                  className='flex w-full flex-col justify-end overflow-hidden rounded-t-md'
+                                  style={{ height: `${height}%` }}
+                                >
+                                  <div className='w-full bg-[#2660A4]' style={{ flex: row.signups || 0 }} />
+                                  <div className='w-full bg-[#26a465]' style={{ flex: row.enrollments || 0 }} />
+                                  <div className='w-full bg-[#F97316]' style={{ flex: row.attempts || 0 }} />
+                                </div>
+                              </div>
+                              <span className='text-[9px] font-semibold text-slate-400'>
+                                {new Date(row.day).getDate()}
+                              </span>
                             </div>
-                          </div>
-                          <span className='text-[9px] font-semibold text-slate-400'>
-                            {new Date(row.day).getDate()}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  {daily.length === 0 && (
-                    <p className='mt-3 text-sm text-slate-500'>
-                      No activity recorded yet.
-                    </p>
-                  )}
-                  {daily.length > 0 && !hasDailyActivity && (
-                    <p className='mt-3 text-sm text-slate-500'>
-                      No signups, enrollments or attempts in the last 14 days.
-                    </p>
-                  )}
-                  {dailyResult.error && (
-                    <p className='mt-3 text-sm font-semibold text-red-600'>
-                      Activity could not be loaded: {dailyResult.error.message}
-                    </p>
+                          );
+                        })}
+                      </div>
+                      {daily.length === 0 && (
+                        <p className='mt-3 text-sm text-slate-500'>
+                          No activity recorded yet.
+                        </p>
+                      )}
+                      {daily.length > 0 && !hasDailyActivity && (
+                        <p className='mt-3 text-sm text-slate-500'>
+                          No signups, enrollments or attempts in the last 14 days.
+                        </p>
+                      )}
+                      {dailyError && (
+                        <p className='mt-3 text-sm font-semibold text-red-600'>
+                          Activity could not be loaded: {dailyError.message}
+                        </p>
+                      )}
+                    </>
                   )}
                 </div>
 
