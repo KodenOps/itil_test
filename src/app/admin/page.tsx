@@ -4,11 +4,7 @@ import Footer from "@/app/components/Footer";
 import { requireAdmin } from "@/lib/supabase/profile";
 import { isStaff } from "@/lib/supabase/profile";
 import { listCourses } from "@/lib/content/courses";
-import {
-  listCourseDraftMap,
-  listCoursePageMap,
-  listStudioCourses,
-} from "@/lib/content/cms";
+import { listStudioCourses } from "@/lib/content/cms";
 import { storedFileName } from "@/lib/storage";
 import {
   ROLE_LABELS,
@@ -22,7 +18,20 @@ import AdminCourseRequestStatus from "./AdminCourseRequestStatus";
 import AdminGradeSubmission from "./AdminGradeSubmission";
 import { AdminInviteForm, AdminRevokeButton } from "./AdminInvite";
 import ContentSyncButton from "./ContentSyncButton";
-import CourseStudio from "./studio/CourseStudio";
+import AdminSideNav from "@/app/components/AdminSideNav";
+import BlogStudio from "./studio/BlogStudio";
+import CourseImport from "./studio/CourseImport";
+import QuestionBankEditor from "./studio/QuestionBankEditor";
+import ReportCard from "./reports/ReportCard";
+import { listAllBlogPosts } from "@/lib/content/blog-posts";
+import { listQuestionReports } from "@/lib/content/reports";
+import { listQuestionDrafts } from "./studio/import-actions";
+import { listCourseQuestions } from "@/lib/content/questionBank";
+import {
+  isTestFormat,
+  parseQuestionBank,
+  type BankQuestion,
+} from "@/types/questionBank";
 import {
   MdOutlinePeopleAlt,
   MdOutlineSchool,
@@ -43,21 +52,27 @@ export const dynamic = "force-dynamic";
 
 type View =
   | "overview"
+  | "blog"
+  | "import"
+  | "questions"
+  | "reports"
   | "users"
   | "invitations"
   | "requests"
   | "courses"
-  | "studio"
   | "grading"
   | "activity";
 
 const VIEWS: { id: View; label: string }[] = [
   { id: "overview", label: "Overview" },
+  { id: "blog", label: "Blog studio" },
+  { id: "import", label: "Course JSON" },
+  { id: "questions", label: "Question bank" },
+  { id: "reports", label: "Question reports" },
   { id: "users", label: "Users & roles" },
   { id: "invitations", label: "Invitations" },
   { id: "requests", label: "Course requests" },
   { id: "courses", label: "Courses & content" },
-  { id: "studio", label: "Course studio" },
   { id: "grading", label: "Practical grading" },
   { id: "activity", label: "Learning activity" },
 ];
@@ -152,7 +167,7 @@ function personLabel(profile: PersonRow | undefined, fallback = "Member") {
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams: Promise<{ view?: string }>;
+  searchParams: Promise<{ view?: string; course?: string }>;
 }) {
   const viewer = await requireAdmin();
   const { supabase, profile } = viewer;
@@ -161,6 +176,7 @@ export default async function AdminPage({
   const view: View = VIEWS.some((item) => item.id === params.view)
     ? (params.view as View)
     : "overview";
+  const requestedCourse = params.course?.trim() ?? "";
 
   const [
     statsResult,
@@ -281,14 +297,51 @@ export default async function AdminPage({
     (peopleResult.data ?? []).map((person) => [person.id, person]),
   );
 
-  const studioData =
-    view === "studio"
-      ? {
-          courses: await listStudioCourses(),
-          pages: await listCoursePageMap(),
-          drafts: await listCourseDraftMap(),
-        }
+  /* ── Blog studio, question bank and reports load only for their view ── */
+
+  const blogPosts = view === "blog" ? await listAllBlogPosts() : [];
+  const reports = view === "reports" ? await listQuestionReports() : [];
+
+  const studioCourses = [
+    ...courses.map((course) => ({ slug: course.slug, title: course.title })),
+    ...((view === "questions" ? await listStudioCourses() : []).map((course) => ({
+      slug: course.slug,
+      title: course.title,
+    })) ?? []),
+  ].filter(
+    (course, index, list) =>
+      list.findIndex((item) => item.slug === course.slug) === index,
+  );
+
+  const questionDrafts =
+    view === "questions" ? await listQuestionDrafts() : {};
+
+  const activeCourseSlug =
+    requestedCourse && studioCourses.some((course) => course.slug === requestedCourse)
+      ? requestedCourse
+      : studioCourses[0]?.slug ?? "";
+
+  const liveQuestions: BankQuestion[] =
+    view === "questions" && activeCourseSlug
+      ? await listCourseQuestions(activeCourseSlug)
+      : [];
+
+  const rawDraft = questionDrafts[activeCourseSlug];
+  const draftBank: BankQuestion[] | null =
+    Array.isArray(rawDraft) && rawDraft.length > 0
+      ? parseQuestionBank(
+          rawDraft,
+          isTestFormat(liveQuestions[0]?.format)
+            ? liveQuestions[0].format
+            : "practice-index",
+        ).questions
       : null;
+
+  const openReportCount = reports.filter(
+    (report) => report.status === "open" || report.status === "reviewing",
+  ).length;
+
+  const draftBankCount = Object.keys(questionDrafts).length;
 
   const topCourses = [...courses].sort((a, b) => b.enrolled - a.enrolled);
   const maxEnrolled = Math.max(1, ...courses.map((course) => course.enrolled));
@@ -298,13 +351,20 @@ export default async function AdminPage({
   );
 
   return (
-    <div className='min-h-screen bg-white text-slate-900'>
+    <div className='min-h-screen bg-slate-50 text-slate-900'>
       <NavBar />
 
-      <main className='relative overflow-hidden mt-20'>
-        <div className='absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(38,96,164,0.12),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(249,115,22,0.08),_transparent_28%),linear-gradient(180deg,_#ffffff_0%,_#f8fafc_60%,_#eef2f7_100%)]' />
+      <AdminSideNav
+        view={view}
+        openReports={openReportCount}
+        draftBanks={draftBankCount}
+        pendingGrading={pendingSubmissions.length}
+      />
 
-        <section className='mx-auto w-full max-w-7xl px-6 pt-10 md:px-10 lg:px-12'>
+      <main className='relative mt-16 min-h-[calc(100vh-4rem)] overflow-hidden pb-16 lg:pl-[264px]'>
+        <div className='absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(38,96,164,0.10),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(31,138,112,0.07),_transparent_28%),linear-gradient(180deg,_#ffffff_0%,_#f8fafc_60%,_#eef2f7_100%)]' />
+
+        <section className='mx-auto w-full max-w-6xl px-5 pt-8 md:px-8'>
           <div className='flex flex-wrap items-start justify-between gap-4'>
             <div>
               <div className='inline-flex items-center gap-2 rounded-full border border-slate-900/10 bg-slate-900 px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-white'>
@@ -329,27 +389,9 @@ export default async function AdminPage({
             </Link>
           </div>
 
-          <nav className='mt-8 flex flex-wrap gap-2'>
-            {VIEWS.map((item) => {
-              const isActive = item.id === view;
-              return (
-                <Link
-                  key={item.id}
-                  href={`/admin?view=${item.id}`}
-                  className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                    isActive
-                      ? "bg-slate-900 text-white shadow-sm"
-                      : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
         </section>
 
-        <section className='mx-auto w-full max-w-7xl px-6 py-8 md:px-10 lg:px-12'>
+        <section className='mx-auto w-full max-w-6xl px-5 py-6 md:px-8'>
           {view === "overview" && (
             <div className='space-y-8'>
               <div className='grid gap-4 md:grid-cols-2 xl:grid-cols-4'>
@@ -864,10 +906,10 @@ export default async function AdminPage({
                   <div className='mt-6'>
                     <ContentSyncButton />
                     <Link
-                      href='/admin?view=studio'
+                      href='/admin?view=questions'
                       className='mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-white/80 underline-offset-4 transition hover:text-white hover:underline'
                     >
-                      Build a course page in the studio →
+                      Open the question bank →
                     </Link>
                   </div>
                 </div>
@@ -875,40 +917,130 @@ export default async function AdminPage({
             </div>
           )}
 
-          {view === "studio" && (
-            <div className='space-y-6'>
+          {view === "blog" && (
+            <div className='space-y-5'>
               <div className='flex flex-wrap items-end justify-between gap-3'>
                 <div>
-                  <p className='text-xs font-semibold uppercase tracking-[0.3em] text-slate-500'>
-                    Course studio
+                  <p className='text-xs font-bold uppercase tracking-[0.3em] text-[#2660A4]'>
+                    Blog studio
                   </p>
                   <h2 className='mt-2 text-2xl font-black text-slate-900'>
-                    Write a page the way you would a blog post
+                    Write a post, or link one that already lives elsewhere
                   </h2>
-                  <p className='mt-1 max-w-2xl text-sm text-slate-600'>
-                    Create a course, add sections, then drag headings, body
-                    text, images, videos, code samples and links into place.
-                    Question banks still come from{" "}
-                    <Link
-                      href='/admin?view=courses'
-                      className='font-semibold text-[#2660A4] underline-offset-4 hover:underline'
-                    >
-                      Content sync
+                  <p className='mt-1 max-w-2xl text-sm leading-6 text-slate-600'>
+                    Posts written here publish to{" "}
+                    <Link href='/blog' className='font-semibold text-[#2660A4] hover:underline'>
+                      /blog
                     </Link>
-                    .
+                    . Paste a Hashnode, Medium or Dev.to link and the studio
+                    pulls the title, summary and cover for you.
                   </p>
                 </div>
-                <span className='rounded-full bg-[#2660A4]/10 px-4 py-2 text-sm font-bold text-[#2660A4]'>
-                  {studioData?.courses.length ?? 0} courses
+                <span className='rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-sm'>
+                  {blogPosts.length} post{blogPosts.length === 1 ? "" : "s"}
                 </span>
               </div>
 
-              {studioData && (
-                <CourseStudio
-                  courses={studioData.courses}
-                  pages={studioData.pages}
-                  drafts={studioData.drafts}
-                />
+              <BlogStudio posts={blogPosts} />
+            </div>
+          )}
+
+          {view === "import" && (
+            <div className='space-y-5'>
+              <div>
+                <p className='text-xs font-bold uppercase tracking-[0.3em] text-[#2660A4]'>
+                  Course JSON
+                </p>
+                <h2 className='mt-2 text-2xl font-black text-slate-900'>
+                  One file: course, page sections and question bank
+                </h2>
+                <p className='mt-1 max-w-2xl text-sm leading-6 text-slate-600'>
+                  Course creation is JSON-only. The editor starts from a complete
+                  sample — change it, drop your own file in, and import. Leave the
+                  publish box unticked to keep it as a draft.
+                </p>
+              </div>
+
+              <CourseImport />
+            </div>
+          )}
+
+          {view === "questions" && (
+            <div className='space-y-5'>
+              <div className='flex flex-wrap items-end justify-between gap-3'>
+                <div>
+                  <p className='text-xs font-bold uppercase tracking-[0.3em] text-[#2660A4]'>
+                    Question bank
+                  </p>
+                  <h2 className='mt-2 text-2xl font-black text-slate-900'>
+                    Add questions one at a time, or import a bank
+                  </h2>
+                  <p className='mt-1 max-w-2xl text-sm leading-6 text-slate-600'>
+                    Pick a course, add questions by hand, drag them into order, or
+                    drop a question-bank JSON file. Save a draft to keep working —
+                    learners only see the bank once you publish it.
+                  </p>
+                </div>
+                <span className='rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-sm'>
+                  {draftBankCount} draft bank{draftBankCount === 1 ? "" : "s"}
+                </span>
+              </div>
+
+              <QuestionBankEditor
+                courses={studioCourses.map((course) => ({
+                  slug: course.slug,
+                  title: course.title,
+                  isPublished: courses.some(
+                    (item) => item.slug === course.slug,
+                  ),
+                  liveQuestions:
+                    course.slug === activeCourseSlug ? liveQuestions.length : 0,
+                  draftQuestions:
+                    course.slug === activeCourseSlug
+                      ? draftBank?.length ?? 0
+                      : Array.isArray(questionDrafts[course.slug])
+                        ? (questionDrafts[course.slug] as unknown[]).length
+                        : 0,
+                }))}
+                courseSlug={activeCourseSlug}
+                live={liveQuestions}
+                draft={draftBank}
+                draftSavedAt={null}
+              />
+            </div>
+          )}
+
+          {view === "reports" && (
+            <div className='space-y-5'>
+              <div className='flex flex-wrap items-end justify-between gap-3'>
+                <div>
+                  <p className='text-xs font-bold uppercase tracking-[0.3em] text-[#2660A4]'>
+                    Question reports
+                  </p>
+                  <h2 className='mt-2 text-2xl font-black text-slate-900'>
+                    Fix the question, then tell the reporter
+                  </h2>
+                  <p className='mt-1 max-w-2xl text-sm leading-6 text-slate-600'>
+                    Every flag a learner sends lands here with the question
+                    attached. Edit the question in place and reply — the reply
+                    goes straight to their notification bell.
+                  </p>
+                </div>
+                <span className='rounded-full bg-amber-100 px-4 py-2 text-sm font-bold text-amber-800'>
+                  {openReportCount} open
+                </span>
+              </div>
+
+              {reports.length === 0 ? (
+                <p className='rounded-[28px] border border-dashed border-slate-300 bg-white p-10 text-center text-sm text-slate-500'>
+                  No reports yet. When a learner flags a question it appears here.
+                </p>
+              ) : (
+                <div className='space-y-4'>
+                  {reports.map((report) => (
+                    <ReportCard key={report.id} report={report} />
+                  ))}
+                </div>
               )}
             </div>
           )}

@@ -26,9 +26,9 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        // The DevOps track moved to the shared learning page.
+        // The DevOps & Systems Engineering course is the blog's recap track.
         source: "/page/devops-sys-engineer",
-        destination: "/page/learning",
+        destination: "/blog/devops-sys-engineer",
         permanent: true,
       },
     ];

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { recordAttempt } from "@/lib/activity/record";
 import NavBar from "../NavBar";
+import FlagQuestion from "../FlagQuestion";
 
 interface Question {
   id: string;
@@ -249,6 +250,16 @@ const Exam = ({
                     className='mt-4 max-h-72 rounded-2xl border border-slate-200 object-contain'
                   />
                 )}
+
+              {shuffledQuestions.length > 0 && (
+                <div className='mt-4 flex justify-end'>
+                  <FlagQuestion
+                    questionId={String(shuffledQuestions[currentIndex].id)}
+                    questionPrompt={shuffledQuestions[currentIndex].question}
+                    courseSlug={courseSlug}
+                  />
+                </div>
+              )}
 
               <div className='mt-6 space-y-3'>
                 {shuffledQuestions.length > 0 &&

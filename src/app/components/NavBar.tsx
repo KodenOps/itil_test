@@ -24,6 +24,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useAppStore } from "@/store/app-store";
 import { isAppInstalled, requestInstallPrompt } from "@/lib/pwa";
 import { ROLE_LABELS } from "@/types/app";
+import NotificationBell from "./NotificationBell";
 
 const BRAND_DEEP = "#0d2c5d";
 const BRAND = "#2660A4";
@@ -282,6 +283,12 @@ const NavBar = () => {
                 <MdDashboardCustomize size={15} />
                 Admin
               </Link>
+            )}
+
+            {ready && user && (
+              <div className='ml-1 hidden sm:block'>
+                <NotificationBell />
+              </div>
             )}
 
             {ready && user ? (

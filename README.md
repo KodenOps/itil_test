@@ -85,7 +85,9 @@ NEXT_PUBLIC_INSTALL_PROMPT_SNOOZE_DAYS=14   # days to stay quiet after
 ### 2. Database
 
 Run the whole of [`supabase/schema.sql`](supabase/schema.sql) in the Supabase SQL
-editor. It is idempotent — re-run it after pulling changes.
+editor, then [`supabase/schema-20261104.sql`](supabase/schema-20261104.sql) for
+the blog studio, question reports, notifications and question-bank drafts. Both
+files are idempotent — re-run them after pulling changes.
 
 In **Authentication → Providers**, keep **Email** enabled and disable every
 social provider (Google, Facebook, …). If an old "Before User Created" hook is
@@ -128,44 +130,55 @@ by Supabase Auth's recovery flow, so turn on the code in the email template:
 Without the template change users only receive the default link; the link flow
 still works, but the code step will not have a code to accept.
 
-### 6. Build course pages in the studio
+### 6. Admin studio
 
-Open **Admin → Course studio**. Create a course, then drag headings, body
-text, images, video embeds/links, code blocks, callouts, quotes, lists, links
-and file downloads into sections. Images upload to the public `course-assets`
-bucket; everything else is stored in `public.course_pages` as one JSON document
-per course, so a save is atomic.
+The admin dashboard has a side navigation; every screen below lives there.
 
-New courses are added to the catalogue immediately and open at
-`/courses/<slug>`. Existing tracks keep their hand-built pages until you change
-their **Page URL** to the studio URL in the editor. Enrolment gates and the
-admin preview use the same renderer, so what you see in Preview is what
-learners get.
+**Blog studio (`/admin?view=blog`).** Write a post and publish it to `/blog`,
+or paste a Hashnode / Medium / Dev.to / any-blog link and press **Fetch
+details** — the studio reads the page's Open Graph tags and fills the title,
+summary, cover image and source label. External posts stay linked to the
+original; the blog card and article page show where the post lives. Posts save
+as drafts until published, and a first publish notifies every learner.
+Posts are stored in `public.blog_posts`, with the body kept as a JSON array of
+blocks (markdown-lite: `## heading`, paragraphs, `- lists`, `> quotes`,
+``` fences ```, `![alt](url)` images and `---`).
+
+**Course JSON (`/admin?view=import`).** Course creation is JSON-only. The editor
+opens with a complete sample: the `course` object (every column the catalogue
+reads), `sections[]` using the same block types as the course page renderer, and
+`questions[]`. Upload a `.json` file, drop one on the editor, or paste the JSON;
+tick **Publish to the catalogue now** or import it as a draft. Re-importing the
+same slug updates in place, so flipping `isPublished` later is a re-run, not a
+new course.
+
+**Question bank (`/admin?view=questions`).** Pick a course from the dropdown,
+then add questions one at a time, drag the handle to reorder, or drop a
+question-bank JSON file. **Save draft** keeps the bank in
+`public.question_bank_drafts` while learners keep seeing the live bank;
+**Publish bank** replaces what learners get. Importing a course leads straight
+here. Pasted JSON accepts an array or `{ "questions": [...] }`; `answer` can be
+an option index, an option letter, the option text, or an array of those.
+
+**Question reports (`/admin?view=reports`).** Learners flag a question from the
+exam runner (**Report an issue**). Each report shows the reporter, the course
+and the stored question, editable in place. Saving the question updates the live
+row, and sending a reply notifies the reporter — they can read it in the bell in
+the top nav or on `/notifications`, next to their own report history.
 
 Sections open one at a time on `/courses/<slug>`: a section stays locked until
-the learner marks the one before it complete, and those completions are what
-the track's progress is calculated from. Every hand-built track page (ITIL
+the learner marks the one before it complete, and those completions are what the
+track's progress is calculated from. Every hand-built track page (ITIL
 Foundation, ITIL Strategist, Excel, Power BI, AWS, KCNA and DevOps on
 `/page/learning`) follows the same rule: one *Mark as completed* button per
 section in the section header, never one per recap, and the next section stays
-locked until it is pressed. `/page/devops-sys-engineer` now redirects to
-`/page/learning`. Section ids and their order live in
+locked until it is pressed. `/page/devops-sys-engineer` redirects to
+`/blog/devops-sys-engineer`, where the DevOps & Systems Engineering recap now
+lives as a full studio article. Section ids and their order live in
 `RECAP_SECTIONS` in [`src/lib/content/progress.ts`](src/lib/content/progress.ts),
-so the API rejects a section that is out of turn. A
-studio track with no questions in
-its bank is scored on sections alone (100%); once the bank has questions, the
-usual 40% sections / 60% assessment split applies.
-
-The **Questions** tab in the same editor builds the bank for that course:
-switch between the drag-and-drop builder and a JSON textarea for bulk upload,
-pick one of the existing test formats (exam/practice, index/text answers),
-mark a question as multi-answer, and attach an image. Pasted JSON accepts an
-array or `{ "questions": [...] }`; `answer` can be an option index, an option
-letter, the option text, or an array of any of those for multi-answer items.
-`Save question bank` replaces the course's questions, or appends to them.
-
-The **Delete course** button removes the course with its page, draft and
-question bank; attempts and activity stay in the log.
+so the API rejects a section that is out of turn. A studio track with no
+questions in its bank is scored on sections alone (100%); once the bank has
+questions, the usual 40% sections / 60% assessment split applies.
 
 For the seeded tracks you can still use **Courses & content → Sync content from
 src/data**, which only ever writes the banks that live in `src/data`.

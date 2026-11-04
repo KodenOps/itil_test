@@ -84,6 +84,143 @@ export type ActivityEvent = {
   createdAt: string;
 };
 
+/* ────────────────────────────── Blog ──────────────────────────────────── */
+
+export const BLOG_SOURCES = [
+  "studio",
+  "hashnode",
+  "medium",
+  "dev",
+  "external",
+] as const;
+
+/** `studio` posts are written in the admin blog studio; the rest are links. */
+export type BlogSource = (typeof BLOG_SOURCES)[number];
+
+export const BLOG_SOURCE_LABELS: Record<BlogSource, string> = {
+  studio: "CertifyHub studio",
+  hashnode: "Hashnode",
+  medium: "Medium",
+  dev: "Dev.to",
+  external: "External blog",
+};
+
+/** One renderable piece of a studio blog post. */
+export type BlogContentBlock =
+  | { type: "heading"; text: string; level: 2 | 3 }
+  | { type: "paragraph"; text: string }
+  | { type: "list"; items: string[]; ordered: boolean }
+  | { type: "quote"; text: string; attribution: string }
+  | { type: "callout"; title: string; text: string }
+  | { type: "code"; text: string; language: string }
+  | { type: "image"; url: string; alt: string; caption: string }
+  | { type: "divider" };
+
+export type BlogPost = {
+  id: string;
+  slug: string;
+  title: string;
+  summary: string;
+  category: string | null;
+  author: string;
+  published: boolean;
+  source: BlogSource;
+  externalUrl: string | null;
+  coverImage: string | null;
+  content: BlogContentBlock[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+/* ───────────────────────── Question reports ───────────────────────────── */
+
+export const QUESTION_REPORT_ISSUES = [
+  "wrong-answer",
+  "ambiguous",
+  "missing-option",
+  "typo",
+  "other",
+] as const;
+
+export type QuestionReportIssue = (typeof QUESTION_REPORT_ISSUES)[number];
+
+export const QUESTION_REPORT_ISSUE_LABELS: Record<QuestionReportIssue, string> = {
+  "wrong-answer": "The marked answer is wrong",
+  ambiguous: "The question is ambiguous",
+  "missing-option": "An option is missing",
+  typo: "Typo or broken formatting",
+  other: "Something else",
+};
+
+export const QUESTION_REPORT_STATUSES = [
+  "open",
+  "reviewing",
+  "resolved",
+  "declined",
+] as const;
+
+export type QuestionReportStatus = (typeof QUESTION_REPORT_STATUSES)[number];
+
+export const QUESTION_REPORT_STATUS_LABELS: Record<
+  QuestionReportStatus,
+  string
+> = {
+  open: "Open",
+  reviewing: "Reviewing",
+  resolved: "Resolved",
+  declined: "Declined",
+};
+
+export type QuestionReport = {
+  id: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  questionId: string;
+  courseSlug: string | null;
+  courseTitle: string | null;
+  questionPrompt: string;
+  issueType: QuestionReportIssue;
+  description: string;
+  status: QuestionReportStatus;
+  adminReply: string;
+  repliedAt: string | null;
+  createdAt: string;
+  /** The question row, so admins can edit it straight from the report. */
+  question: {
+    externalId: string | null;
+    prompt: string;
+    options: string[];
+    answers: number[];
+    explanation: string;
+  } | null;
+};
+
+/* ─────────────────────────── Notifications ────────────────────────────── */
+
+export const NOTIFICATION_TYPES = [
+  "report_replied",
+  "report_acknowledged",
+  "question_updated",
+  "blog_published",
+  "announcement",
+] as const;
+
+export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
+
+export type Notification = {
+  id: string;
+  userId: string;
+  actorId: string | null;
+  actorName: string | null;
+  type: NotificationType;
+  title: string;
+  body: string;
+  link: string | null;
+  readAt: string | null;
+  createdAt: string;
+};
+
 export const COURSE_REQUEST_STATUSES = [
   "new",
   "reviewing",
