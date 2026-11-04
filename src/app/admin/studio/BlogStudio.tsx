@@ -374,16 +374,23 @@ export default function BlogStudio({ posts }: { posts: BlogPost[] }) {
             <MdPublic size={15} />
             {draft.published ? "Update & keep published" : "Publish to /blog"}
           </button>
-          {draft.id && (
-            <a
-              href={`/blog/${posts.find((post) => post.id === draft.id)?.slug ?? ""}`}
-              target='_blank'
-              rel='noopener noreferrer'
-              className='inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-bold text-[#2660A4] transition hover:bg-[#2660A4]/5'
-            >
-              <MdOutlineVisibility size={15} /> Preview
-            </a>
-          )}
+          {(() => {
+            const saved = posts.find((post) => post.id === draft.id);
+
+            // Drafts have no public URL yet, so only live posts get a link.
+            if (!saved?.published) return null;
+
+            return (
+              <a
+                href={`/blog/${saved.slug}`}
+                target='_blank'
+                rel='noopener noreferrer'
+                className='inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-bold text-[#2660A4] transition hover:bg-[#2660A4]/5'
+              >
+                <MdOutlineVisibility size={15} /> View live post
+              </a>
+            );
+          })()}
         </div>
       </div>
 
