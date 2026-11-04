@@ -151,14 +151,33 @@ export default async function BlogPostPage({ params }: Props) {
 
   if (!staticPost && !dbPost) notFound();
 
-  const title = staticPost?.title ?? dbPost!.title;
-  const summary = staticPost?.summary ?? dbPost!.summary;
-  const category = staticPost?.category ?? dbPost!.category ?? "Article";
-  const source: BlogSource = staticPost?.source ?? dbPost!.source;
-  const externalUrl = staticPost?.externalUrl ?? dbPost!.externalUrl;
-  const coverImage = staticPost?.coverImage ?? dbPost!.coverImage;
-  const publishedAt = staticPost?.publishedAt ?? dbPost!.createdAt;
-  const blocks = staticPost?.content ?? dbPost!.content;
+  // Static posts intentionally carry nulls (no external URL, no cover image),
+  // so pick a source first instead of merging them with `??` — that would fall
+  // through a static null to the (absent) database row and throw.
+  const post = staticPost
+    ? {
+        title: staticPost.title,
+        summary: staticPost.summary,
+        category: staticPost.category,
+        source: staticPost.source,
+        externalUrl: staticPost.externalUrl,
+        coverImage: staticPost.coverImage,
+        publishedAt: staticPost.publishedAt,
+        blocks: staticPost.content ?? [],
+      }
+    : {
+        title: dbPost!.title,
+        summary: dbPost!.summary,
+        category: dbPost!.category ?? "Article",
+        source: dbPost!.source,
+        externalUrl: dbPost!.externalUrl,
+        coverImage: dbPost!.coverImage,
+        publishedAt: dbPost!.createdAt,
+        blocks: dbPost!.content,
+      };
+
+  const { title, summary, category, source, externalUrl, coverImage, publishedAt, blocks } =
+    post;
   const label =
     source === "studio"
       ? "CertifyHub studio"
