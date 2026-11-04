@@ -7,13 +7,7 @@ import Link from "next/link";
 import thumbnailPic from "../../../../public/images/docker.webp";
 import thumbnailUrl from "../../../../public/images/thumbnail.avif";
 import Image from "next/image";
-import { MdCheckCircle, MdLockOutline, MdPlayArrow } from "react-icons/md";
-import {
-  LockedSectionCard,
-  RecapCompletionButton,
-  useRecapProgress,
-  useSequentialUnlock,
-} from "@/app/components/RecapProgress";
+import { MdPlayArrow } from "react-icons/md";
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 type TopicLesson = {
@@ -1129,23 +1123,13 @@ function LessonCard({
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-const COURSE_SLUG = "devops-sys-engineer";
-
-const sectionIds = categories.map((category) => category.id);
-
 export default function LearnPage() {
   const [activeCategoryId, setActiveCategoryId] = useState(categories[0].id);
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [isMobileTocOpen, setIsMobileTocOpen] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  const recap = useRecapProgress(COURSE_SLUG);
-  const isLocked = useSequentialUnlock(sectionIds, recap.completed, recap.loaded);
-
   const activeCategory = categories.find((c) => c.id === activeCategoryId)!;
-  const completedSections = sectionIds.filter((id) => recap.completed.has(id));
-  const sectionLocked = isLocked(activeCategory.id);
-  const sectionCompleted = recap.completed.has(activeCategory.id);
 
   // Track active lesson via IntersectionObserver
   useEffect(() => {
@@ -1194,35 +1178,20 @@ export default function LearnPage() {
           <div className='flex items-center gap-1 overflow-x-auto py-3 custom-scrollbar-x'>
             {categories.map((cat) => {
               const isActive = cat.id === activeCategoryId;
-              const locked = isLocked(cat.id);
-              const done = recap.completed.has(cat.id);
               return (
                 <button
                   key={cat.id}
                   type='button'
                   onClick={() => switchCategory(cat.id)}
-                  disabled={locked}
-                  title={
-                    locked
-                      ? "Finish and mark the previous section completed to unlock this one."
-                      : undefined
-                  }
                   className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
                     isActive
                       ? "text-white shadow-sm"
-                      : locked
-                        ? "cursor-not-allowed text-slate-300"
-                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                   }`}
                   style={
                     isActive ? { backgroundColor: cat.accentHex } : undefined
                   }
                 >
-                  {locked ? (
-                    <MdLockOutline size={13} />
-                  ) : done ? (
-                    <MdCheckCircle size={13} />
-                  ) : null}
                   {cat.title}
                 </button>
               );
@@ -1259,35 +1228,11 @@ export default function LearnPage() {
               a key-concept video you can replay before you practise.
             </p>
 
-            <div className='mt-6 flex flex-wrap items-center gap-3'>
-              {sectionLocked ? (
-                <span className='inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-500'>
-                  <MdLockOutline size={16} />
-                  Locked until the previous section is complete
-                </span>
-              ) : (
-                <RecapCompletionButton
-                  completed={sectionCompleted}
-                  pending={recap.pendingId === activeCategory.id}
-                  onClick={() => void recap.markCompleted(activeCategory.id)}
-                  accentHex={activeCategory.accentHex}
-                />
-              )}
-              <span className='text-sm font-semibold text-slate-500'>
-                {completedSections.length} of {sectionIds.length} sections complete
-              </span>
-            </div>
-
-            {recap.error && (
-              <p className='mt-3 text-sm font-semibold text-rose-600'>
-                {recap.error}
-              </p>
-            )}
           </div>
         </div>
 
         {/* ── Mobile TOC toggle ── */}
-        <div className={sectionLocked ? "hidden" : "lg:hidden mb-6"}>
+        <div className='lg:hidden mb-6'>
           <button
             type='button'
             onClick={() => setIsMobileTocOpen(!isMobileTocOpen)}
@@ -1332,28 +1277,17 @@ export default function LearnPage() {
         <div className='flex gap-10 pb-4'>
           {/* Lessons content */}
           <div className='min-w-0 flex-1'>
-            {sectionLocked ? (
-              <LockedSectionCard
-                title={activeCategory.title}
-                accentHex={activeCategory.accentHex}
-              />
-            ) : (
-              activeCategory.lessons.map((lesson) => (
+            {activeCategory.lessons.map((lesson) => (
               <LessonCard
                 key={lesson.id}
                 lesson={lesson}
                 accentHex={activeCategory.accentHex}
               />
-              ))
-            )}
+            ))}
           </div>
 
           {/* Sticky Table of Contents */}
-          <aside
-            className={`hidden w-64 shrink-0 lg:block xl:w-72 ${
-              sectionLocked ? "lg:hidden" : ""
-            }`}
-          >
+          <aside className='hidden w-64 shrink-0 lg:block xl:w-72'>
             <div className='sticky top-24 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm'>
               <p className='text-xs font-bold uppercase tracking-widest text-slate-400 mb-4'>
                 In this module
