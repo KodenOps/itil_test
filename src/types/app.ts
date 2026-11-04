@@ -204,6 +204,11 @@ export const NOTIFICATION_TYPES = [
   "question_updated",
   "blog_published",
   "announcement",
+  // Admin-facing: raised by the database whenever work needs an admin.
+  "report_created",
+  "submission_created",
+  "request_created",
+  "signup_created",
 ] as const;
 
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];

@@ -37,11 +37,14 @@ export default function AdminSideNav({
   openReports,
   draftBanks,
   pendingGrading,
+  alerts = {},
 }: {
   view: string;
   openReports: number;
   draftBanks: number;
   pendingGrading: number;
+  /** Unread admin alerts per section; renders the red dot until it is opened. */
+  alerts?: Record<string, number>;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -163,6 +166,7 @@ export default function AdminSideNav({
 
   const renderItem = (item: Item) => {
     const active = item.id === view;
+    const alert = alerts[item.id] ?? 0;
 
     return (
       <Link key={item.id} href={item.href} className={itemClass(active)}>
@@ -177,7 +181,15 @@ export default function AdminSideNav({
         </span>
         <span className='flex-1 truncate'>{item.label}</span>
 
-        {item.badge ? (
+        {alert > 0 ? (
+          // Something landed here and has not been opened yet.
+          <span
+            className='flex h-5 min-w-[20px] items-center justify-center rounded-full bg-rose-500 px-1.5 text-[10px] font-bold text-white ring-2 ring-white'
+            title={`${alert} new`}
+          >
+            {alert > 99 ? "99+" : alert}
+          </span>
+        ) : item.badge ? (
           <span
             className={`flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold ${
               active

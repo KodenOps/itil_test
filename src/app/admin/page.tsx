@@ -19,6 +19,7 @@ import GradingBoard from "./grading/GradingBoard";
 import { AdminInviteForm, AdminRevokeButton } from "./AdminInvite";
 import ContentSyncButton from "./ContentSyncButton";
 import AdminSideNav from "@/app/components/AdminSideNav";
+import MarkViewSeen from "./MarkViewSeen";
 import BlogStudio from "./studio/BlogStudio";
 import CourseImport from "./studio/CourseImport";
 import QuestionBankEditor from "./studio/QuestionBankEditor";
@@ -188,6 +189,7 @@ export default async function AdminPage({
     courses,
     courseRequestsResult,
     submissionsResult,
+    adminAlertsResult,
   ] = await Promise.all([
     supabase.rpc("platform_stats"),
     supabase
@@ -236,7 +238,15 @@ export default async function AdminPage({
       .order("created_at", { ascending: false })
       .limit(150)
       .returns<SubmissionRow[]>(),
-   ]);
+    supabase
+      .from("notifications")
+      .select("link")
+      .eq("user_id", viewer.userId)
+      .is("read_at", null)
+      .like("link", "/admin%")
+      .limit(300)
+      .returns<{ link: string | null }[]>(),
+  ]);
 
   // Supabase RPC responses carry { data, error }. The .returns<T>()
   // override sets the data shape; error stays PostgrestError | null.
@@ -249,6 +259,22 @@ export default async function AdminPage({
   const attempts = (attemptsResult.data ?? []) as AttemptRow[];
   const courseRequests = (courseRequestsResult.data ?? []) as CourseRequestRow[];
   const submissions = (submissionsResult.data ?? []) as SubmissionRow[];
+
+  // Unread admin alerts, grouped by the dashboard section they point at. The
+  // side nav shows a red dot for each section, and opening it clears them.
+  const adminAlerts: Record<string, number> = {};
+
+  for (const row of (adminAlertsResult.data ?? []) as { link: string | null }[]) {
+    const link = row.link ?? "";
+
+    if (!link.startsWith("/admin")) continue;
+
+    const section = link.includes("view=")
+      ? link.split("view=")[1].split("&")[0]
+      : "overview";
+
+    adminAlerts[section] = (adminAlerts[section] ?? 0) + 1;
+  }
   const pendingSubmissions = submissions.filter(
     (submission) => submission.status === "pending",
   );
@@ -359,7 +385,10 @@ export default async function AdminPage({
         openReports={openReportCount}
         draftBanks={draftBankCount}
         pendingGrading={pendingSubmissions.length}
+        alerts={adminAlerts}
       />
+
+      <MarkViewSeen view={view} />
 
       <main className='relative mt-16 min-h-[calc(100vh-4rem)] overflow-hidden pb-16 lg:pl-[264px]'>
         <div className='absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(38,96,164,0.10),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(31,138,112,0.07),_transparent_28%),linear-gradient(180deg,_#ffffff_0%,_#f8fafc_60%,_#eef2f7_100%)]' />

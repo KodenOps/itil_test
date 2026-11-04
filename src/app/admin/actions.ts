@@ -12,7 +12,12 @@ import {
 
 const ROLES: AppRole[] = ["learner", "instructor", "admin"];
 
-export type AdminActionResult = { ok: boolean; message?: string };
+export type AdminActionResult = {
+  ok: boolean;
+  message?: string;
+  /** How many rows the action touched, when that is useful to the caller. */
+  cleared?: number;
+};
 
 export async function setUserRole(
   userId: string,
@@ -211,4 +216,59 @@ export async function revokeInvite(id: string): Promise<AdminActionResult> {
   revalidatePath("/admin");
 
   return { ok: true };
+}
+
+const ADMIN_VIEWS_WITH_ALERTS = [
+  "overview",
+  "users",
+  "invitations",
+  "courses",
+  "activity",
+  "blog",
+  "import",
+  "questions",
+  "reports",
+  "requests",
+  "grading",
+] as const;
+
+/**
+ * Clears the unread admin alerts for one dashboard section.
+ *
+ * The side-nav dot and the bell badge read the same notification rows, so this
+ * is what makes a red dot disappear the moment an admin opens the section.
+ */
+export async function markAdminViewNotificationsRead(
+  view: string,
+): Promise<AdminActionResult> {
+  const viewer = await requireAdmin();
+
+  if (!(ADMIN_VIEWS_WITH_ALERTS as readonly string[]).includes(view)) {
+    return { ok: false, message: "Unknown section." };
+  }
+
+  // The overview is the bare /admin URL, so it only clears its own alerts.
+  const exact = view === "overview";
+  const prefix = exact ? "/admin" : `/admin?view=${view}`;
+
+  let query = viewer.supabase
+    .from("notifications")
+    .update({ read_at: new Date().toISOString() })
+    .eq("user_id", viewer.userId)
+    .is("read_at", null);
+
+  query = exact ? query.eq("link", prefix) : query.like("link", `${prefix}%`);
+
+  const { data, error } = await query
+    .select("id")
+    .returns<{ id: string }[]>();
+
+  if (error) {
+    console.error("Could not clear admin alerts:", error.message);
+    return { ok: false, message: "Could not clear those alerts." };
+  }
+
+  revalidatePath("/admin");
+
+  return { ok: true, cleared: data?.length ?? 0 };
 }

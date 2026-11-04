@@ -8,7 +8,10 @@ import {
   MdMarkEmailRead,
   MdNotifications,
   MdOutlineArticle,
+  MdOutlineGrading,
+  MdOutlinePersonAdd,
   MdOutlineQuiz,
+  MdReportProblem,
 } from "react-icons/md";
 import type { Notification } from "@/types/app";
 
@@ -20,6 +23,12 @@ function iconFor(type: Notification["type"]) {
       return <MdOutlineQuiz size={15} />;
     case "blog_published":
       return <MdOutlineArticle size={15} />;
+    case "report_created":
+      return <MdReportProblem size={15} />;
+    case "submission_created":
+      return <MdOutlineGrading size={15} />;
+    case "signup_created":
+      return <MdOutlinePersonAdd size={15} />;
     default:
       return <MdCampaign size={15} />;
   }
@@ -76,7 +85,15 @@ export default function NotificationBell() {
     void load();
 
     const timer = setInterval(() => void load(), 60_000);
-    return () => clearInterval(timer);
+    const onRefresh = () => void load();
+
+    // Fired by the admin dashboard after it clears a section's alerts.
+    window.addEventListener("certifyhub:notifications", onRefresh);
+
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener("certifyhub:notifications", onRefresh);
+    };
   }, [load]);
 
   useEffect(() => {
@@ -131,7 +148,7 @@ export default function NotificationBell() {
       >
         <MdNotifications size={18} />
         {unread > 0 && (
-          <span className='absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#2660A4] px-1 text-[10px] font-bold text-white'>
+          <span className='absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white ring-2 ring-white'>
             {unread > 9 ? "9+" : unread}
           </span>
         )}

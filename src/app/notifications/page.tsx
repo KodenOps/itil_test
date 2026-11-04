@@ -1,6 +1,14 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { MdCampaign, MdCheckCircle, MdMarkEmailRead, MdOutlineQuiz } from "react-icons/md";
+import {
+  MdCampaign,
+  MdCheckCircle,
+  MdMarkEmailRead,
+  MdOutlineGrading,
+  MdOutlinePersonAdd,
+  MdOutlineQuiz,
+  MdReportProblem,
+} from "react-icons/md";
 import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
 import { getViewer } from "@/lib/supabase/profile";
@@ -18,6 +26,12 @@ function iconFor(type: NotificationType) {
       return <MdMarkEmailRead size={17} />;
     case "question_updated":
       return <MdOutlineQuiz size={17} />;
+    case "report_created":
+      return <MdReportProblem size={17} />;
+    case "submission_created":
+      return <MdOutlineGrading size={17} />;
+    case "signup_created":
+      return <MdOutlinePersonAdd size={17} />;
     default:
       return <MdCampaign size={17} />;
   }

@@ -86,8 +86,10 @@ NEXT_PUBLIC_INSTALL_PROMPT_SNOOZE_DAYS=14   # days to stay quiet after
 
 Run the whole of [`supabase/schema.sql`](supabase/schema.sql) in the Supabase SQL
 editor, then [`supabase/schema-20261104.sql`](supabase/schema-20261104.sql) for
-the blog studio, question reports, notifications and question-bank drafts. Both
-files are idempotent — re-run them after pulling changes.
+the blog studio, question reports, notifications and question-bank drafts, and
+finally [`supabase/schema-20261105-admin-alerts.sql`](supabase/schema-20261105-admin-alerts.sql)
+so admins are alerted when work lands. All three files are idempotent — re-run
+them after pulling changes.
 
 In **Authentication → Providers**, keep **Email** enabled and disable every
 social provider (Google, Facebook, …). If an old "Before User Created" hook is
@@ -165,6 +167,13 @@ exam runner (**Report an issue**). Each report shows the reporter, the course
 and the stored question, editable in place. Saving the question updates the live
 row, and sending a reply notifies the reporter — they can read it in the bell in
 the top nav or on `/notifications`, next to their own report history.
+
+**Admin alerts.** A database trigger raises a notification for every admin when
+a question is flagged, a practical is submitted, a course is requested or a new
+account signs up. They arrive in the bell (red dot) and on the matching side-nav
+link (red dot), and clearing happens by opening the section: the dashboard marks
+that section's alerts read, so the dot goes away in the nav and the bell at once.
+Nothing is lost — the rows stay in the admin's `/notifications` feed.
 
 Sections open one at a time on `/courses/<slug>`: a section stays locked until
 the learner marks the one before it complete, and those completions are what the
