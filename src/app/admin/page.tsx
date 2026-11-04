@@ -15,7 +15,7 @@ import {
 } from "@/types/app";
 import AdminRoleSelect from "./AdminRoleSelect";
 import AdminCourseRequestStatus from "./AdminCourseRequestStatus";
-import AdminGradeSubmission from "./AdminGradeSubmission";
+import GradingBoard from "./grading/GradingBoard";
 import { AdminInviteForm, AdminRevokeButton } from "./AdminInvite";
 import ContentSyncButton from "./ContentSyncButton";
 import AdminSideNav from "@/app/components/AdminSideNav";
@@ -1069,125 +1069,12 @@ export default async function AdminPage({
                 </span>
               </div>
 
-              <div className='grid gap-4 lg:grid-cols-2'>
-                {submissions.map((submission) => {
-                  const isGraded = submission.status === "graded";
-                  const hasStoredFile = submission.file_path.includes("/");
-                  const trackTitle =
-                    courses.find((course) => course.slug === submission.course_slug)
-                      ?.title ??
-                    submission.course_slug ??
-                    "Practical assessment";
-
-                  return (
-                    <article
-                      key={submission.id}
-                      className='rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm'
-                    >
-                      <div className='flex flex-wrap items-start justify-between gap-3'>
-                        <div className='min-w-0'>
-                          <p className='text-xs font-semibold uppercase tracking-[0.2em] text-slate-500'>
-                            {trackTitle}
-                          </p>
-                          <h3 className='mt-1 text-lg font-black text-slate-900'>
-                            {submission.full_name}
-                          </h3>
-                          <p className='text-xs text-slate-500'>
-                            {submission.email}
-                          </p>
-                        </div>
-                        <span
-                          className={`rounded-full px-3 py-1 text-xs font-bold ${
-                            isGraded
-                              ? "bg-emerald-100 text-emerald-800"
-                              : "bg-amber-100 text-amber-800"
-                          }`}
-                        >
-                          {isGraded
-                            ? `Graded · ${Math.round(Number(submission.score))}%`
-                            : "Pending Grading"}
-                        </span>
-                      </div>
-
-                      <div className='mt-4 grid gap-2 rounded-2xl bg-slate-50 p-4 text-xs text-slate-600 sm:grid-cols-2'>
-                        <p>
-                          <span className='font-semibold text-slate-800'>
-                            Track:
-                          </span>{" "}
-                          {trackTitle}
-                        </p>
-                        <p>
-                          <span className='font-semibold text-slate-800'>
-                            Task:
-                          </span>{" "}
-                          {submission.task_name ?? "Not specified"}
-                        </p>
-                        <p className='min-w-0 truncate'>
-                          <span className='font-semibold text-slate-800'>
-                            File:
-                          </span>{" "}
-                          {storedFileName(submission.file_path)}
-                        </p>
-                        <p>
-                          <span className='font-semibold text-slate-800'>
-                            Submitted:
-                          </span>{" "}
-                          {formatDateTime(submission.created_at)}
-                        </p>
-                        <p>
-                          <span className='font-semibold text-slate-800'>
-                            Graded:
-                          </span>{" "}
-                          {submission.graded_at
-                            ? formatDateTime(submission.graded_at)
-                            : "Waiting"}
-                        </p>
-                      </div>
-
-                      <div className='mt-4 flex flex-wrap items-center justify-between gap-3'>
-                        <div className='flex flex-wrap items-center gap-2'>
-                          {hasStoredFile ? (
-                            <a
-                              href={`/api/admin/submissions/${submission.id}/download`}
-                              className='inline-flex items-center gap-1.5 rounded-full border border-[#2660A4]/30 bg-[#2660A4]/5 px-3 py-1.5 text-xs font-semibold text-[#2660A4] transition hover:bg-[#2660A4]/10'
-                            >
-                              <MdOutlineFileDownload size={14} /> Download file
-                            </a>
-                          ) : (
-                            <span className='inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-400'>
-                              <MdOutlineFileDownload size={14} /> File unavailable
-                            </span>
-                          )}
-                          <a
-                            href={`mailto:${encodeURIComponent(submission.email)}?subject=${encodeURIComponent(
-                              "Your practical assessment",
-                            )}`}
-                            className='inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50'
-                          >
-                            <MdOutlineReply size={13} /> Contact learner
-                          </a>
-                        </div>
-                        <AdminGradeSubmission
-                          submissionId={submission.id}
-                          score={
-                            submission.score === null
-                              ? null
-                              : Number(submission.score)
-                          }
-                          graded={isGraded}
-                        />
-                      </div>
-                    </article>
-                  );
-                })}
-
-                {submissions.length === 0 && (
-                  <p className='rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-sm text-slate-600'>
-                    No practical submissions yet. They appear here as soon as a
-                    learner uploads a workbook.
-                  </p>
+              <GradingBoard
+                submissions={submissions}
+                courseTitles={Object.fromEntries(
+                  courses.map((course) => [course.slug, course.title]),
                 )}
-              </div>
+              />
             </div>
           )}
 
