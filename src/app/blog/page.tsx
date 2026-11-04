@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
-import { staticBlogPosts, studioPost } from "./blog";
+import { devopsOverview, staticBlogPosts } from "./blog";
 import { listPublishedBlogPosts } from "@/lib/content/blog-posts";
 import { blogHostLabel } from "@/lib/content/blog";
 import type { BlogPost, BlogSource } from "@/types/app";
@@ -105,16 +105,16 @@ export default async function BlogPage() {
     }));
 
   const pinned: Card = {
-    slug: studioPost.slug,
-    title: studioPost.title,
-    summary: studioPost.summary,
-    category: studioPost.category,
-    publishedAt: studioPost.publishedAt,
-    source: studioPost.source,
+    slug: devopsOverview.slug,
+    title: devopsOverview.title,
+    summary: devopsOverview.summary,
+    category: devopsOverview.category,
+    publishedAt: devopsOverview.publishedAt,
+    source: devopsOverview.source,
     label: "CertifyHub studio",
-    externalUrl: studioPost.externalUrl,
-    coverImage: studioPost.coverImage,
-    readMinutes: studioPost.readMinutes ?? null,
+    externalUrl: devopsOverview.externalUrl,
+    coverImage: devopsOverview.coverImage,
+    readMinutes: devopsOverview.readMinutes ?? null,
   };
 
   const external: Card[] = [

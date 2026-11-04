@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { MdArrowBack, MdOpenInNew, MdSchedule, MdTag } from "react-icons/md";
 import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
-import { staticBlogPosts, studioPost } from "@/app/blog/blog";
+import { staticBlogPosts } from "@/app/blog/blog";
 import { getBlogPostBySlug } from "@/lib/content/blog-posts";
 import { blogHostLabel } from "@/lib/content/blog";
 import type { BlogContentBlock, BlogSource } from "@/types/app";
@@ -145,7 +145,7 @@ export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
 
   const staticPost =
-    [studioPost, ...staticBlogPosts].find((post) => post.slug === slug) ?? null;
+    staticBlogPosts.find((post) => post.slug === slug) ?? null;
 
   const dbPost = staticPost ? null : await getBlogPostBySlug(slug);
 

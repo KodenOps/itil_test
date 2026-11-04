@@ -181,9 +181,10 @@ track's progress is calculated from. Every hand-built track page (ITIL
 Foundation, ITIL Strategist, Excel, Power BI, AWS, KCNA and DevOps on
 `/page/learning`) follows the same rule: one *Mark as completed* button per
 section in the section header, never one per recap, and the next section stays
-locked until it is pressed. `/page/devops-sys-engineer` redirects to
-`/blog/devops-sys-engineer`, where the DevOps & Systems Engineering recap now
-lives as a full studio article. Section ids and their order live in
+locked until it is pressed. The DevOps & Systems Engineering overview is not a
+catalogue course: its original overview page lives at
+`/blog/devops-sys-engineer` and is listed in the blog, and
+`/page/devops-sys-engineer` redirects there. Section ids and their order live in
 `RECAP_SECTIONS` in [`src/lib/content/progress.ts`](src/lib/content/progress.ts),
 so the API rejects a section that is out of turn. A studio track with no
 questions in its bank is scored on sections alone (100%); once the bank has
