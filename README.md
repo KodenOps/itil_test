@@ -183,8 +183,13 @@ Foundation, ITIL Strategist, Excel, Power BI, AWS, KCNA and DevOps on
 section in the section header, never one per recap, and the next section stays
 locked until it is pressed. The DevOps & Systems Engineering overview is not a
 catalogue course: its original overview page lives at
-`/blog/devops-sys-engineer` and is listed in the blog, and
-`/page/devops-sys-engineer` redirects there. Section ids and their order live in
+`/blog/devops-sys-engineer` and is listed in the blog, it carries no completion
+button because nothing is tracked for a blog post, and
+`/page/devops-sys-engineer` redirects there. Its slug is listed in
+`RETIRED_COURSE_SLUGS` ([`src/lib/content/courses.ts`](src/lib/content/courses.ts))
+so `listCourses()` never returns it, which keeps it off `/` and out of the
+admin dashboard counts; the row itself stays put so old enrolments resolve.
+Section ids and their order live in
 `RECAP_SECTIONS` in [`src/lib/content/progress.ts`](src/lib/content/progress.ts),
 so the API rejects a section that is out of turn. A studio track with no
 questions in its bank is scored on sections alone (100%); once the bank has

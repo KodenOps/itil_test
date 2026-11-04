@@ -168,6 +168,8 @@ create table if not exists public.courses (
   created_at timestamptz not null default now()
 );
 
+-- The DevOps & Systems Engineering track is deliberately absent: it is not a
+-- catalogue course, its overview lives in the blog at /blog/devops-sys-engineer.
 insert into public.courses
   (slug, title, summary, track, level, accent_from, accent_to, href, icon, estimated_hours, position)
 values
@@ -194,11 +196,7 @@ values
   ('aws-cloud-practitioner', 'AWS Cloud Practitioner',
    'Core AWS services and the shared responsibility model recapped, with a full exam-format practice bank.',
    'Exam track', 'Foundation', '#F97316', '#7C2D12',
-   '/page/aws-home', 'cloud', 16, 6),
-  ('devops-sys-engineer', 'DevOps & Sys Eng',
-   'Architecture, reliability and production sense recapped, then examined the way the paper asks it.',
-   'Exam track', 'Intermediate', '#6D2E46', '#A24E67',
-   '/page/learning', 'engineering', 24, 7)
+   '/page/aws-home', 'cloud', 16, 6)
 on conflict (slug) do update set
   title = excluded.title,
   summary = excluded.summary,

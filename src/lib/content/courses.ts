@@ -44,6 +44,14 @@ export type EnrollmentRow = {
 };
 
 /**
+ * Tracks that are no longer sold as catalogue courses. The DevOps & Systems
+ * Engineering overview now lives in the blog at `/blog/devops-sys-engineer`,
+ * so it is kept out of every catalogue listing; the row itself stays so old
+ * enrolments and progress still resolve.
+ */
+const RETIRED_COURSE_SLUGS = ["devops-sys-engineer"];
+
+/**
  * Course catalogue + enrolment counts. Counts come from a SECURITY DEFINER
  * aggregate so a learner can see how popular a course is without being able
  * to read anybody else's enrolment rows.
@@ -61,6 +69,7 @@ export async function listCourses(): Promise<Course[]> {
         .from("courses")
         .select("*")
         .eq("is_published", true)
+        .not("slug", "in", `(${RETIRED_COURSE_SLUGS.join(",")})`)
         .order("position", { ascending: true })
         .returns<CourseRow[]>(),
       supabase.rpc("course_stats"),
