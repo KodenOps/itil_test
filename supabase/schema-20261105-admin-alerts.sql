@@ -78,8 +78,10 @@ begin
 end;
 $$;
 
-grant execute on function public.notify_admins(text, text, text, text, uuid)
-  to authenticated;
+-- Triggers call this as its owner; no client role needs the grant, and
+-- withholding it stops users from fanning out fake alerts to every admin.
+revoke all on function public.notify_admins(text, text, text, text, uuid)
+  from public, anon, authenticated;
 
 -- ---------------------------------------------------------------------------
 -- Triggers: raise the alerts as the rows land
